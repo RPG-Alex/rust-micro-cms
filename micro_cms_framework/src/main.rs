@@ -21,9 +21,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 		if trimmed_body == "" {
 			running = false;
 		} else {
+			//need to update this when I decide databse logic.
 			conn.execute("INSERT INTO notes (body) values (?1)",
 			[trimmed_body])?;
 		}
 	}
 	Ok(())
 }
+
+
+// To do:
+// Need to be able to get timestamp for posts, check there is title and body, and then input that into the database
