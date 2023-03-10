@@ -12,15 +12,15 @@ The project is meant to have a small footprint, and hopefully offer a more relia
 
 ## Intended Features:
 
-*Full Database Accessbility - Out of the box the database should set itself up and operate without further configuration
+* Full Database Accessbility - Out of the box the database should set itself up and operate without further configuration
 
-*Model web server best practices, including properly configured CORS, and so on
+* Model web server best practices, including properly configured CORS, and so on
 
-*Compile to a single binary that can then be placed on your server and accessed via a browser
+* Compile to a single binary that can then be placed on your server and accessed via a browser
 
-*Ease of backup - Using a file for DB with SQlite should aid in the ease of backup and avoid complications
+* Ease of backup - Using a file for DB with SQlite should aid in the ease of backup and avoid complications
 
-*other features may surely arise
+* other features may surely arise
 
 
 
