@@ -22,15 +22,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 	while running == true {
 		let mut buffer = String::new();
 		io::stdin().read_line(&mut buffer)?;
+
 		let trimmed_body = buffer.trim();
+
 		if trimmed_body == "" {
 			running = false;
+		} else if {
+			// this needs to work with JSON I think. We should figure this out first. And pass JSON to this as a standard method (api time) and then just use this logic for adding/updating posts. for now this is a place holder
 		} else {
 			//grab the timestamp and convert to string to put into db
 			let local: DateTime<Local> = Local::now();
 			let local = &local.to_string();
-
-			//need to update this when I decide databse logic.
+			
+			//CREATE query for new post
 			conn.execute("INSERT INTO notes (title,body,time_stamp) values (?1,?2,?3)",
 			[trimmed_body,local,trimmed_body])?;
 		}
@@ -41,20 +45,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 /*
 To do:
-	implement timestamp when adding post
-		likely use chrono for this as unix timestamp needs to be made into string to enter in DB
-	very if unique type is necessary for body/title fields
-	implement CRUD functionality (rough first, then as API)
-		First just read out to console
-		Then as API - requires configuring server detals
+	Implement REST API server
+		Configure Server 
+		Establish functionalities
+			GET 
+			POST
+			DELETE
+			UPDATE
+		Map CRUD to GPPU (
+			Create = POST
+			Read = GET
+			UPDATE = PUT
+			Delete = DELETE
+		)
 	Decide on login system. 
 		Likely add separate db table for logins
 		Needs to hash password and can update password etc
-	Implement Server Functionality
-		GET 
-		POST
-		DELETE
-		UPDATE
 	Connect a simple front end for testing in browser
 	Decide on how to handle markup - WYSIWYG editor markup?
 */
