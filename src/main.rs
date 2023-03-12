@@ -1,24 +1,20 @@
 use std::io;
 use rusqlite::{Connection, Result};
-use std::time::SystemTime;
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::prelude::*;
 
 
 // not sure about the structure setup for the main function - pretty sure this is debugging oriented. Will need to update. Delete comment when done.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-
-	let now = SystemTime::now();
-	println!("{:?} is the current time",now);
 	
 	let conn = Connection::open("post.db")?;
 	conn.execute(
-	//Not working, under construction:
-	//Currently the database structure is sufficient for posts
+	
+	//Should create the atabase if needed. 
 		"create table if not exists notes (
 			id integer primary key,
 			title text not null unique,
 			body text not null unique,
-			time_stamp integer not null unique
+			time_stamp text not null unique
 		)",
 		[],
 	)?;
@@ -30,9 +26,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 		if trimmed_body == "" {
 			running = false;
 		} else {
+			//grab the timestamp and convert to string to put into db
+			let local: DateTime<Local> = Local::now();
+			let local = &local.to_string();
+
 			//need to update this when I decide databse logic.
-			conn.execute("INSERT INTO notes (body,time_stamp) values (?1,?2)",
-			[trimmed_body,])?;
+			conn.execute("INSERT INTO notes (title,body,time_stamp) values (?1,?2,?3)",
+			[trimmed_body,local,trimmed_body])?;
 		}
 	}
 	Ok(())
