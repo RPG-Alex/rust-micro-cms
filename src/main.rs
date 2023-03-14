@@ -1,3 +1,12 @@
+//Server time (thank you axum examples)
+use axum::{
+	routing::{get,post},
+	http::StatusCode,
+	response::IntoResponse,
+	Json, Router,
+};
+use serde::{Deserialize, Serialize};
+use std::net::SocketAddr;
 //this is for CLI support
 use std::io;
 //
@@ -6,7 +15,8 @@ use chrono::prelude::*;
 
 
 // not sure about the structure setup for the main function - pretty sure this is debugging oriented. Will need to update. Delete comment when done.
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let conn = Connection::open("post.db")?;
 	conn.execute(
 	
@@ -69,6 +79,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 /*
 To do:
+	Start working on this project like its a server side applicaton!
 	Implement REST API server
 		Configure Server 
 		Establish functionalities
