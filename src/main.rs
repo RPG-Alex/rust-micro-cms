@@ -11,7 +11,8 @@ use chrono::prelude::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-	
+
+
 	let serve = Router::new()
 		.route("/",get(root))
 		//need to configure this -- review how axum is setting this up for clarity
@@ -22,9 +23,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 		.await
 		.unwrap();
 
-
 	Ok(())
 }
+
 
 //functional hello world
 async fn root() -> &'static str {
