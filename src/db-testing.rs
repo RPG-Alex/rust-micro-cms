@@ -1,9 +1,11 @@
 //This file is just for testing things with the databasee structure. Transfer to new library when done
+use rusqlite::{Connection, Result};
+use chrono::prelude::*;
 
 //for debugging so we can see what we are doing
 #[derive(Debug)]
 //desired structure we will use for posts
-struct Posts {
+struct Post {
 	id: i32,
 	title: String,
 	body: String,
@@ -11,12 +13,28 @@ struct Posts {
 }
 
 fn main(){
-    	//just testing if the structure compiles
-	let go = Posts {
-		id : 1,
-		title: String::from("Wazzup"),
-		body: String::from("Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis sit nulla quia asperiores porro commodi aut impedit numquam molestiae quisquam iusto quae, voluptatibus eum sunt doloribus pariatur distinctio totam quibusdam."),
-		time_stamp: String::from("today I guess"),
-	};
-    println!("{:?}",go);
+	let conn = Connection::open("notes.db");
+	let mut note = String::new();
+	conn.execute(
+	"create table if not exists notes (
+	id integer primary key,
+	title text not null unique,
+	body text not null unique,
+	time_stamp text not null unique,
+		)",
+		[],
+	);
+	let mut stmt = conn.prepare("SELECT * from notes");
+	let mut rows = stmt.query(rusqlite::params![]);
+	while let Some(row) = rows.next() {
+		let go = Post {
+			id : row.get(0),
+			title: row.get(1),
+			body: row.get(2),
+			time_stamp: row.get(3),
+		};
+		println!("{:?}",go);
+	}   
 }
+
+

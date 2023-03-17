@@ -1,36 +1,44 @@
-use axum::{
-	routing::{get,post},
-	http::StatusCode,
-	response::IntoResponse,
-	Json, Router,
-};
-use serde::{Deserialize, Serialize};
-use std::net::SocketAddr;
+//This file is just for testing things with the databasee structure. Transfer to new library when done
 use rusqlite::{Connection, Result};
 use chrono::prelude::*;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+//for debugging so we can see what we are doing
+#[derive(Debug)]
+//desired structure we will use for posts
+struct Post {
+	id: i32,
+	title: String,
+	body: String,
+	time_stamp: String,
+}
 
-
-	let serve = Router::new()
-		.route("/",get(root))
-		//need to configure this -- review how axum is setting this up for clarity
-		.route("/posts",get(root));
-	let addr = SocketAddr::from(([127,0,0,1],3000));
-	axum::Server::bind(&addr)
-		.serve(serve.into_make_service())
-		.await
-		.unwrap();
-
+fn main() -> Result<()> {
+	let conn = Connection::open("notes.db");
+	let mut note = String::new();
+	conn.execute(
+	"create table if not exists notes (
+	id integer primary key,
+	title text not null unique,
+	body text not null unique,
+	time_stamp text not null unique,
+		)",
+		[],
+	)?;
+	let mut stmt = conn.prepare("SELECT * from notes")?;
+	let mut rows = stmt.query(rusqlite::params![])?;
+	while let Some(row) = rows.next() {
+		let go = Post {
+			id : row.get(0),
+			title: row.get(1),
+			body: row.get(2),
+			time_stamp: row.get(3),
+		};
+		println!("{:?}",go);
+	}
 	Ok(())
 }
 
 
-//functional hello world
-async fn root() -> &'static str {
-	"This is working at least"
-}
 
 
 /*
