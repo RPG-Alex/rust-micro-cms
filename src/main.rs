@@ -22,14 +22,18 @@ fn main() -> Result<()> {
 		[],
 	)?;
 
+
+
 	//Test post for checking structure and acccessign it.
 	let test = Post {
-		id: 1,
-		title: "Welcome!".to_string(),
-		body: "Hello World!".to_string(),
+		//the id is set to one but not used (this is a placeholder for the actual id you would get from a query. May need to make two structures to avoid this, a New_Post and Post or similar?)
+		id: 2,
+		title: "Hello!".to_string(),
+		body: "World!".to_string(),
 		time_stamp: Local::now().to_string(),
 	};
-	println!("id: {}, title: {}. body: {}. Time: {}",test.id,test.title,test.body,test.time_stamp);
+	//practice inserting into db
+	let mut stmt = conn.execute("INSERT INTO posts (title,body,time_stamp) values (?1,?2,?3)",[&test.title,&test.body,&test.time_stamp]);
 
 	//This is fetching all entries and setting a variable to each one.
 	let mut stmt = conn.prepare("SELECT * from posts")?;
@@ -41,6 +45,7 @@ fn main() -> Result<()> {
 			body: row.get(2)?,
 			time_stamp: row.get(3)?,
 		};
+		println!("id: {}, title: {}. body: {}. Time: {}", go.id, go.title, go.body, go.time_stamp);
 	}
 	Ok(())
 }
