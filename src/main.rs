@@ -47,5 +47,12 @@ fn main() -> Result<()> {
 		};
 		println!("id: {}, title: {}. body: {}. Time: {}", go.id, go.title, go.body, go.time_stamp);
 	}
+
+	//Working Update Functionality
+	let new_title = "This was changed! It works!";
+	let id = 1.to_string();
+	let mut stmt = conn.execute("UPDATE posts SET title = (?1) WHERE id = (?2)",[new_title,&id])?;
+
+
 	Ok(())
 }
