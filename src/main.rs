@@ -52,6 +52,9 @@ fn main() -> Result<()> {
 	let new_title = "This was changed! It works!";
 	let id = 1.to_string();
 	let mut stmt = conn.execute("UPDATE posts SET title = (?1) WHERE id = (?2)",[new_title,&id])?;
+	
+	//adding delete functionality
+	let mut stmt = conn.execute("DELETE FROM posts WHERE id = (?1)",[id])?;
 
 
 	Ok(())
