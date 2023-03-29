@@ -13,7 +13,7 @@ use std::net::SocketAddr;
 #[tokio::main]
 pub async fn serve() -> () {
 	let serve = Router::new()
-		.route("/",get(root))
+		.route("/",get(root).post(received))
 		//need to configure this -- review how axum is setting this up for clarity
 		.route("/posts",get(posts));
 	let addr = SocketAddr::from(([127,0,0,1],3000));
@@ -29,4 +29,7 @@ async fn root() -> &'static str {
 }
 async fn posts() -> &'static str {
     "And here will go posts"
+}
+async fn received() -> &'static str {
+	"We get it. You sent us a post request"
 }
