@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repository is an attempt to create a standalone content manage application (CMS) that utilizes the rust programming language for as much of the application as is possible. This includes CRUD with the DB (currently SQLite), and serving the application.
+This project's purpose is to create an easily deployable website CMS, with a complete backend and frontend, ultimately with a "What you see is what you get" (WYSIWYG) or similar input for ease of posting.
 
 ### Goals
 
@@ -10,19 +10,13 @@ Ultimately this project is a learning project, to help understand how Rust can b
 
 The project is meant to have a small footprint, and hopefully offer a more reliable and secure CMS solution, with less overall logic and complexity.
 
-## Intended Features:
-
-* Full Database Accessbility - Out of the box the database should set itself up and operate without further configuration
-
-* Model web server best practices, including properly configured CORS, and so on
-
-* Compile to a single binary that can then be placed on your server and accessed via a browser
-
-* Ease of backup - Using a file for DB with SQlite should aid in the ease of backup and avoid complications
-
-* other features may surely arise
-
-
+## Features:
+[] Frontend built with Rust
+	[] Browser based input for new posts
+	[] Update, delete posts through browser
+	[] Add media to posts 
+[] Backend build with Rust
+[] Database Management System
 
 ### Contributing
 
