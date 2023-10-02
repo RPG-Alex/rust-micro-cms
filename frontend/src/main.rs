@@ -1,21 +1,16 @@
 use yew::prelude::*;
+use chrono::{Datelike};
 
 #[function_component]
 fn App() -> Html {
-	let counter = use_state(|| 0);
-	let onclick = {
-		let counter = counter.clone();
-		move |_| {
-			let value = *counter + 1;
-			counter.set(value);
-		}
-	};
-
+	let creation_date = 2023;
+	let current_year = chrono::Local::now().year();
+	let mut title = "Welcome to the home page!";
 	html!{
-		<div>
-			<button {onclick}>{ "+1" }</button>
-			<p>{ *counter }</p>
-		</div>
+		<>
+		<h1>{title}</h1>
+		<footer>{"Copyright: "}<b>{creation_date}{"-"}{current_year}</b></footer>
+		</>
 	}
 }
 

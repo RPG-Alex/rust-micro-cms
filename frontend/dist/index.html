@@ -1,9 +1,11 @@
 <!DOCTYPE html><html><head>
         <meta charset="utf-8">
-        <title>Yew App</title>
-    </head>
+        <title>Just Another Rust Based Website...</title>
+    
+<link rel="preload" href="/frontend-c6cee04750f0fae4_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/frontend-c6cee04750f0fae4.js"></head>
 <body>
-<script>(function () {
+<script type="module">import init from '/frontend-c6cee04750f0fae4.js';init('/frontend-c6cee04750f0fae4_bg.wasm');</script><script>(function () {
     var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     var url = protocol + '//' + window.location.host + '/_trunk/ws';
     var poll_interval = 5000;
