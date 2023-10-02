@@ -11,12 +11,12 @@ Ultimately this project is a learning project, to help understand how Rust can b
 The project is meant to have a small footprint, and hopefully offer a more reliable and secure CMS solution, with less overall logic and complexity.
 
 ## Features:
-[ ] Frontend built with Rust
-	[ ] Browser based input for new posts
-	[ ] Update, delete posts through browser
-	[ ] Add media to posts 
-[ ] Backend build with Rust
-[ ] Database Management System
+- [ ] Frontend built with Rust
+	- [ ] Browser based input for new posts
+	- [ ] Update, delete posts through browser
+	- [ ] Add media to posts 
+- [ ] Backend build with Rust
+- [ ] Database Management System
 
 ### Contributing
 
