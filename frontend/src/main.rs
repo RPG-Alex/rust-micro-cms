@@ -1,15 +1,29 @@
 use yew::prelude::*;
-use chrono::{Datelike};
+use chrono::Datelike;
+
+const COPYRIGHT_YEAR: u16 = 2023;
+
+//Structure for a blog post
+struct Post {
+	title: String,
+	date: String,
+	body: String,
+}
+
 
 #[function_component]
 fn App() -> Html {
-	let creation_date = 2023;
-	let current_year = chrono::Local::now().year();
-	let mut title = "Welcome to the home page!";
+	//test blog post. 
+	let example_post = Post{
+		title: String::from("This is generated from a struct!"),
+		date: chrono::Local::now().year().to_string(),
+		body: String::from("Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, voluptas sed sapiente hic dolores qui, beatae eaque at repellendus illum aliquid animi laudantium labore dolorum unde fuga vero, sit perspiciatis."),
+	};
 	html!{
 		<>
-		<h1>{title}</h1>
-		<footer>{"Copyright: "}<b>{creation_date}{"-"}{current_year}</b></footer>
+		<h1>{example_post.title}</h1>
+		<p>{example_post.body}</p>
+		<footer>{"Copyright: "}<b>{COPYRIGHT_YEAR}{"-"}{example_post.date}</b></footer>
 		</>
 	}
 }
