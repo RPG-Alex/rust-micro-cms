@@ -1,10 +1,11 @@
 use yew::prelude::*;
 use chrono::Datelike;
 
+// Define the copyright year as a constant (year of copyright will never change)
 const COPYRIGHT_YEAR: u16 = 2023;
 
-
-//Structure for a blog post
+///Structure for a blog post
+#[derive(Clone,PartialEq)]
 struct Post {
 	id: usize,
 	title: String,
@@ -12,12 +13,29 @@ struct Post {
 	body: String,
 }
 
+///Structure for a vector of blog posts
+#[derive(Properties, PartialEq)]
+struct PostsListProps {
+	posts: Vec<Post>,
+}
+
+///function for displaying list of blog posts
+#[function_component(PostsList)]
+fn posts_list(PostsListProps { posts }: &PostsListProps) -> Html{
+	posts
+		.iter()
+		.map(|post| html!{
+			<p>
+				<a key={post.id} href={post.id.to_string()}>{format!("{}", post.title)}</a>
+			</p>
+		}).collect()
+}
 
 #[function_component]
 fn App() -> Html {
 	let home = "index.html";
 	//test blog posts list. 
-	let example_posts = vec![
+	let posts = vec![
 		Post{
 			id: 1,
 			title: String::from("This is generated from a struct!"),
@@ -31,16 +49,10 @@ fn App() -> Html {
 			body: String::from("This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click!"),
 		}
 	];
-	//Iterator for posts and potential blog post template
-	let example_posts = example_posts.iter().map(|post| html!{
-		<p>
-		<a key={post.id} href={post.id.to_string()}>{format!("{}", post.title)}</a>
-		</p>
-	}).collect::<Html>();
 	html!{
 		<>
 		<header><a href={home}>{"Home"}</a></header>
-		{example_posts}
+		<PostsList posts={posts} />
 		<footer>{"Copyright: "}<b>{COPYRIGHT_YEAR}</b></footer>
 		</>
 	}
