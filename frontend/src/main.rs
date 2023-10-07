@@ -13,27 +13,71 @@ struct Post {
 	body: String,
 }
 
+
+
+#[derive(Properties, PartialEq)]
+struct PostsDetailsProps {
+    post: Post,
+}
+
+#[function_component(PostDetails)]
+fn post_details(PostsDetailsProps { post }: &PostsDetailsProps) -> Html {
+    html! {
+        <div>
+            <h3>{ post.title.clone() }</h3>
+			<h4>{"Date: "}{post.date.clone()}</h4>
+            <b>{ post.body.clone()}</b>
+        </div>
+    }
+}
+
 ///Structure for a vector of blog posts
 #[derive(Properties, PartialEq)]
 struct PostsListProps {
 	posts: Vec<Post>,
+	on_click: Callback<Post>
 }
 
 ///function for displaying list of blog posts
 #[function_component(PostsList)]
-fn posts_list(PostsListProps { posts }: &PostsListProps) -> Html{
+fn posts_list(PostsListProps{posts, on_click }: &PostsListProps) -> Html{
+	let on_click = on_click.clone();
 	posts
 		.iter()
-		.map(|post| html!{
+		.map(|post| {
+			let on_post_select = {
+				let on_click = on_click.clone();
+				let post = post.clone();
+				Callback::from(move |_| {
+					on_click.emit(post.clone())
+				})
+			};
+			
+
+			html!{
 			<p>
-				<a key={post.id} href={post.id.to_string()}>{format!("{}", post.title)}</a>
+				<a key={post.id} onclick={on_post_select}>{format!("{}", post.title)}</a>
 			</p>
+			}
 		}).collect()
+
 }
 
 #[function_component]
 fn App() -> Html {
-	let home = "index.html";
+
+	let selected_post = use_state(|| None);
+
+	let on_post_select = {
+		let selected_post = selected_post.clone();
+		Callback::from(move |post: Post| {
+			selected_post.set(Some(post))
+		})
+	};
+
+	let post_details = selected_post.as_ref().map(|post| html!{
+		<PostDetails post={post.clone()} />
+	});
 	//test blog posts list. 
 	let posts = vec![
 		Post{
@@ -51,9 +95,10 @@ fn App() -> Html {
 	];
 	html!{
 		<>
-		<header><a href={home}>{"Home"}</a></header>
-		<PostsList posts={posts} />
+		<header><a href={"index.html"}>{"Home"}</a></header>
+		<PostsList posts={posts} on_click={on_post_select.clone()} />
 		<footer>{"Copyright: "}<b>{COPYRIGHT_YEAR}</b></footer>
+		{for post_details}
 		</>
 	}
 }
