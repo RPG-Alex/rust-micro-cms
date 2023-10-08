@@ -6,6 +6,18 @@
 
 */
 
+//started working on the post structure, may add an entry for an author as well
+struct Post {
+    id: usize,
+    title: String,
+    date: String,
+    body: String,
+}
+
+struct Posts {
+    posts: Vec<Post>,
+}
+
 fn main() {
     println!("Hello, world!");
 }
