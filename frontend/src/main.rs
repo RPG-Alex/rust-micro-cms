@@ -13,12 +13,12 @@ struct Post {
 	body: String,
 }
 
-
-
 #[derive(Properties, PartialEq)]
 struct PostsDetailsProps {
     post: Post,
 }
+
+
 
 #[function_component(PostDetails)]
 fn post_details(PostsDetailsProps { post }: &PostsDetailsProps) -> Html {
@@ -63,6 +63,53 @@ fn posts_list(PostsListProps{posts, on_click }: &PostsListProps) -> Html{
 
 }
 
+#[derive(Clone, PartialEq, Debug)]
+enum AddPostState{
+	Button, 
+	Form,
+	Submitted,
+}
+
+#[function_component(AddPost)]
+fn add_post_form() -> Html {
+	let state = use_state(|| AddPostState::Button);
+	let switch_to_form = {
+		let state = state.clone();
+		Callback::from(move |_| {
+			state.set(AddPostState::Form);
+		})
+	};
+
+	match *state {
+		AddPostState::Button => {
+			html!{
+				<button onclick={switch_to_form}>{"Add new Post"}</button>
+			}
+		}
+		AddPostState::Form => {
+			let submit_form = {
+				let state = state.clone();
+				Callback::from(move |_: yew::MouseEvent| {
+					state.set(AddPostState::Submitted);
+				})
+			};
+			html!{
+				<>
+					<input type="text" />
+					<button onclick={submit_form}>{"Submit"}</button>
+				</>
+			}
+		}
+		AddPostState::Submitted => {
+			html!{
+				<>
+				<b> {"Post Submitted!"}</b>
+				</>
+			}
+		}
+	}
+}
+
 #[function_component]
 fn App() -> Html {
 
@@ -97,6 +144,7 @@ fn App() -> Html {
 		<>
 		<header><a href={"index.html"}>{"Home"}</a></header>
 		<PostsList posts={posts} on_click={on_post_select.clone()} />
+		<AddPost />
 		<footer>{"Copyright: "}<b>{COPYRIGHT_YEAR}</b></footer>
 		{for post_details}
 		</>
