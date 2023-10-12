@@ -131,6 +131,7 @@ fn add_post_form() -> Html {
 				<b> {"Post Submitted!"}</b>
 				</>
 			}
+			
 		}
 	}
 }
