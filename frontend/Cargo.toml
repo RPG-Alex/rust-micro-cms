@@ -7,4 +7,5 @@ authors = ["Alex Blood"]
 
 [dependencies]
 chrono = "0.4.31"
+serde = "1.0.188"
 yew = {version = "0.21.0", features = ["csr"]}
