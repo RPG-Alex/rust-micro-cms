@@ -8,4 +8,5 @@ authors = ["Alex Blood"]
 [dependencies]
 axum = "0.6.20"
 hyper = "0.14.27"
+rusqlite = "0.29.0"
 tokio = {version = "1.33.0", features = ["full"]}
