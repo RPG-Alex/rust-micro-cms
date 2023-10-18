@@ -15,10 +15,6 @@ use axum::{
 use std::net::SocketAddr;
 
 
-// Structure for vector of posts (such as fetching all from DB)
-struct Posts {
-    posts: Vec<Post>,
-}
 
 
 #[tokio::main]
