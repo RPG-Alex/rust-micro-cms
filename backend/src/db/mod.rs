@@ -49,3 +49,12 @@ pub fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
     let posts = posts?;
     Ok (Posts { posts})
 }
+
+// Add a new post
+pub fn insert_post(conn: &Connection, title: &str, date:&str, body: &str) -> Result<usize> {
+    let sql = "
+        INSERT INTO posts (title, date, body)
+        VALUES (?1, ?2, ?3)
+        ";
+    conn.execute(sql, &[title, date, body])
+}

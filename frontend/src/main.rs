@@ -73,7 +73,6 @@ enum AddPostState{
 #[function_component(AddPost)]
 fn add_post_form() -> Html {
 	let state = use_state(|| AddPostState::Button);
-	let task = use_sate(|| None::<FetchTask>);
 
 	let switch_to_form = {
 		let state = state.clone();
@@ -82,26 +81,7 @@ fn add_post_form() -> Html {
 		})
 	};
 
-	let submit_post = |post_data: &str| {
-		let request = Request::post("PUT SERVER HERE")
-			.header("Content-Type","application/json")
-			.body(Json(&post_date))
-			.expect("Failed to build request.");
-
-		let callback = {
-			let state = state.clone();
-			Callback::from(move |response: Response<Json<Result<String, anyhow::Error>>>| {
-				if response.status().is_success() {
-					state.set(AddPostState::Submitted);
-				} else {
-					//todo handle error
-				}
-			})
-		};
-		
-		let task = FetchService::fetch(request, callback).expect("Failed to start request");
-		task.set(Some(task));
-	};
+	
 
 	match *state {
 		AddPostState::Button => {
@@ -114,7 +94,6 @@ fn add_post_form() -> Html {
 				let state = state.clone();
 				Callback::from(move |_: yew::MouseEvent| {
 					let post_data = "Post Data Here";
-					submit_post(post_data);
 					state.set(AddPostState::Submitted);
 				})
 			};
