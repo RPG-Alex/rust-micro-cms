@@ -2,6 +2,7 @@ use rusqlite::{Connection, Result};
 use std::path::Path;
 
 //Post Structure for Database
+#[derive(Debug)]
 pub struct Post {
     pub id: usize,
     pub title: String,
@@ -10,6 +11,7 @@ pub struct Post {
 }
 
 // Structure for vector of posts (such as fetching all from DB)
+#[derive(Debug)]
 pub struct Posts {
     pub posts: Vec<Post>,
 }

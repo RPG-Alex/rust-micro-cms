@@ -22,6 +22,10 @@ async fn main() {
     let db_conn = db::establish_connection(&db_path);
     let db_insert = db::insert_post(&db_conn.unwrap(), "New Post Title", "2023-10-20", "This is the post body")
     .expect("Failed to insert post");
+    let db_conn = db::establish_connection(&db_path);
+    let all_posts = db::fetch_all_posts(&db_conn.unwrap());
+    print!("{:#?}",all_posts);
+    //
 
     // server address
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
