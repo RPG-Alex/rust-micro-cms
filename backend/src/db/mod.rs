@@ -60,3 +60,22 @@ pub fn insert_post(conn: &Connection, title: &str, date:&str, body: &str) -> Res
         ";
     conn.execute(sql, &[title, date, body])
 }
+
+//Update a post data
+pub fn update_post(conn: &Connection, post_id:usize, new_title:&str, new_date: &str, new_body: &str) -> Result<usize>{
+    // convert the usize to a string for query
+    let post_id_str = post_id.to_string();
+    // update entry
+    let sql = "UPDATE posts SET title = ?1, date = ?2, body = ?3 WHERE id = ?4";
+    conn.execute(sql, &[new_title,new_date,new_body,&post_id_str])
+}
+
+//Delete a post
+pub fn delete_post(conn: &Connection, post_id:usize) -> Result<usize> {
+    // convert the usize to a string for query
+    let post_id_str = post_id.to_string();
+    // update entry
+    let sql = "DELETE FROM posts WHERE id = ?1";
+    // post_id_str is converted to str here for query
+    conn.execute(sql, &[&post_id_str])
+}
