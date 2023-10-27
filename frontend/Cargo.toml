@@ -7,4 +7,5 @@ authors = ["Alex Blood"]
 
 [dependencies]
 chrono = "0.4.31"
+leptos = { version = "0.5.2", features = ["csr", "nightly"] }
 yew = {version = "0.21.0", features = ["csr"]}
