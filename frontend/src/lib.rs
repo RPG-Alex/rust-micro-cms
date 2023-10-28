@@ -24,7 +24,21 @@ pub fn ListAllBlogPost() -> impl IntoView {
 			body: String::from("This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click!"),
 		}
 	];
+	//currently view is prototype for learning.
     view!{
 		<h1>"To do: show all posts!"</h1>
+		<ul>
+			{posts.into_iter()
+				.map(|n| view! {
+					<li>
+					<b>"TITLE: "</b> 
+					{n.title}
+					"DATE: "
+					{n.date}
+					{n.body}
+					</li>
+				}).collect_view()
+			}
+		</ul>
     }
 }
