@@ -1,4 +1,4 @@
-use leptos::{*, html::h2};
+use leptos::{*};
 use chrono::Datelike;
 
 struct Post {
@@ -25,35 +25,32 @@ pub fn ListAllBlogPost() -> impl IntoView {
 		}
 	];
 	//currently view is prototype for learning.
-	let (visibility, set_visibility) = create_signal(true);
     view!{
-		<h1>"To do: show all posts!"</h1>
+		<h1>"To do: List all posts!"</h1>
 		<div id="posts">
 		{posts.into_iter()
 			.map(|n| 
-				view! {
-					<div id={&n.id.to_string()}
-						on:click=move |_| {
-							if visibility() == true {
-								set_visibility.update(|b| *b = false);
-							} else {
-								set_visibility.update(|b| *b = true);
-							}
-						}
-						>
-						<h2>{&n.title}</h2>
-						<ShowSinglePostInfo post=n visibility=visibility.get()/>
-					</div>
-			}).collect_view()
+				view! {<ShowSinglePostInfo post=n/>}).collect_view()
 		}
 		</div>
     }
 }
 
 #[component]
-fn ShowSinglePostInfo(post: Post, visibility: bool) -> impl IntoView {
+fn ShowSinglePostInfo(post: Post) -> impl IntoView {
+	let (show_body, set_show_body) = create_signal(false);
 	view! {
+		<div on:click=move |_| set_show_body(true)>
+		<h2>{post.title}</h2>
 		<i>{post.date}</i>
-		<p hidden=visibility>{post.body}</p>
+		{if (move || show_body.get())(){
+			view! {
+				<p>{post.body}</p>
+			}
+		} else {
+			view! {<p></p>}
+		}}
+		</div>
 	}
 }
+
