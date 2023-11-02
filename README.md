@@ -33,7 +33,8 @@ Ultimately this project is a learning project, to help understand how Rust can b
 The project is meant to have a small footprint, and hopefully offer a more reliable and secure CMS solution, with less overall logic and complexity.
 
 ## Roadmap:
-Frontend Development
+
+### Frontend Development
 
 - [ ] Browser-based input for new posts
 	- [ ] Design and implement a user-friendly interface for creating new posts.
@@ -45,36 +46,36 @@ Frontend Development
 	- [ ] Develop a system for uploading and embedding media (images, videos, etc.) in posts.
 	- [ ] Ensure media is displayed correctly across different browsers and devices.
 
-Backend Development
+### Backend Development
 
 - [ ] Backend built with Rust using Axum
 	- [ ] Design and implement a robust backend system to handle requests from the frontend.
 	- [ ] Ensure the backend is secure and can handle high traffic.
 
-Database Management System
+### Database Management System
 
 - [ ] Database Management System
 	- [ ] Choose an appropriate DBMS for the project (considering factors like scalability, performance, etc.).
 	- [ ] Design the database schema and set up the database.
 	- [ ] Implement functionality for basic CRUD (Create, Read, Update, Delete) operations.
 
-User Authentication
+### User Authentication
 
 - [ ] Login/Verification System
 	- [ ] Implement a secure login system for users.
 	- [ ] Include features like password recovery, email verification, etc.
 
-SEO Optimization
+### SEO Optimization
 
 - [ ] SEO Optimization
 	- [ ] Implement SEO best practices to improve the visibility of the CMS on search engines.
 
-Accessibility
+### Accessibility
 
 - [ ] Accessibility
 	- [ ] Ensure that the CMS is accessible to all users, including those with disabilities.
 
-Testing & Deployment
+### Testing & Deployment
 
 - [ ] Testing
 	- [ ] Perform unit testing to ensure individual components of the project are working as expected.
@@ -83,11 +84,11 @@ Testing & Deployment
 	- [ ] Set up a server environment for deploying the CMS.
 	- [ ] Ensure the CMS is easily deployable, similar to WordPress or other popular CMSs.
 
-Documentation & Community
+### Documentation & Community
 
 - [ ] Documentation
 	- [ ] Write comprehensive documentation covering all aspects of the CMS, including setup, usage, troubleshooting, etc.
-- - [ ] Community
+- [ ] Community
 	- [ ] Encourage community involvement through contributions, feedback, etc.
 
 
