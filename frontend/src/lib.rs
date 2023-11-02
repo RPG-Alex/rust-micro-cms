@@ -39,17 +39,31 @@ pub fn ListAllBlogPost() -> impl IntoView {
 #[component]
 fn ShowSinglePostInfo(post: Post) -> impl IntoView {
 	let (show_body, set_show_body) = create_signal(false);
-	view! {
-		<div on:click=move |_| set_show_body(true)>
-		<h2>{post.title}</h2>
-		<i>{post.date}</i>
-		{if (move || show_body.get())(){
+
+	let post_body = post.body.clone();
+	let show_body_closure = move || {
+		if show_body.get() {
 			view! {
-				<p>{post.body}</p>
+				<p>{post_body.clone()}</p>
 			}
 		} else {
-			view! {<p></p>}
-		}}
+			view! {
+				<p></p>
+			}
+		}
+	};
+
+	view! {
+		<div on:click=move |_| {
+			if show_body.get() {
+				set_show_body(false)
+			} else {
+				set_show_body(true)
+			}
+		}>
+		<h2>{post.title}</h2>
+		<i>{post.date}</i>
+		{show_body_closure}
 		</div>
 	}
 }
