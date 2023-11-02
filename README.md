@@ -1,4 +1,11 @@
+<a name="readme-top"></a>
 # rust-micro-cms
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 ## Purpose
 
@@ -21,3 +28,6 @@ The project is meant to have a small footprint, and hopefully offer a more relia
 ### Contributing
 
 If you want to contribute to this project that is great! I am doing this to learn Rust and welcome anyone else doing the same or anyone that thinks a solution like this is something they would like to see happen!
+
+
+<p align="center">[<a href="#readme-top">RETURN TO TOP</a>]</p>
