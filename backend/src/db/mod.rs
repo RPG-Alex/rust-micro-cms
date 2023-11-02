@@ -79,3 +79,65 @@ pub fn delete_post(conn: &Connection, post_id:usize) -> Result<usize> {
     // post_id_str is converted to str here for query
     conn.execute(sql, &[&post_id_str])
 }
+
+// BEGIN TESTING
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rusqlite;
+    use std::fs;
+
+    #[test]
+    fn test_insert_and_fetch_posts(){
+        let conn = establish_connection(&Path::new(":memory:")).unwrap();
+        create_posts_table(&conn).unwrap();
+
+        let title = "Test Title";
+        let date = "2023-10-20";
+        let body = "Test Body";
+        insert_post(&conn, title, date, body).unwrap();
+
+        let posts = fetch_all_posts(&conn).unwrap();
+        assert_eq!(posts.posts[0].title, title);
+        assert_eq!(posts.posts[0].date, date);
+        assert_eq!(posts.posts[0].body, body);
+    }
+
+    #[test]
+    fn test_update_post() {
+        let conn = establish_connection(&Path::new(":memory:")).unwrap();
+        create_posts_table(&conn).unwrap();
+
+        let title = "Test Title";
+        let date = "2023-10-20";
+        let body = "Test Body";
+        insert_post(&conn, title, date, body).unwrap();
+
+        let new_title = "New Test Title";
+        let new_date = "2023-10-21";
+        let new_body = "New Test Body";
+        update_post(&conn, 1, new_title, new_date, new_body).unwrap();
+
+        let posts = fetch_all_posts(&conn).unwrap();
+        assert_eq!(posts.posts.len(), 1);
+        assert_eq!(posts.posts[0].title, new_title);
+        assert_eq!(posts.posts[0].date, new_date);
+        assert_eq!(posts.posts[0].body, new_body);
+    }
+    #[test]
+    fn test_delete_post() {
+        let conn = establish_connection(&Path::new(":memory:")).unwrap();
+        create_posts_table(&conn).unwrap();
+
+        let title = "Test Title";
+        let date = "2023-10-20";
+        let body = "Test Body";
+        insert_post(&conn, title, date, body).unwrap();
+
+        delete_post(&conn, 1).unwrap();
+
+        let posts = fetch_all_posts(&conn).unwrap();
+        assert_eq!(posts.posts.len(), 0);
+    }
+
+}

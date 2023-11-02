@@ -1,5 +1,5 @@
 use leptos::{*};
-use chrono::Datelike;
+//use chrono::Datelike;
 
 struct Post {
 	id: usize,
@@ -48,7 +48,7 @@ fn ShowSinglePostInfo(post: Post) -> impl IntoView {
 			}
 		} else {
 			view! {
-				<p></p>
+				<p>{"Click to read this post!"}</p>
 			}
 		}
 	};
