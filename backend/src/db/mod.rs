@@ -1,8 +1,9 @@
 use rusqlite::{Connection, Result};
 use std::path::Path;
+use serde::Serialize;
 
 //Post Structure for Database
-#[derive(Debug)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Post {
     pub id: usize,
     pub title: String,
@@ -11,7 +12,7 @@ pub struct Post {
 }
 
 // Structure for vector of posts (such as fetching all from DB)
-#[derive(Debug)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Posts {
     pub posts: Vec<Post>,
 }
