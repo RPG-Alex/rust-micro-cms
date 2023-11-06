@@ -45,11 +45,3 @@ async fn main() {
         .await
         .unwrap();
 }
-
-
-
-// Axum Example handler - no wjson
-async fn handler() -> Json<&'static str> {
-    Json("hello")
-}
-

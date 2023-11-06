@@ -1,6 +1,8 @@
-use leptos::{*};
+use leptos::{*, Serializable};
+use serde::{Deserialize, Serialize};
 //use chrono::Datelike;
 
+#[derive(Clone, Deserialize, Serialize)]
 struct Post {
 	id: usize,
 	title: String,
@@ -8,31 +10,54 @@ struct Post {
 	body: String,
 }
 
+
+#[cfg(not(feature = "ssr"))]
+pub async fn fetch_api<T>(path: &str) -> Option<T>
+where
+    T: Serializable,
+{
+    let abort_controller = web_sys::AbortController::new().ok();
+    let abort_signal = abort_controller.as_ref().map(|a| a.signal());
+
+    // abort in-flight requests if, e.g., we've navigated away from this page
+    leptos::on_cleanup(move || {
+        if let Some(abort_controller) = abort_controller {
+            abort_controller.abort()
+        }
+    });
+
+    let json = gloo_net::http::Request::get(path)
+        .abort_signal(abort_signal.as_ref())
+        .send()
+        .await
+        .map_err(|e| log::error!("{e}"))
+        .ok()?
+        .text()
+        .await
+        .ok()?;
+
+    T::de(&json).ok()
+}
+
 #[component]
 pub fn ListAllBlogPost() -> impl IntoView {
-    let posts = vec![
-		Post{
-			id: 1,
-			title: String::from("This is generated from a struct!"),
-			date: chrono::Local::now().date_naive().to_string(),
-			body: String::from("Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, voluptas sed sapiente hic dolores qui, beatae eaque at repellendus illum aliquid animi laudantium labore dolorum unde fuga vero, sit perspiciatis."),
-		},
-		Post{
-			id: 2,
-			title: String::from("This is another generated from a struct!"),
-			date: chrono::Local::now().date_naive().to_string(),
-			body: String::from("This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click! This post is only visible of you click!"),
-		}
-	];
-	//currently view is prototype for learning.
+    let (posts, set_posts) = create_signal(Vec::new());
+
+    create_effect(move |_| {
+        spawn_local(async move {
+            let posts_data: Vec<Post> = fetch_api("http://127.0.0.1:3000/").await.unwrap();
+            set_posts(posts_data);
+        });
+    });
+
     view!{
-		<h1>"To do: List all posts!"</h1>
-		<div id="posts">
-		{posts.into_iter()
-			.map(|n| 
-				view! {<ShowSinglePostInfo post=n/>}).collect_view()
-		}
-		</div>
+        <h1>"To do: List all posts!"</h1>
+        <div id="posts">
+        {posts.get().into_iter()
+            .map(|n| 
+                view! {<ShowSinglePostInfo post=n/>}).collect_view()
+        }
+        </div>
     }
 }
 
