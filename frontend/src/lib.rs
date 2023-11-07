@@ -2,7 +2,7 @@ use leptos::{*, Serializable};
 use serde::{Deserialize, Serialize};
 //use chrono::Datelike;
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 struct Post {
 	id: usize,
 	title: String,
@@ -52,6 +52,7 @@ pub fn ListAllBlogPost() -> impl IntoView {
 
     view!{
         <h1>"To do: List all posts!"</h1>
+        <p>{println!("{:#?}", posts.get())}</p>
         <div id="posts">
         {posts.get().into_iter()
             .map(|n| 
