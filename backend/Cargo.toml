@@ -7,6 +7,7 @@ authors = ["Alex Blood"]
 
 [dependencies]
 axum = "0.6.20"
+axum-util = "0.2.2"
 hyper = "0.14.27"
 rusqlite = "0.29.0"
 serde = { version = "1.0.190", features = ["derive"] }

@@ -12,4 +12,5 @@ leptos = { version = "0.5.2", features = ["csr", "nightly"] }
 log = "0.4.20"
 serde = { version = "1.0.190", features = ["derive"] }
 wasm-bindgen-futures = "0.4.38"
+wasm-bindgen-test = "0.3.38"
 web-sys = { version = "0.3.65", features = ["AbortSignal", "AbortController"] }
