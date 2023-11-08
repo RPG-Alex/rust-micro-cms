@@ -52,11 +52,9 @@ pub fn ListAllBlogPost() -> impl IntoView {
 
     view!{
         <h1>"To do: List all posts!"</h1>
-        <p>{println!("{:#?}", posts.get())}</p>
         <div id="posts">
-        {posts.get().into_iter()
-            .map(|n| 
-                view! {<ShowSinglePostInfo post=n/>}).collect_view()
+        {posts.get().iter().map(|n| 
+            view! {<ShowSinglePostInfo post=n.clone() />})
         }
         </div>
     }
@@ -89,8 +87,7 @@ fn ShowSinglePostInfo(post: Post) -> impl IntoView {
 		}>
 		<h2>{post.title}</h2>
 		<i>{post.date}</i>
-		{show_body_closure}
+		{show_body_closure()}
 		</div>
 	}
 }
-
