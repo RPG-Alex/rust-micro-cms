@@ -41,23 +41,7 @@ where
 
 #[component]
 pub fn ListAllBlogPost() -> impl IntoView {
-    let (posts, set_posts) = create_signal(Vec::new());
 
-    create_effect(move |_| {
-        spawn_local(async move {
-            let posts_data: Vec<Post> = fetch_api("http://127.0.0.1:3000/").await.unwrap();
-            set_posts(posts_data);
-        });
-    });
-
-    view!{
-        <h1>"To do: List all posts!"</h1>
-        <div id="posts">
-        {posts.get().iter().map(|n| 
-            view! {<ShowSinglePostInfo post=n.clone() />})
-        }
-        </div>
-    }
 }
 
 #[component]
@@ -91,3 +75,4 @@ fn ShowSinglePostInfo(post: Post) -> impl IntoView {
 		</div>
 	}
 }
+
