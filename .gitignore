@@ -3,3 +3,4 @@ posts.db
 frontend/dist/
 **/dist/
 **/target/
+.vscode/

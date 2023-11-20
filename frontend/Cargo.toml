@@ -9,6 +9,8 @@ authors = ["Alex Blood"]
 chrono = "0.4.31"
 gloo-net = { version = "0.4.0", features = ["http"] }
 leptos = { version = "0.5.2", features = ["csr", "nightly"] }
+leptos_meta = "0.5.2"
+leptos_router = "0.5.2"
 log = "0.4.20"
 serde = { version = "1.0.190", features = ["derive"] }
 wasm-bindgen-futures = "0.4.38"
