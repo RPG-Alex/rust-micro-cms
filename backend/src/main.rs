@@ -17,16 +17,20 @@ use std::path::Path;
 
 #[tokio::main]
 async fn main() {
-    // Database Testing logic
+    // Set path to database and make connection
     let db_path = Path::new("posts.db");
     let db_conn = db::establish_connection(&db_path);
-    let db_create = db::create_posts_table(&db_conn.unwrap());
-    let db_conn = db::establish_connection(&db_path);
-    let db_insert = db::insert_post(&db_conn.unwrap(), "New Post Title", "2023-10-20", "This is the post body")
-    .expect("Failed to insert post");
-    let db_conn = db::establish_connection(&db_path);
-    let all_posts = Arc::new(Mutex::new(db::fetch_all_posts(&db_conn.unwrap())));
 
+    // Used for Testing
+    //let db_conn = db::establish_connection(&db_path);
+    //let db_create = db::create_posts_table(&db_conn.unwrap());
+    //let db_conn = db::establish_connection(&db_path);
+    //let db_insert = db::insert_post(&db_conn.unwrap(), "New Post Title", "2023-10-20", "This is the post body").expect("Failed to insert post");
+    //
+
+
+    // Fetch all posts and serialize to JSON
+    let all_posts = Arc::new(Mutex::new(db::fetch_all_posts(&db_conn.unwrap())));
     async fn fetch_all_posts_as_json(all_posts_from_db: Arc<Mutex<Result<db::Posts, SqliteError>>>) -> Result<Json<String>, Infallible> {
         match &*all_posts_from_db.lock().unwrap() {
             Ok(posts) => {
@@ -37,6 +41,7 @@ async fn main() {
         }
     }
 
+    // Currently outputting all posts to root path. Need to implement other paths
     let app = Router::new().route("/", get(move || fetch_all_posts_as_json(all_posts.clone()))).layer(CorsLayer);
     // server address
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

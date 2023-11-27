@@ -9,7 +9,26 @@ pub struct Post {
     pub title: String,
     pub date: String,
     pub body: String,
+    // pub author: String,
+    // pub author_id: usize,
 }
+
+// Defining user structure
+#[derive(Clone, Debug, Serialize)]
+pub struct Author {
+    pub author_id: usize,
+    pub author: String,
+}
+
+/* 
+Need to modify database to have a user table holding:
+user_id PK
+author String
+pw_hash Password hash
+
+Then can add login functionality
+*/
+
 
 // Structure for vector of posts (such as fetching all from DB)
 #[derive(Clone, Debug, Serialize)]

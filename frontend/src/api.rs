@@ -7,8 +7,7 @@ pub fn posts(path: &str) -> String {
 }
 
 #[cfg(not(feature = "ssr"))]
-pub async fn fetch_api<T>(path: &str) -> Option<T>
-where T: Serializable, {
+pub async fn fetch_api<T>(path: &str) -> Option<T> where T: Serializable, {
     let abort_controller = web_sys::AbortController::new().ok();
     let abort_signal = abort_controller.as_ref().map(|a| a.signal());
 
