@@ -45,7 +45,7 @@ The project is meant to have a small footprint and hopefully offer a more reliab
 	- [ ] Ensure the backend is secure and can handle high traffic.
 
 - [ ] **Database Management System**
-	- [ ] Choose an appropriate DBMS for the project (considering factors like scalability, performance, etc.).
+	- [x] Choose an appropriate DBMS for the project (considering factors like scalability, performance, etc.).
 	- [ ] Design the database schema and set up the database.
 	- [ ] Implement functionality for basic CRUD (Create, Read, Update, Delete) operations.
 
@@ -55,12 +55,14 @@ The project is meant to have a small footprint and hopefully offer a more reliab
 	- [ ] **CREATE REST API for frontend to access**
         - [ ] **Database Setup**:
             - [ ] Establish a database connection.
-            - [ ] Create tables for posts (and potentially users).
+            - [ ] Create tables for posts
+            - [ ] Create tables for users
             - [ ] Implement user authentication and authorization.
             - [ ] Consider enabling HTTPS support (e.g., with a reverse proxy like Nginx or with Rust libraries like `hyper-tls`).
         - [ ] **Post Endpoints**:
             - [ ] Create routes and handlers for the following APIs:
                 - [ ] Fetch all posts (HTTP GET /api/posts).
+                    - [ ] Add pagination to fetch all posts.
                 - [ ] Fetch a specific post by ID (HTTP GET /api/posts/{id}).
                 - [ ] Create a new post (HTTP POST /api/posts).
                 - [ ] Update a specific post (HTTP PUT /api/posts/{id}).
@@ -74,24 +76,26 @@ The project is meant to have a small footprint and hopefully offer a more reliab
         - [ ] **API Documentation**:
             - [ ] Generate and maintain API documentation, which can be served via a web page or a separate API documentation tool.
         - [ ] **Testing**:
-            - [ ] Write unit tests and integration tests for your API endpoints to ensure their correctness.
+            - [ ] Write unit tests and integration tests for the API endpoints to ensure their correctness.
         - [ ] **Deployment**:
-            - [ ] Prepare your Axum application for deployment, considering factors like load balancing, containerization, and continuous integration/continuous deployment (CI/CD) pipelines.
+            - [ ] Prepare the Axum application for deployment, considering factors like load balancing, containerization, and continuous integration/continuous deployment (CI/CD) pipelines.
+            - [ ] Consider dockerizing application.
         - [ ] **Security**:
             - [ ] Implement security best practices, including input validation, rate limiting, and protection against common web vulnerabilities (e.g., cross-site scripting, SQL injection).
         - [ ] **Logging**:
-            - [ ] Set up logging to monitor your application's behavior and diagnose issues.
+            - [ ] Set up logging to monitor the application's behavior and diagnose issues.
         - [ ] **Performance**:
-            - [ ] Optimize the performance of your API, considering factors like database query optimization, caching, and concurrency control.
+            - [ ] Optimize the performance of the API, considering factors like database query optimization, caching, and concurrency control.
+            - [ ] Undertake load testing to veriy load and optimize as needed. 
         - [ ] **Continuous Maintenance**:
             - [ ] Regularly update dependencies and apply security patches.
             - [ ] Monitor server and application performance and apply necessary optimizations.
         - [ ] **API Versioning**:
-            - [ ] Consider implementing versioning for your APIs to maintain compatibility as the API evolves.
+            - [ ] Consider implementing versioning for the APIs to maintain compatibility as the API evolves.
         - [ ] **Rate Limiting and Quotas**:
-            - [ ] Implement rate limiting and usage quotas to protect against abuse of your API.
+            - [ ] Implement rate limiting and usage quotas to protect against abuse of the API.
         - [ ] **Data Validation**:
-            - [ ] Ensure
+            - [ ] Ensure data recieved is safe and valid
 
 ### Additional Features
 
