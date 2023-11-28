@@ -42,7 +42,10 @@ async fn main() {
     }
 
     // Currently outputting all posts to root path. Need to implement other paths
-    let app = Router::new().route("/", get(move || fetch_all_posts_as_json(all_posts.clone()))).layer(CorsLayer);
+    let app = Router::new()
+        .route("/", get(move || fetch_all_posts_as_json(all_posts.clone())))
+        .route("/post", get( move || async { "Hello from single post view!"}))
+        .layer(CorsLayer);
     // server address
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("listening on {}", addr);
