@@ -38,7 +38,9 @@ The project is meant to have a small footprint and hopefully offer a more reliab
 
 - [ ] **Server-side rendering with Rust**
     - [ ] Implement server-side rendering for HTML pages.
+        - [x] Server Side rendering functionality added
     - [ ] Serve HTML content directly from the server.
+        - [ ] Create views for all views used for server side rendering
 
 - [ ] **Backend built with Rust using Axum**
 	- [ ] Design and implement a robust backend system to handle requests from the frontend.
