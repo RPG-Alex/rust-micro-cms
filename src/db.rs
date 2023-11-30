@@ -9,8 +9,6 @@ pub struct Post {
     pub title: String,
     pub date: String,
     pub body: String,
-    // pub author: String,
-    // pub author_id: usize,
 }
 
 // Defining user structure
@@ -54,6 +52,20 @@ pub fn create_posts_table(conn: &Connection) -> Result<()> {
     conn.execute(sql, ())?;
     Ok(())
 }
+
+pub fn create_author_table(conn: &Connection) -> Result<()> {
+    let sql = "
+        CREATE TABLE IF NOT EXISTS author (
+            id INTEGER PRIMARY KEY,
+            author TEXT NOT NULL,                      
+        )
+    ";
+    conn.execute(sql, ())?;
+    Ok(())
+}
+
+
+
 
 // Get all the posts
 pub fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
