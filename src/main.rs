@@ -23,10 +23,17 @@ async fn main() {
 
     // Used for Testing. 
     
+    
+    
+    let db_create_author = db::create_author_table(&db_conn.unwrap());
+
+    let db_conn = db::establish_connection(&db_path);
+    let db_add_author = db::add_author(&db_conn.unwrap(), "Mike Striker");
+
+    let db_conn = db::establish_connection(&db_path);
     let db_create = db::create_posts_table(&db_conn.unwrap());
     let db_conn = db::establish_connection(&db_path);
-
-    let db_insert = db::insert_post(&db_conn.unwrap(), "New Post Title", "2023-10-20", "This is the post body").expect("Failed to insert post");
+    let db_post_insert = db::insert_post(&db_conn.unwrap(), "New Post Title", "2023-10-20", "This is the post body", 1).expect("Failed to insert post");
     //
     let db_conn = db::establish_connection(&db_path);
 
