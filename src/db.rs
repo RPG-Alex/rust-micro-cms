@@ -136,7 +136,8 @@ mod tests {
         let title = "Test Title";
         let date = "2023-10-20";
         let body = "Test Body";
-        insert_post(&conn, title, date, body).unwrap();
+        let author_id = 1;
+        insert_post(&conn, title, date, body, author_id).unwrap();
 
         let posts = fetch_all_posts(&conn).unwrap();
         assert_eq!(posts.posts[0].title, title);
@@ -152,7 +153,8 @@ mod tests {
         let title = "Test Title";
         let date = "2023-10-20";
         let body = "Test Body";
-        insert_post(&conn, title, date, body).unwrap();
+        let author_id = 1;
+        insert_post(&conn, title, date, body, author_id).unwrap();
 
         let new_title = "New Test Title";
         let new_date = "2023-10-21";
@@ -173,7 +175,8 @@ mod tests {
         let title = "Test Title";
         let date = "2023-10-20";
         let body = "Test Body";
-        insert_post(&conn, title, date, body).unwrap();
+        let author_id = 1;
+        insert_post(&conn, title, date, body, author_id).unwrap();
 
         delete_post(&conn, 1).unwrap();
 
