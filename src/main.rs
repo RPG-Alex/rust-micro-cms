@@ -40,11 +40,11 @@ async fn main() {
     // Fetch all posts and serialize to JSON
     let all_posts = Arc::new(Mutex::new(db::fetch_all_posts(&db_conn.unwrap())));
 
-
+    let all_posts_as_json = fetch_all_posts_as_json(all_posts.clone()).await;
     // Currently outputting all posts to root path. Need to implement other paths
     let app = Router::new()
-        .route("/", get(move || fetch_all_posts_as_json(all_posts.clone())))
-        .route("/post", get( move || handler()));
+        .route("/", get(move || fetch_all_posts_as_json(all_posts)))
+        .route("/posts", get( move || posts(all_posts_as_json)));
     // server address
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("listening on {}", addr);
@@ -54,6 +54,7 @@ async fn main() {
         .unwrap();
 }
 
+//API Endpoint for all posts
 async fn fetch_all_posts_as_json(all_posts_from_db: Arc<Mutex<Result<db::Posts, SqliteError>>>) -> Result<Json<String>, Infallible> {
     match &*all_posts_from_db.lock().unwrap() {
         Ok(posts) => {
@@ -64,6 +65,18 @@ async fn fetch_all_posts_as_json(all_posts_from_db: Arc<Mutex<Result<db::Posts, 
     }
 }
 
-async fn handler() -> Html<&'static str> {
-    Html("<h1> This is a test of server side rendering</h1>")
+async fn posts(posts: Result<Json<String>, Infallible>) -> Html<&'static str> {
+    match posts {
+        Ok(Json(json_string)) => {
+            // Convert the JSON string to HTML format as per your requirements
+            let html_string = json_string;
+            Html(html_string)
+        }
+        Err(_) => Html("An error occurred".into()),
+    }
+    
+    // Html("
+    //     <h1> This is a test of server side rendering:</h1>
+    // ")
+
 }
