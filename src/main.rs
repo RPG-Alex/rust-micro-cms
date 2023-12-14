@@ -69,7 +69,7 @@ async fn posts(posts: Result<Json<String>, Infallible>) -> Html<&'static str> {
     match posts {
         Ok(Json(json_string)) => {
             // Convert the JSON string to HTML format as per your requirements
-            let html_string = json_string;
+            let html_string = &json_string.as_str();
             Html(html_string)
         }
         Err(_) => Html("An error occurred".into()),
