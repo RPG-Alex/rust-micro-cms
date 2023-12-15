@@ -65,18 +65,13 @@ async fn fetch_all_posts_as_json(all_posts_from_db: Arc<Mutex<Result<db::Posts, 
     }
 }
 
-async fn posts(posts: Result<Json<String>, Infallible>) -> Html<&'static str> {
+async fn posts(posts: Result<Json<String>, Infallible>) -> String {
     match posts {
         Ok(Json(json_string)) => {
             // Convert the JSON string to HTML format as per your requirements
-            let html_string = &json_string.as_str();
-            Html(html_string)
+            json_string
         }
-        Err(_) => Html("An error occurred".into()),
+        Err(_) => "Unable to parse json".to_string()
     }
     
-    // Html("
-    //     <h1> This is a test of server side rendering:</h1>
-    // ")
-
 }
