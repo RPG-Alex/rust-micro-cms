@@ -7,6 +7,10 @@ use axum::{
 };
 
 use rusqlite::Error as SqliteError;
+//use rusqlite::types::Value;
+
+use serde_json::Value;
+use serde::Deserialize;
 
 use std::convert::Infallible;
 use std::sync::{Arc, Mutex};
@@ -65,13 +69,45 @@ async fn fetch_all_posts_as_json(all_posts_from_db: Arc<Mutex<Result<db::Posts, 
     }
 }
 
-async fn posts(posts: Result<Json<String>, Infallible>) -> String {
+// Temporary structure to deserialize each post from JSON
+#[derive(Deserialize)]
+struct TempPost {
+    id: usize,
+    title: String,
+    date: String,
+    body: String,
+    author_id: usize,
+    author: String,
+}
+
+// Deserialize the json and structure as html and return it
+async fn posts(posts: Result<Json<String>, Infallible>) -> Html<String> {
     match posts {
         Ok(Json(json_string)) => {
-            // Convert the JSON string to HTML format as per your requirements
-            json_string
+            // Parse the JSON string to a serde_json::Value
+            let posts_data: Value = serde_json::from_str(&json_string).unwrap();
+
+            // Check if posts_data is an array and iterate over it
+            if posts_data.is_array() {
+                let posts_array = posts_data.as_array().unwrap();
+                let mut html_output = String::new();
+
+                for post_value in posts_array {
+                    // Deserialize each post
+                    let post: TempPost = serde_json::from_value(post_value.clone()).unwrap();
+
+                    // Create HTML string for each post
+                    html_output.push_str(&format!(
+                        "<div><h2>{}</h2><p><i>{}</i></p><p>{}</p></div>",
+                        post.title, post.author, post.body
+                    ));
+                }
+
+                Html(html_output)
+            } else {
+                Html("<div>Error: Posts data is not an array.</div>".to_string())
+            }
         }
-        Err(_) => "Unable to parse json".to_string()
+        Err(_) => Html("<div>Unable to parse JSON</div>".to_string()),
     }
-    
 }
