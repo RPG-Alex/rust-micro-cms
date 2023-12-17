@@ -1,6 +1,9 @@
 use rusqlite::{Connection, Result};
 use std::path::Path;
 use serde::Serialize;
+//Need to use database pool
+use r2d2_sqlite::SqliteConnectionManager;
+
 
 //Post Structure for Database
 #[derive(Clone, Debug, Serialize)]
@@ -28,8 +31,9 @@ pub struct Posts {
 }
 
 // connect to our sqlite db
-pub fn establish_connection(db_path: &Path) -> Result<Connection> {
-    Connection::open(db_path)
+pub fn establish_connection(db_path: &Path) -> Result<r2d2::Pool<SqliteConnectionManager>, r2d2::Error> {
+    let manager = SqliteConnectionManager::file(db_path);
+    r2d2::Pool::new(manager).map_err(|e| e.into())
 }
 
 
@@ -91,6 +95,24 @@ pub fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
     let posts: Result<Vec<Post>> = post_iter.collect();
     let posts = posts?;
     Ok (Posts { posts})
+}
+
+//fetch a single post by id
+pub fn fetch_single_post(conn: &Connection, post_id: usize) -> Result<Option<Post>> {
+    let mut stmt = conn.prepare("SELECT posts.id, posts.title, posts.date, posts.body, posts.author_id, author.author FROM posts INNER JOIN author ON posts.author_id = author.id WHERE posts.id = ?1")?;
+    
+    let mut post_iter = stmt.query_map([post_id], |row| {
+        Ok(Post {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            date: row.get(2)?,
+            body: row.get(3)?,
+            author_id: row.get(4)?,
+            author: row.get(5)?,
+        })
+    })?;
+
+    post_iter.next().transpose()
 }
 
 // Add a new post

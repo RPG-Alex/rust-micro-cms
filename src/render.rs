@@ -1,11 +1,15 @@
 use axum::{
-    response::Html,
-    Json,
+    response::{Html, Json},
+    extract::Extension,
 };
-use serde::{Deserialize};
+use std::sync::Arc;
+use r2d2::Pool;
+use r2d2_sqlite::SqliteConnectionManager;
 use serde_json::Value;
+use serde::{Deserialize};
 use std::convert::Infallible;
-
+use crate::db::{self, fetch_single_post, Post};
+//use rusqlite::Error as SqliteError;
 // Temporary structure to deserialize each post from JSON
 #[derive(Deserialize)]
 pub struct TempPost {
@@ -46,5 +50,41 @@ pub async fn posts(posts: Result<Json<String>, Infallible>) -> Html<String> {
             }
         }
         Err(_) => Html("<div>Unable to parse JSON</div>".to_string()),
+    }
+}
+
+pub async fn post(
+    post_id: axum::extract::Path<usize>, 
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>
+) -> Html<String> {
+    let post_id = *post_id;
+
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+
+    match fetch_single_post(&conn, post_id) {
+        Ok(Some(post)) => {
+            let post_html = format!(
+                "<div><h2>{}</h2><p><i>{}</i></p><p>{}</p></div>",
+                post.title, post.author, post.body
+            );
+            Html(post_html)
+        },
+        Ok(None) => Html(format!("<div>No post found with ID {}</div>", post_id)),
+        Err(_) => Html("<div>Error fetching post</div>".to_string()),
+    }
+}
+
+//API Endpoint for all posts
+pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Result<Json<String>, Infallible> {
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+
+    match db::fetch_all_posts(&conn) {
+        Ok(posts) => {
+            let posts_json = serde_json::to_string(&posts.posts).expect("Failed to serialize posts.");
+            Ok(Json(posts_json))
+        },
+        Err(_) => Ok(Json("Error Fetching All Posts".to_string()))
     }
 }
