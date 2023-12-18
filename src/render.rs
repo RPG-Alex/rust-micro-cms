@@ -66,7 +66,13 @@ pub async fn render_all_posts_html(db_pool: Extension<Arc<Pool<SqliteConnectionM
 
 // Render form for adding a new post
 pub async fn render_add_post_form() -> Html<String> {
-    // HTML form for adding a new post
+    Html(
+        "<form action='' method='post'>
+        <input type='text' name='' id=''>
+        <input type='text' name='' id=''>
+        <input type='submit' value=''>
+    </form>".to_string()
+    )
 }
 
 // Render form for editing a post
