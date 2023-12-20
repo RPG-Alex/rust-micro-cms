@@ -67,17 +67,39 @@ pub async fn render_all_posts_html(db_pool: Extension<Arc<Pool<SqliteConnectionM
 // Render form for adding a new post
 pub async fn render_add_post_form() -> Html<String> {
     Html(
-        "<form action='' method='post'>
-        <input type='text' name='' id=''>
-        <input type='text' name='' id=''>
-        <input type='submit' value=''>
-    </form>".to_string()
+        "<form action='/add_post' method='post'>
+        <input type='text' name='title' id='title'>
+        <input type='text' name='body' id='body'>
+        <input type='submit' value='Add Post'>
+        </form>
+    ".to_string()
     )
 }
 
 // Render form for editing a post
 pub async fn render_edit_post_form(post_id: Path<usize>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Html<String> {
-    // HTML form for editing an existing post
+    let post_id = *post_id;
+
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+
+    match fetch_single_post(&conn, post_id) {
+        Ok(Some(post)) => {
+            let post_html = format!(
+                "<form action='/update_post' method='post'>
+                <input type='text' name='title' id='title' value='{}'>
+                <input type='hidden' name='id' value='{}'>
+                <input type='text' name='body' id='body' value='{}'>
+                <input type='submit' value='Add Post'>
+                </form>
+            ",
+                post.title, post.id, post.body
+            );
+            Html(post_html)
+        },
+        Ok(None) => Html(format!("<div>No post found with ID {}</div>", post_id)),
+        Err(_) => Html("<div>Error fetching post</div>".to_string()),
+    }
 }
 
 // Render confirmation for deleting a post
