@@ -16,8 +16,16 @@ use r2d2::Pool;
 async fn main() {
     // Set path to database and establish a connection pool
     let db_path = Path::new("posts.db");
+
     let manager = SqliteConnectionManager::file(db_path);
     let pool = Pool::new(manager).expect("Failed to create pool.");
+
+    // Get a connection from the pool
+    let conn = pool.get().expect("Failed to get a connection from the pool");
+
+    // Call the table creation methods
+    db::create_author_table(&conn).expect("Failed to create author table");
+    db::create_posts_table(&conn).expect("Failed to create posts table");
 
     // Set up the Axum application with routes
     let app = Router::new()

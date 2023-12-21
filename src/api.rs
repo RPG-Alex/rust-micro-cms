@@ -23,22 +23,22 @@ pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectio
     }
 }
 
-// Add a new post
-pub async fn add_post(form: Form<NewPost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
-    // Add a new post to the database
-}
+// // Add a new post
+// pub async fn add_post(form: Form<NewPost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
+//     // Add a new post to the database
+// }
 
-// Update an existing post
-pub async fn update_post(post_id: usize, form: Form<UpdatePost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
-    // Update an existing post in the database
-}
+// // Update an existing post
+// pub async fn update_post(post_id: usize, form: Form<UpdatePost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
+//     // Update an existing post in the database
+// }
 
-// Delete a post
-pub async fn delete_post(post_id: usize, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
-    // Delete a post from the database
-}
+// // Delete a post
+// pub async fn delete_post(post_id: usize, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
+//     // Delete a post from the database
+// }
 
-// Fetch all posts as JSON (moved from render.rs)
-pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Json<Vec<Post>> {
-    // Fetch all posts from the database and return as JSON
-}
+// // Fetch all posts as JSON (moved from render.rs)
+// pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Json<Vec<Post>> {
+//     // Fetch all posts from the database and return as JSON
+// }
