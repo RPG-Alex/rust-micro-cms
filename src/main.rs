@@ -22,8 +22,8 @@ async fn main() {
     // Set up the Axum application with routes
     let app = Router::new()
         .route("/", get(api::fetch_all_posts_as_json)) // Default route serves JSON version of all posts
-        .route("/posts", get(render::render_all_posts_html)) // "/posts" route serves HTML version of all posts
-        .route("/post/:id", get(render::render_single_post_html)) // "/post/:id" route serves individual post in HTML
+        .route("/posts", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts
+        .route("/post/:id", get(render::render_single_post)) // "/post/:id" route serves individual post in HTML
         .layer(axum::extract::Extension(Arc::new(pool)));
 
     // Define the server address

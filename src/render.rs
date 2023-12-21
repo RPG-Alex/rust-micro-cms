@@ -1,14 +1,13 @@
 use axum::{
-    response::{Html, Json},
-    extract::Extension,
+    response::Html,
+    extract::{Path, Extension},
 };
+
 use std::sync::Arc;
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
-use serde_json::Value;
 use serde::Deserialize;
-use std::convert::Infallible;
-use crate::db::{self, fetch_single_post, Post};
+use crate::db::{self, fetch_single_post};
 
 // Temporary structure to deserialize each post from JSON
 #[derive(Deserialize)]
@@ -22,7 +21,7 @@ pub struct TempPost {
 }
 
 
-pub async fn render_single_post_html(
+pub async fn render_single_post(
     post_id: axum::extract::Path<usize>, 
     db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>
 ) -> Html<String> {
@@ -43,7 +42,7 @@ pub async fn render_single_post_html(
         Err(_) => Html("<div>Error fetching post</div>".to_string()),
     }
 }
-pub async fn render_all_posts_html(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Html<String> {
+pub async fn render_all_posts(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Html<String> {
     let pool = db_pool.0;
     let conn = pool.get().expect("Failed to get a connection from the pool.");
 
@@ -103,6 +102,30 @@ pub async fn render_edit_post_form(post_id: Path<usize>, db_pool: Extension<Arc<
 }
 
 // Render confirmation for deleting a post
-pub async fn render_delete_post_confirmation(post_id: Path<usize>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Html<String> {
-    // HTML confirmation for deleting a post
+pub async fn render_delete_post_confirmation(
+    post_id: Path<usize>, 
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>
+) -> Html<String> {
+    let post_id = *post_id;
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+
+    match fetch_single_post(&conn, post_id) {
+        Ok(Some(post)) => {
+            let confirmation_html = format!(
+                "<div>
+                    <p>Are you sure you want to delete the post: '{}'?</p>
+                    <form action='/delete_post' method='post'>
+                        <input type='hidden' name='id' value='{}'>
+                        <input type='submit' value='Confirm Delete'>
+                        <a href='/cancel_delete'>Cancel</a>
+                    </form>
+                </div>",
+                post.title, post.id
+            );
+            Html(confirmation_html)
+        },
+        Ok(None) => Html(format!("<div>No post found with ID {}</div>", post_id)),
+        Err(_) => Html("<div>Error fetching post for deletion</div>".to_string()),
+    }
 }
