@@ -26,7 +26,8 @@ async fn main() {
     // Call the table creation methods
     db::create_author_table(&conn).expect("Failed to create author table");
     db::create_posts_table(&conn).expect("Failed to create posts table");
-
+    db::add_author(&conn, "Sylvia").expect("failed to add");
+    db::create_post(&conn, "Example Post", "12/22/2023", "lorem ipsum.", 1);
     // Set up the Axum application with routes
     let app = Router::new()
         .route("/", get(api::fetch_all_posts_as_json)) // Default route serves JSON version of all posts

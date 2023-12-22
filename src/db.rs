@@ -116,7 +116,7 @@ pub fn fetch_single_post(conn: &Connection, post_id: usize) -> Result<Option<Pos
 }
 
 // Add a new post
-pub fn insert_post(conn: &Connection, title: &str, date:&str, body: &str, author_id: usize) -> Result<usize> {
+pub fn create_post(conn: &Connection, title: &str, date:&str, body: &str, author_id: usize) -> Result<usize> {
     let sql = "
         INSERT INTO posts (title, date, body, author_id)
         VALUES (?1, ?2, ?3, ?4)
