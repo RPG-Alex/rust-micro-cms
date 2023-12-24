@@ -26,6 +26,8 @@ pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectio
     }
 }
 
+
+// Structure used for submitting new posts
 #[derive(Deserialize)]
 struct New_Post {
     title: String,
