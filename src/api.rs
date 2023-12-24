@@ -3,10 +3,12 @@ use axum::{
     response::Json,
     extract::Extension,
 };
-use std::sync::Arc;
+
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
+use serde::Deserialize;
 use serde_json::Value;
+use std::sync::Arc;
 use std::convert::Infallible;
 use crate::db::{self, fetch_single_post, Post};
 
@@ -24,12 +26,19 @@ pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectio
     }
 }
 
-// // // Add a new post
-// pub async fn add_post(form: Form<Post>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
-//     let pool = db_pool.0;
-//     let conn = pool.get().expect("Failed to get a connection from the pool");
-//     match db::create_post(conn, , date, body, author_id)
-// }
+#[derive(Deserialize)]
+struct New_Post {
+    title: String,
+    author: String,
+    body: String,
+}
+
+// Add a new post
+pub async fn add_post(form: Form<New_Post>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool");
+    match db::create_post(conn, , date, body, author_id)
+}
 
 // // Update an existing post
 // pub async fn update_post(post_id: usize, form: Form<UpdatePost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {

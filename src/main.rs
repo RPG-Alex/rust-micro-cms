@@ -24,6 +24,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(api::fetch_all_posts_as_json)) // Default route serves JSON version of all posts
         .route("/posts", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts
+        .route("/posts", get(api::add_post)) // add new posts
         .route("/post/:id", get(render::render_single_post)) // "/post/:id" route serves individual post in HTML
         .route("/post/new", get(render::render_add_post_form)) // create a new post
         .layer(axum::extract::Extension(Arc::new(pool)));
