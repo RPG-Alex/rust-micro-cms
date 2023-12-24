@@ -66,14 +66,74 @@ pub async fn render_all_posts(db_pool: Extension<Arc<Pool<SqliteConnectionManage
 // Render form for adding a new post
 pub async fn render_add_post_form() -> Html<String> {
     Html(
-        "<form action='/add_post' method='post'>
-        <input type='text' name='title' id='title'>
-        <input type='text' name='body' id='body'>
-        <input type='submit' value='Add Post'>
+        "<style>
+            form {
+                display: flex;
+                flex-direction: column;
+                width: 400px;
+                margin: 20px;
+            }
+            label {
+                margin-top: 10px;
+            }
+            input[type='text'], textarea {
+                padding: 8px;
+                margin-top: 5px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                font-size: 16px;
+            }
+            input[type='submit'] {
+                margin-top: 20px;
+                padding: 10px;
+                border: none;
+                background-color: #4CAF50;
+                color: white;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+            input[type='submit']:hover {
+                background-color: #45a049;
+            }
+        </style>
+        <form id='addPostForm'>
+            <label for='title'>Title</label>
+            <input type='text' name='title' id='title' placeholder='Enter post title' required>
+
+            <label for='author'>Author</label>
+            <input type='text' name='author' id='author' placeholder='Enter author name' required>
+
+            <label for='body'>Body</label>
+            <textarea name='body' id='body' placeholder='Enter post content' rows='6' required></textarea>
+
+            <input type='submit' value='Add Post'>
         </form>
+        <script>
+            document.getElementById('addPostForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var title = document.getElementById('title').value;
+                var author = document.getElementById('author').value;
+                var body = document.getElementById('body').value;
+
+                fetch('/add_post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, author, body })
+                })
+                .then(response => response.status)
+                .then(status => console.log('Submitted with status:', status))
+                .catch(error => console.error('Error:', error));
+            });
+        </script>
     ".to_string()
     )
 }
+
+
 
 // Render form for editing a post
 pub async fn render_edit_post_form(post_id: Path<usize>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Html<String> {

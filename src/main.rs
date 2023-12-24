@@ -20,19 +20,12 @@ async fn main() {
     let manager = SqliteConnectionManager::file(db_path);
     let pool = Pool::new(manager).expect("Failed to create pool.");
 
-    // Get a connection from the pool
-    let conn = pool.get().expect("Failed to get a connection from the pool");
-
-    // Call the table creation methods
-    db::create_author_table(&conn).expect("Failed to create author table");
-    db::create_posts_table(&conn).expect("Failed to create posts table");
-    db::add_author(&conn, "Sylvia").expect("failed to add");
-    db::create_post(&conn, "Example Post", "12/22/2023", "lorem ipsum.", 1);
     // Set up the Axum application with routes
     let app = Router::new()
         .route("/", get(api::fetch_all_posts_as_json)) // Default route serves JSON version of all posts
         .route("/posts", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts
         .route("/post/:id", get(render::render_single_post)) // "/post/:id" route serves individual post in HTML
+        .route("/post/new", get(render::render_add_post_form)) // create a new post
         .layer(axum::extract::Extension(Arc::new(pool)));
 
     // Define the server address

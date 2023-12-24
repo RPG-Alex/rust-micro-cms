@@ -1,4 +1,5 @@
 use axum::{
+    Form,
     response::Json,
     extract::Extension,
 };
@@ -23,9 +24,11 @@ pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectio
     }
 }
 
-// // Add a new post
-// pub async fn add_post(form: Form<NewPost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
-//     // Add a new post to the database
+// // // Add a new post
+// pub async fn add_post(form: Form<Post>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
+//     let pool = db_pool.0;
+//     let conn = pool.get().expect("Failed to get a connection from the pool");
+//     match db::create_post(conn, , date, body, author_id)
 // }
 
 // // Update an existing post
