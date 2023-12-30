@@ -115,7 +115,7 @@ pub fn fetch_single_post(conn: &Connection, post_id: usize) -> Result<Option<Pos
     post_iter.next().transpose()
 }
 
-// Add a new post
+// Create a new post
 pub fn create_post(conn: &Connection, title: &str, date:&str, body: &str, author_id: usize) -> Result<usize> {
     let sql = "
         INSERT INTO posts (title, date, body, author_id)
