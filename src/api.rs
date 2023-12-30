@@ -32,22 +32,21 @@ pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectio
 #[derive(Deserialize)]
 struct NewPost {
     title: String,
-    author: String,
+    author_id: usize,
     body: String,
 }
 
 // Add a new post
-// Under construction. I need to redo this (and make it function properly!)
 pub async fn add_post(form: Form<NewPost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> impl IntoResponse {
     let pool = db_pool.0;
     let conn = pool.get().expect("Failed to get a connection from the pool");
 
     // Extracting data from the form
-    let new_post = form.into_inner();
+    let new_post = form.0;
     let date = Utc::now();
     // Inserting the new post into the database
     //      This needs to be corrected. 
-    match db::create_post(&conn, &new_post.title, &date.to_string(), &new_post.author, &new_post.body) {
+    match db::create_post(&conn, &new_post.title, &date.to_string(), &new_post.body, new_post.author_id) {
         Ok(_) => Json(json!({ "status": "success", "message": "Post added successfully" })),
         Err(e) => Json(json!({ "status": "error", "message": e.to_string() }))
     }
