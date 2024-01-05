@@ -2,7 +2,7 @@ use axum::{
     Form,
     Json,
     response::IntoResponse,
-    extract::Extension,
+    extract::Extension, Error,
 };
 use chrono::Utc;
 use r2d2::Pool;
@@ -37,7 +37,7 @@ struct NewPost {
 }
 
 // Add a new post
-pub async fn add_post(form: Form<NewPost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> impl IntoResponse {
+pub async fn add_post(form: Form<NewPost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Result<Json<axum::Json<Json>>, Error> {
     let pool = db_pool.0;
     let conn = pool.get().expect("Failed to get a connection from the pool");
 
