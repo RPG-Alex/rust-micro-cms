@@ -134,7 +134,7 @@ pub fn update_post(conn: &Connection, post_id:usize, new_title:&str, new_date: &
 }
 
 //Delete a post
-pub fn delete_post(conn: &Connection, post_id:usize) -> Result<usize> {
+pub fn delete_post(conn: &Connection, post_id:&usize) -> Result<usize> {
     // convert the usize to a string for query
     let post_id_str = post_id.to_string();
     // update entry

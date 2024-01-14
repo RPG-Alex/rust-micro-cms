@@ -3,7 +3,6 @@ mod db;
 mod render;
 
 use axum::{
-    response::IntoResponse,
     routing::{get, post},
     Router,
 };
