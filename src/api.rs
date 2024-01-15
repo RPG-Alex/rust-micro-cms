@@ -2,7 +2,7 @@ use axum::{
     Form,
     Json,
     extract::Extension, Error,
-    response::{IntoResponse, Json},
+    response::IntoResponse,
 };
 use chrono::Utc;
 use r2d2::Pool;
@@ -14,16 +14,16 @@ use std::convert::Infallible;
 use crate::db::{self};
 
 //API Endpoint for all posts
-pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Result<Json<String>, Infallible> {
+pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Json<String> {
     let pool = db_pool.0;
     let conn = pool.get().expect("Failed to get a connection from the pool.");
 
     match db::fetch_all_posts(&conn) {
         Ok(posts) => {
             let posts_json = serde_json::to_string(&posts.posts).expect("Failed to serialize posts.");
-            Ok(Json(posts_json))
+            Json(posts_json)
         },
-        Err(_) => Ok(Json("Error Fetching All Posts".to_string()))
+        Err(_) => Json("Error Fetching All Posts".to_string())
     }
 }
 
