@@ -44,7 +44,6 @@ pub struct PostResponse {
 }
 
 // Add a new post
-#[axum::debug_handler]
 pub async fn add_post(
     db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
     Json(new_post): Json<NewPost>, 
@@ -52,7 +51,7 @@ pub async fn add_post(
     let pool = db_pool.0;
     let conn = pool.get().expect("Failed to get a connection from the pool");
 
-    let date = Utc::now();
+    let date = Utc::now().naive_local().date();
     match db::create_post(&conn, &new_post.title, &date.to_string(), &new_post.body, new_post.author_id) {
         Ok(_) => (
             StatusCode::OK,
@@ -88,12 +87,4 @@ pub async fn delete_post(post_id: usize, db_pool: Extension<Arc<Pool<SqliteConne
 //     // Update an existing post in the database
 // }
 
-// // Delete a post
-// pub async fn delete_post(post_id: usize, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
-//     // Delete a post from the database
-// }
 
-// // Fetch all posts as JSON (moved from render.rs)
-// pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Json<Vec<Post>> {
-//     // Fetch all posts from the database and return as JSON
-// }

@@ -52,8 +52,8 @@ pub async fn render_all_posts(db_pool: Extension<Arc<Pool<SqliteConnectionManage
             for post in posts.posts {
                 // Each post title is a clickable link to the post's page
                 html_output.push_str(&format!(
-                    "<div><h2><a href=\"/post/{}\">{}</a></h2><p><i>{}</i></p><p>{}</p></div>",
-                    post.id, post.title, post.author, post.body
+                    "<div><h2><a href=\"/post/{}\">{}</a></h2><p><i>date: {}</i></p><p><i>{}</i></p><p>{}</p></div>",
+                    post.id, post.title, post.date, post.author, post.body
                 ));
             }
 
