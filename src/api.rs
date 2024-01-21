@@ -82,9 +82,31 @@ pub async fn delete_post(post_id: usize, db_pool: Extension<Arc<Pool<SqliteConne
     }
 }
 
-// // Update an existing post
-// pub async fn update_post(post_id: usize, form: Form<UpdatePost>, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> StatusCode {
-//     // Update an existing post in the database
-// }
+// Update an existing post
+pub async fn update_post(
+    post_id: usize, 
+    Json(update_post): Json<NewPost>,  
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>
+) -> impl IntoResponse  {
+        let pool = db_pool.0;
+        let conn = pool.get().expect("Failed to get a connection from the pool");
 
-
+        //need to modify later, to make updating date optional
+        let date = Utc::now().naive_local().date();
+        match db::update_post(&conn, post_id, &update_post.title, &date.to_string(), &update_post.body) {
+            Ok(_) => (
+                StatusCode::OK,
+                Json(PostResponse {
+                    status: "success".to_string(),
+                    message: "Post update successfully".to_string(),
+                }),
+            ),
+            Err(e) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(PostResponse {
+                    status: "error".to_string(),
+                    message: e.to_string(),
+                }),
+            ),
+    }
+}
