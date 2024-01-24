@@ -164,7 +164,6 @@ mod tests {
 
     #[test]
     fn test_establish_connection() {
-        let conn = in_memory_db();
         assert!(establish_connection(Path::new(":memory:")).is_ok());
     }
 
