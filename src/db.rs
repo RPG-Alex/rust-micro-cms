@@ -57,10 +57,18 @@ pub fn add_author(conn: &Connection, author: &str) -> Result<usize> {
     conn.execute(sql, &[author])
 }
 
-pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<usize> {
-    let sql = "SELECT * FROM author WHERE id = ?1";
-    conn.execute(sql, &[&author_id])
+pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<Author> {
+    let mut stmt = conn.prepare("SELECT id, author FROM author WHERE id = ?1")?;
+    let mut author_iter = stmt.query_map([author_id], |row| {
+        Ok(Author {
+            author_id: row.get(0)?,
+            author: row.get(1)?,
+        })
+    })?;
+
+    author_iter.next().expect("Failed to retrieve author")
 }
+
 
 // create the psots table if it doesn't exist
 pub fn create_posts_table(conn: &Connection) -> Result<()> {
@@ -143,3 +151,81 @@ pub fn delete_post(conn: &Connection, post_id:&usize) -> Result<usize> {
     conn.execute(sql, &[&post_id_str])
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rusqlite::{Connection};
+    use std::path::Path;
+
+    // Helper function to create an in-memory database connection
+    fn in_memory_db() -> Connection {
+        Connection::open_in_memory().expect("Failed to create in-memory database")
+    }
+
+    #[test]
+    fn test_establish_connection() {
+        let conn = in_memory_db();
+        assert!(establish_connection(Path::new(":memory:")).is_ok());
+    }
+
+    #[test]
+    fn test_create_tables() {
+        let conn = in_memory_db();
+        assert!(create_author_table(&conn).is_ok());
+        assert!(create_posts_table(&conn).is_ok());
+    }
+
+    #[test]
+    fn test_add_and_get_author() {
+        let conn = in_memory_db();
+        create_author_table(&conn).unwrap();
+        let author_id = add_author(&conn, "John Doe").unwrap();
+        let fetched_id = get_author_info(&conn, author_id).unwrap().author_id;
+        assert_eq!(author_id, fetched_id);
+    }
+
+    #[test]
+    fn test_create_fetch_post() {
+        let conn = in_memory_db();
+        create_author_table(&conn).unwrap();
+        create_posts_table(&conn).unwrap();
+
+        let author_id = add_author(&conn, "John Doe").unwrap();
+        let post_id = create_post(&conn, "Test Title", "2022-01-01", "Test Body", author_id).unwrap();
+
+        let fetched_posts = fetch_all_posts(&conn).unwrap();
+        assert_eq!(fetched_posts.posts.len(), 1);
+
+        let fetched_post = fetch_single_post(&conn, post_id).unwrap();
+        assert!(fetched_post.is_some());
+        assert_eq!(fetched_post.unwrap().id, post_id);
+    }
+
+    #[test]
+    fn test_update_post() {
+        let conn = in_memory_db();
+        create_author_table(&conn).unwrap();
+        create_posts_table(&conn).unwrap();
+
+        let author_id = add_author(&conn, "John Doe").unwrap();
+        let post_id = create_post(&conn, "Test Title", "2022-01-01", "Test Body", author_id).unwrap();
+
+        update_post(&conn, post_id, "Updated Title", "2022-01-02", "Updated Body").unwrap();
+        let updated_post = fetch_single_post(&conn, post_id).unwrap();
+        assert_eq!(updated_post.unwrap().title, "Updated Title");
+    }
+
+    #[test]
+    fn test_delete_post() {
+        let conn = in_memory_db();
+        create_author_table(&conn).unwrap();
+        create_posts_table(&conn).unwrap();
+
+        let author_id = add_author(&conn, "John Doe").unwrap();
+        let post_id = create_post(&conn, "Test Title", "2022-01-01", "Test Body", author_id).unwrap();
+
+        delete_post(&conn, &post_id).unwrap();
+        let post_after_deletion = fetch_single_post(&conn, post_id).unwrap();
+        assert!(post_after_deletion.is_none());
+    }
+}

@@ -189,3 +189,4 @@ pub async fn render_delete_post_confirmation(
         Err(_) => Html("<div>Error fetching post for deletion</div>".to_string()),
     }
 }
+
