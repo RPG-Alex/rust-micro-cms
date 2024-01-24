@@ -78,7 +78,12 @@ The project is meant to have a small footprint and hopefully offer a more reliab
         - [ ] **API Documentation**:
             - [ ] Generate and maintain API documentation, which can be served via a web page or a separate API documentation tool.
         - [ ] **Testing**:
-            - [ ] Write unit tests and integration tests for the API endpoints to ensure their correctness.
+            - [ ] Write unit tests for:
+                - [ ]  API endpoints
+                - [x]  Database queries
+                - [ ]  Rendering
+                - [ ]  POST Functionality
+                - [ ]  GET Functionality
         - [ ] **Deployment**:
             - [ ] Prepare the Axum application for deployment, considering factors like load balancing, containerization, and continuous integration/continuous deployment (CI/CD) pipelines.
             - [ ] Consider dockerizing application.
