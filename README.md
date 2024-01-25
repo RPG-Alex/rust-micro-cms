@@ -79,7 +79,7 @@ The project is meant to have a small footprint and hopefully offer a more reliab
             - [ ] Generate and maintain API documentation, which can be served via a web page or a separate API documentation tool.
         - [ ] **Testing**:
             - [ ] Write unit tests for:
-                - [ ]  API endpoints
+                - [x]  API endpoints
                 - [x]  Database queries
                 - [ ]  Rendering
                 - [ ]  POST Functionality
