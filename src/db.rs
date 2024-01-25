@@ -154,7 +154,7 @@ pub fn delete_post(conn: &Connection, post_id:&usize) -> Result<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rusqlite::{Connection};
+    use rusqlite::Connection;
     use std::path::Path;
 
     // Helper function to create an in-memory database connection
