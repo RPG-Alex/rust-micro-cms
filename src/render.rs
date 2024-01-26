@@ -190,3 +190,95 @@ pub async fn render_delete_post_confirmation(
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::{
+        extract::{Extension, Path},
+        response::Html,
+    };
+    use r2d2::Pool;
+    use r2d2_sqlite::SqliteConnectionManager;
+    use rusqlite::Connection;
+    use std::sync::Arc;
+
+    // Helper function to create a test database pool
+    fn create_test_db_pool() -> Extension<Arc<Pool<SqliteConnectionManager>>> {
+        let manager = SqliteConnectionManager::memory();
+        let pool = r2d2::Pool::new(manager).expect("Failed to create a test database pool");
+        Extension(Arc::new(pool))
+    }
+
+    // Helper function to set up the database with necessary data
+    fn setup_test_database(conn: &Connection) {
+        conn.execute("CREATE TABLE IF NOT EXISTS author (id INTEGER PRIMARY KEY, author TEXT NOT NULL)", [])
+            .expect("Failed to create author table");
+        conn.execute("CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY, title TEXT NOT NULL, date TEXT NOT NULL, body TEXT NOT NULL, author_id INTEGER NOT NULL, FOREIGN KEY (author_id) REFERENCES author(id))", [])
+            .expect("Failed to create posts table");
+        conn.execute("INSERT INTO author (author) VALUES (?1)", ["John Doe"])
+            .expect("Failed to insert author");
+        conn.execute("INSERT INTO posts (title, date, body, author_id) VALUES (?1, ?2, ?3, ?4)", ["Test Post", "2022-01-01", "Test Content", &1.to_string()])
+            .expect("Failed to insert post");
+    }
+
+    #[tokio::test]
+    async fn test_render_single_post() {
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+    
+        let post_id = 1;
+        let response = render_single_post(Path(post_id), db_pool).await;
+        assert!(response.0.contains("Test Post"));
+        assert!(response.0.contains("Test Content"));
+        assert!(response.0.contains("John Doe"));
+    }
+    
+
+    #[tokio::test]
+    async fn test_render_all_posts() {
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+    
+        let response = render_all_posts(db_pool).await;
+        assert!(response.0.contains("Test Post"));
+        assert!(response.0.contains("Test Content"));
+        assert!(response.0.contains("John Doe"));
+    }
+    
+
+    #[tokio::test]
+    async fn test_render_add_post_form() {
+        let response = render_add_post_form().await;
+        assert!(response.0.contains("<form id='addPostForm'>"));
+        assert!(response.0.contains("<input type='submit' value='Add Post'>"));
+    }
+    
+
+    #[tokio::test]
+    async fn test_render_edit_post_form() {
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+    
+        let post_id = 1;
+        let response = render_edit_post_form(Path(post_id), db_pool).await;
+        assert!(response.0.contains("value='Test Post'"));
+        assert!(response.0.contains("value='Test Content'"));
+    }
+    
+
+    #[tokio::test]
+    async fn test_render_delete_post_confirmation() {
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+    
+        let post_id = 1;
+        let response = render_delete_post_confirmation(Path(post_id), db_pool).await;
+        assert!(response.0.contains("Are you sure you want to delete the post:"));
+        assert!(response.0.contains("value='Confirm Delete'"));
+    }
+    
+}
