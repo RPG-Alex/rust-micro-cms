@@ -36,6 +36,11 @@ pub struct NewPost {
     body: String,
 }
 
+#[derive(Deserialize)]
+pub struct  DeletePost {
+    post_id: usize,
+}
+
 // Response type for successful post creation (thank you documentation!)
 #[derive(Serialize)]
 pub struct PostResponse {
@@ -71,14 +76,29 @@ pub async fn add_post(
 }
 
 // Delete a post
-pub async fn delete_post(post_id: usize, db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Result<Json<serde_json::Value>, Error> {
+pub async fn delete_post(
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
+    Json(post_id): Json<DeletePost>,
+) -> impl IntoResponse {
     let pool = db_pool.0;
     let conn = pool.get().expect("Failed to get a connection from the pool");
 
     
-    match db::delete_post(&conn, &post_id) {
-        Ok(_) => Ok(Json(json!({ "status": "success", "message": "Post deleted successfully" }))),
-        Err(e) => Ok(Json(json!({ "status": "error", "message": e.to_string() })))
+    match db::delete_post(&conn, &post_id.post_id) {
+        Ok(_) => (
+            StatusCode::OK,
+            Json(PostResponse{
+                status: "success".to_string(),
+                message: "Post deleted successfully".to_string(),
+            }),
+        ),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(PostResponse {
+                status: "error".to_string(),
+                message: e.to_string(),
+            }),
+        ),
     }
 }
 

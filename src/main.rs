@@ -3,7 +3,7 @@ mod db;
 mod render;
 
 use axum::{
-    routing::{get, post},
+    routing::{delete, get, post},
     Router,
 };
 use std::net::SocketAddr;
@@ -22,11 +22,15 @@ async fn main() {
 
     // Set up the Axum application with routes
     let app = Router::new()
-        .route("/", get(api::fetch_all_posts_as_json)) // Default route serves JSON version of all posts
-        .route("/posts", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts
-        .route("/posts", post(api::add_post)) // add new posts
+        // App root and APIs
+        .route("/posts", get(api::fetch_all_posts_as_json)) // Default route serves JSON version of all posts
+        .route("/posts/new", post(api::add_post)) // add new posts
+        .route("/posts/delete", delete(api::delete_post)) 
+        //All rendering goes here
+        .route("/post", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts
         .route("/post/:id", get(render::render_single_post)) // "/post/:id" route serves individual post in HTML
         .route("/post/new", get(render::render_add_post_form)) // create a new post
+        
         .layer(axum::extract::Extension(Arc::new(pool)));
 
     // Define the server address
