@@ -64,6 +64,7 @@ pub async fn render_all_posts(db_pool: Extension<Arc<Pool<SqliteConnectionManage
 }
 
 // Render form for adding a new post
+// TODO: Need to query authors to populate form (maybe this is a good argument for leptos or dioxus switchover?)
 pub async fn render_add_post_form() -> Html<String> {
     Html(
         "<style>
@@ -101,8 +102,13 @@ pub async fn render_add_post_form() -> Html<String> {
             <label for='title'>Title</label>
             <input type='text' name='title' id='title' placeholder='Enter post title' required>
 
-            <label for='author'>Author</label>
-            <input type='text' name='author' id='author' placeholder='Enter author name' required>
+            <label for='author_id'>Author</label>
+            <select name='author_id' id='author_id' required>
+                <option value='1'>John Doe</option>
+                <option value='2'>John Doe</option>
+                <option value='3'>John Doe</option>
+                <option value='4'>John Doe</option>
+            </select>
 
             <label for='body'>Body</label>
             <textarea name='body' id='body' placeholder='Enter post content' rows='6' required></textarea>
@@ -114,15 +120,15 @@ pub async fn render_add_post_form() -> Html<String> {
                 e.preventDefault();
 
                 var title = document.getElementById('title').value;
-                var author = document.getElementById('author').value;
+                var author_id = parseInt(document.getElementById('author_id').value, 10);
                 var body = document.getElementById('body').value;
 
-                fetch('/add_post', {
+                fetch('/post/add_post', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ title, author, body })
+                    body: JSON.stringify({ title, author_id, body })
                 })
                 .then(response => response.status)
                 .then(status => console.log('Submitted with status:', status))
