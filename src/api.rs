@@ -36,11 +36,6 @@ pub struct NewPost {
     body: String,
 }
 
-#[derive(Deserialize)]
-pub struct  DeletePost {
-    post_id: usize,
-}
-
 // Response type for successful post creation (thank you documentation!)
 #[derive(Serialize)]
 pub struct PostResponse {
@@ -78,13 +73,13 @@ pub async fn add_post(
 // Delete a post
 pub async fn delete_post(
     db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
-    Json(post_id): Json<DeletePost>,
+    Json(post_id): Json<usize>,
 ) -> impl IntoResponse {
     let pool = db_pool.0;
     let conn = pool.get().expect("Failed to get a connection from the pool");
 
     
-    match db::delete_post(&conn, &post_id.post_id) {
+    match db::delete_post(&conn, &post_id) {
         Ok(_) => (
             StatusCode::OK,
             Json(PostResponse{
@@ -243,9 +238,14 @@ mod tests {
         setup_test_database(&conn);
     
         let post_id_to_delete = 1;
-        let response = delete_post(post_id_to_delete, db_pool).await.expect("Failed to delete post");
-        assert_eq!(response["status"], "success");
-        assert_eq!(response["message"], "Post deleted successfully");
+        let response = delete_post(db_pool, Json(post_id_to_delete)).await.into_response();
+        let (parts, body) = response.into_parts();
+        let body_bytes = hyper::body::to_bytes(body).await.expect("Failed to read response body");
+        let response_value: serde_json::Value = serde_json::from_slice(&body_bytes).expect("Failed to parse JSON");
+
+        assert_eq!(parts.status, StatusCode::OK);
+        assert_eq!(response_value["status"], "success");
+        assert_eq!(response_value["message"], "Post deleted successfully");
     }
 
     #[tokio::test]

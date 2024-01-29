@@ -1,4 +1,4 @@
-use rusqlite::{Connection, Result};
+use rusqlite::{Connection, Result, Row};
 use std::path::Path;
 use serde::Serialize;
 //Need to use database pool
@@ -23,6 +23,10 @@ pub struct Author {
     pub author: String,
 }
 
+#[derive(Serialize)]
+pub struct Authors {
+    pub authors: Vec<Author>,
+}
 
 // Structure for vector of posts (such as fetching all from DB)
 #[derive(Clone, Debug, Serialize)]
@@ -69,6 +73,20 @@ pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<Author> {
     author_iter.next().expect("Failed to retrieve author")
 }
 
+
+pub fn get_all_authors(conn: &Connection) -> Result<Authors> {
+    let mut stmt = conn.prepare("SELECT id, author FROM author")?;
+    let authors_iter = stmt.query_map((), |row| {
+        Ok(Author {
+            author_id: row.get(0)?,
+            author: row.get(1)?,
+        })
+    })?;
+
+    let authors: Result<Vec<Author>> = authors_iter.collect();
+    let authors = authors?;
+    Ok (Authors{authors})
+}
 
 // create the psots table if it doesn't exist
 pub fn create_posts_table(conn: &Connection) -> Result<()> {
@@ -182,6 +200,27 @@ mod tests {
         let fetched_id = get_author_info(&conn, author_id).unwrap().author_id;
         assert_eq!(author_id, fetched_id);
     }
+
+    #[test]
+    fn test_get_all_authors() {
+        let conn = in_memory_db();
+        create_author_table(&conn).unwrap();
+
+        // Insert multiple authors
+        add_author(&conn, "John Doe").unwrap();
+        add_author(&conn, "Jane Smith").unwrap();
+
+        // Call get_all_authors and verify the results
+        let result = get_all_authors(&conn).unwrap();
+        assert_eq!(result.authors.len(), 2);
+
+        // Check that the authors are as expected
+        assert_eq!(result.authors[0].author_id, 1);
+        assert_eq!(result.authors[0].author, "John Doe");
+        assert_eq!(result.authors[1].author_id, 2);
+        assert_eq!(result.authors[1].author, "Jane Smith");
+    }
+
 
     #[test]
     fn test_create_fetch_post() {
