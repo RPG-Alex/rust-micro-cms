@@ -8,12 +8,12 @@ use r2d2_sqlite::SqliteConnectionManager;
 //Post Structure for Database
 #[derive(Clone, Debug, Serialize)]
 pub struct PostData {
-    pub id: Option<usize>,
-    pub title: Option<String>,
-    pub date: Option<String>,
-    pub body: Option<String>,
-    pub author_id: Option<usize>,
-    pub author: Option<String>,
+    pub id: usize,
+    pub title: String,
+    pub date: String,
+    pub body: String,
+    pub author_id: usize,
+    pub author: String,
 }
 
 // Structure for vector of posts (such as fetching all from DB)
@@ -25,8 +25,8 @@ pub struct Posts {
 // Defining Author structure
 #[derive(Clone, Debug, Serialize)]
 pub struct AuthorData {
-    pub author_id: Option<usize>,
-    pub author: Option<String>,
+    pub author_id: usize,
+    pub author: String,
 }
 
 #[derive(Serialize)]
@@ -55,30 +55,22 @@ pub fn create_author_table(conn: &Connection) -> Result<()> {
     Ok(())
 }
 
-pub fn add_author(conn: &Connection, author_data: &AuthorData) -> Result<usize> {
-    if let Some(author_name) = &author_data.author {
-        let sql = "INSERT INTO author (author) VALUES (?1)";
-        conn.execute(sql, &[author_name])
-    } else {
-        Err(rusqlite::Error::InvalidQuery)
-    }
+pub fn add_author(conn: &Connection, author_name: &str) -> Result<usize> {
+    let sql = "INSERT INTO author (author) VALUES (?1)";
+    conn.execute(sql, &[author_name])
 }
 
 
-pub fn get_author_info(conn: &Connection, author_data: &AuthorData) -> Result<AuthorData> {
-    if let Some(author_id) = &author_data.author_id {
-        let mut stmt = conn.prepare("SELECT id, author FROM author WHERE id = ?1")?;
-        let mut author_iter = stmt.query_map([author_id], |row| {
-            Ok(AuthorData {
-                author_id: row.get(0)?,
-                author: row.get(1)?,
-            })
-        })?;
+pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData> {
+    let mut stmt = conn.prepare("SELECT id, author FROM author WHERE id = ?1")?;
+    let mut author_iter = stmt.query_map([author_id], |row| {
+    Ok(AuthorData {
+        author_id: row.get(0)?,
+        author: row.get(1)?,
+        })
+    })?;
     
-        author_iter.next().expect("Failed to retrieve author")
-    } else {
-        Err(rusqlite::Error::InvalidQuery)
-    }
+    author_iter.next().expect("Failed to retrieve author")
 }
 
 
@@ -132,25 +124,21 @@ pub fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
 }
 
 //fetch a single post by id
-pub fn fetch_single_post(conn: &Connection, post: PostData) -> Result<Option<PostData>> {
-    if let Some (post_id) = post.id {
-        let mut stmt = conn.prepare("SELECT posts.id, posts.title, posts.date, posts.body, posts.author_id, author.author FROM posts INNER JOIN author ON posts.author_id = author.id WHERE posts.id = ?1")?;
+pub fn fetch_single_post(conn: &Connection, post_id: usize) -> Result<Option<PostData>> {
+    let mut stmt = conn.prepare("SELECT posts.id, posts.title, posts.date, posts.body, posts.author_id, author.author FROM posts INNER JOIN author ON posts.author_id = author.id WHERE posts.id = ?1")?;
     
-        let mut post_iter = stmt.query_map([post_id], |row| {
-            Ok(PostData {
-                id: row.get(0)?,
-                title: row.get(1)?,
-                date: row.get(2)?,
-                body: row.get(3)?,
-                author_id: row.get(4)?,
-                author: row.get(5)?,
-            })
-        })?;
+    let mut post_iter = stmt.query_map([post_id], |row| {
+        Ok(PostData {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            date: row.get(2)?,
+            body: row.get(3)?,
+            author_id: row.get(4)?,
+            author: row.get(5)?,
+        })
+    })?;
     
-        post_iter.next().transpose()
-    } else {
-        Err(rusqlite::Error::InvalidQuery)
-    }
+    post_iter.next().transpose()
 }
 
 // Create a new post
