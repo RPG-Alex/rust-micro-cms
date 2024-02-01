@@ -36,6 +36,15 @@ pub struct NewPost {
     body: String,
 }
 
+// Structure for updating a post
+#[derive(Deserialize)]
+pub struct UpdatePost {
+    title: String,
+    post_id: usize,
+    author_id: usize,
+    body: String,
+}
+
 // Response type for successful post creation (thank you documentation!)
 #[derive(Serialize)]
 pub struct PostResponse {
@@ -99,16 +108,15 @@ pub async fn delete_post(
 
 // Update an existing post
 pub async fn update_post(
-    post_id: usize, 
-    Json(update_post): Json<NewPost>,  
-    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
+    Json(update_post): Json<UpdatePost>,  
 ) -> impl IntoResponse  {
         let pool = db_pool.0;
         let conn = pool.get().expect("Failed to get a connection from the pool");
 
         //need to modify later, to make updating date optional
         let date = Utc::now().naive_local().date();
-        match db::update_post(&conn, post_id, &update_post.title, &date.to_string(), &update_post.body) {
+        match db::update_post(&conn, update_post.post_id, &update_post.title, &date.to_string(), &update_post.body) {
             Ok(_) => (
                 StatusCode::OK,
                 Json(PostResponse {

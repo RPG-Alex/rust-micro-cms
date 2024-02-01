@@ -26,6 +26,8 @@ async fn main() {
         .route("/posts", get(api::fetch_all_posts_as_json)) // Default route serves JSON version of all posts
         .route("/posts/new", post(api::add_post)) // add new posts
         .route("/posts/delete", delete(api::delete_post)) 
+        .route("/posts/update", post(api::update_post))
+
         //All rendering goes here
         .route("/post", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts
         .route("/post/:id", get(render::render_single_post)) // "/post/:id" route serves individual post in HTML
