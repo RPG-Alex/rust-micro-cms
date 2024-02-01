@@ -262,13 +262,14 @@ mod tests {
         let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
         setup_test_database(&conn);
     
-        let update_post_data = NewPost {
+        let update_post_data = UpdatePost {
             title: "Updated Post".to_string(),
+            post_id: 1,
             author_id: 1,
             body: "Updated Post Content".to_string(),
         };
         let post_id_to_update = 1;
-        let response = update_post(post_id_to_update, Json(update_post_data), db_pool).await.into_response();
+        let response = update_post(db_pool, Json(update_post_data)).await.into_response();
         let (parts, body) = response.into_parts();
         let body_bytes = hyper::body::to_bytes(body).await.expect("Failed to read response body");
         let response_value: serde_json::Value = serde_json::from_slice(&body_bytes).expect("Failed to parse JSON");
