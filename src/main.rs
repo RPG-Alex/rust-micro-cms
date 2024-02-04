@@ -3,8 +3,9 @@ mod db;
 mod render;
 
 use axum::{
-    routing::{delete, get, post},
-    Router,
+    handler::HandlerWithoutStateExt, 
+    routing::{delete, get, post}, 
+    Router
 };
 use std::net::SocketAddr;
 use std::path::Path;
@@ -16,9 +17,11 @@ use r2d2::Pool;
 async fn main() {
     // Set path to database and establish a connection pool
     let db_path = Path::new("posts.db");
-
+    
     let manager = SqliteConnectionManager::file(db_path);
     let pool = Pool::new(manager).expect("Failed to create pool.");
+
+    initialize_database_tables(&pool).await.expect("Failed to initialize database tables");
 
     // Set up the Axum application with routes
     let app = Router::new()
@@ -44,4 +47,14 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap();
+}
+
+
+async fn initialize_database_tables(pool: &Pool<SqliteConnectionManager>) -> Result<(), rusqlite::Error> {
+    let conn = pool.get().expect("Failed to get DB connection from pool");
+    
+    db::create_author_table(&conn)?;
+    db::create_posts_table(&conn)?;
+
+    Ok(())
 }

@@ -1,9 +1,5 @@
-use rusqlite::{Connection, Result, Row};
-use std::path::Path;
+use rusqlite::{Connection, Result};
 use serde::Serialize;
-//Need to use database pool
-use r2d2_sqlite::SqliteConnectionManager;
-
 
 //Post Structure for Database
 #[derive(Clone, Debug, Serialize)]
@@ -20,72 +16,6 @@ pub struct PostData {
 #[derive(Clone, Debug, Serialize)]
 pub struct Posts {
     pub posts: Vec<PostData>,
-}
-
-// Defining Author structure
-#[derive(Clone, Debug, Serialize)]
-pub struct AuthorData {
-    pub author_id: usize,
-    pub author: String,
-}
-
-#[derive(Serialize)]
-pub struct Authors {
-    pub authors: Vec<AuthorData>,
-}
-
-
-
-// connect to our sqlite db
-pub fn establish_connection(db_path: &Path) -> Result<r2d2::Pool<SqliteConnectionManager>, r2d2::Error> {
-    let manager = SqliteConnectionManager::file(db_path);
-    r2d2::Pool::new(manager).map_err(|e| e.into())
-}
-
-
-
-pub fn create_author_table(conn: &Connection) -> Result<()> {
-    let sql = "
-        CREATE TABLE IF NOT EXISTS author (
-            id INTEGER PRIMARY KEY NOT NULL,
-            author TEXT NOT NULL
-        )
-    ";
-    conn.execute(sql, ())?;
-    Ok(())
-}
-
-pub fn add_author(conn: &Connection, author_name: &str) -> Result<usize> {
-    let sql = "INSERT INTO author (author) VALUES (?1)";
-    conn.execute(sql, &[author_name])
-}
-
-
-pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData> {
-    let mut stmt = conn.prepare("SELECT id, author FROM author WHERE id = ?1")?;
-    let mut author_iter = stmt.query_map([author_id], |row| {
-    Ok(AuthorData {
-        author_id: row.get(0)?,
-        author: row.get(1)?,
-        })
-    })?;
-    
-    author_iter.next().expect("Failed to retrieve author")
-}
-
-
-pub fn get_all_authors(conn: &Connection) -> Result<Authors> {
-    let mut stmt = conn.prepare("SELECT id, author FROM author")?;
-    let authors_iter = stmt.query_map((), |row| {
-        Ok(AuthorData {
-            author_id: row.get(0)?,
-            author: row.get(1)?,
-        })
-    })?;
-
-    let authors: Result<Vec<AuthorData>> = authors_iter.collect();
-    let authors = authors?;
-    Ok (Authors{authors})
 }
 
 // create the psots table if it doesn't exist
@@ -167,6 +97,62 @@ pub fn delete_post(conn: &Connection, post_id:&usize) -> Result<usize> {
     let sql = "DELETE FROM posts WHERE id = ?1";
     // post_id_str is converted to str here for query
     conn.execute(sql, &[&post_id_str])
+}
+
+// Defining Author structure
+#[derive(Clone, Debug, Serialize)]
+pub struct AuthorData {
+    pub author_id: usize,
+    pub author: String,
+}
+
+#[derive(Serialize)]
+pub struct Authors {
+    pub authors: Vec<AuthorData>,
+}
+
+pub fn create_author_table(conn: &Connection) -> Result<()> {
+    let sql = "
+        CREATE TABLE IF NOT EXISTS author (
+            id INTEGER PRIMARY KEY NOT NULL,
+            author TEXT NOT NULL
+        )
+    ";
+    conn.execute(sql, ())?;
+    Ok(())
+}
+
+pub fn add_author(conn: &Connection, author_name: &str) -> Result<usize> {
+    let sql = "INSERT INTO author (author) VALUES (?1)";
+    conn.execute(sql, &[author_name])
+}
+
+
+pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData> {
+    let mut stmt = conn.prepare("SELECT id, author FROM author WHERE id = ?1")?;
+    let mut author_iter = stmt.query_map([author_id], |row| {
+    Ok(AuthorData {
+        author_id: row.get(0)?,
+        author: row.get(1)?,
+        })
+    })?;
+    
+    author_iter.next().expect("Failed to retrieve author")
+}
+
+
+pub fn get_all_authors(conn: &Connection) -> Result<Authors> {
+    let mut stmt = conn.prepare("SELECT id, author FROM author")?;
+    let authors_iter = stmt.query_map((), |row| {
+        Ok(AuthorData {
+            author_id: row.get(0)?,
+            author: row.get(1)?,
+        })
+    })?;
+
+    let authors: Result<Vec<AuthorData>> = authors_iter.collect();
+    let authors = authors?;
+    Ok (Authors{authors})
 }
 
 #[cfg(test)]

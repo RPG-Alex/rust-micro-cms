@@ -1,7 +1,7 @@
 use axum::{
     http::StatusCode,
     Json,
-    extract::Extension, Error,
+    extract::Extension,
     response::IntoResponse,
     
 };
@@ -9,23 +9,9 @@ use chrono::Utc;
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use serde::{Serialize, Deserialize};
-use serde_json::json;
 use std::sync::Arc;
 use crate::db::{self};
 
-//API Endpoint for all posts
-pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Json<String> {
-    let pool = db_pool.0;
-    let conn = pool.get().expect("Failed to get a connection from the pool.");
-
-    match db::fetch_all_posts(&conn) {
-        Ok(posts) => {
-            let posts_json = serde_json::to_string(&posts.posts).expect("Failed to serialize posts.");
-            Json(posts_json)
-        },
-        Err(_) => Json("Error Fetching All Posts".to_string())
-    }
-}
 
 
 // Structure used for submitting new posts
@@ -76,6 +62,20 @@ pub async fn add_post(
                 message: e.to_string(),
             }),
         ),
+    }
+}
+
+//API Endpoint for all posts
+pub async fn fetch_all_posts_as_json(db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>) -> Json<String> {
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+
+    match db::fetch_all_posts(&conn) {
+        Ok(posts) => {
+            let posts_json = serde_json::to_string(&posts.posts).expect("Failed to serialize posts.");
+            Json(posts_json)
+        },
+        Err(_) => Json("Error Fetching All Posts".to_string())
     }
 }
 
@@ -132,6 +132,19 @@ pub async fn update_post(
                 }),
             ),
     }
+}
+
+
+#[derive(Deserialize)]
+struct NewAuthor {
+    author_name: String,
+}
+
+pub async fn add_author(
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
+    Json(new_author) : Json<NewAuthor>,
+){
+    
 }
 
 #[cfg(test)]
