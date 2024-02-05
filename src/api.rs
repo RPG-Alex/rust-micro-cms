@@ -136,21 +136,39 @@ pub async fn update_post(
 
 
 #[derive(Deserialize)]
-struct NewAuthor {
+pub struct NewAuthor {
     author_name: String,
 }
 
 pub async fn add_author(
     db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
-    Json(new_author) : Json<NewAuthor>,
-){
-    
+    Json(new_name) : Json<NewAuthor>,
+) -> impl IntoResponse {
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from pool");
+    let author_name = &new_name.author_name;
+    match db::add_author(&conn, author_name) {
+        Ok(_) => (
+            StatusCode::OK,
+            Json(PostResponse {
+                status: "success".to_string(),
+                message: "Author added successfully".to_string(),
+            }),
+        ),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(PostResponse {
+                status: "error".to_string(),
+                message: e.to_string(),
+            })
+        ),
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::extract::Extension;
+    use axum::{extract::Extension, http::response};
     use r2d2::Pool;
     use r2d2_sqlite::SqliteConnectionManager;
     use rusqlite::Connection;
@@ -292,4 +310,23 @@ mod tests {
         assert_eq!(response_value["message"], "Post updated successfully");
     }
     
+    #[tokio::test]
+    async fn test_add_author() {
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+
+        let new_author = NewAuthor {
+            author_name: "John".to_string(),
+        };
+        let response = add_author(db_pool, Json(new_author)).await.into_response();
+        let (parts, body) = response.into_parts();
+        let body_bytes = hyper::body::to_bytes(body).await.expect("Failed to read response body");
+        let response_value: serde_json::Value = serde_json::from_slice(&body_bytes).expect("Failed to parse JSON");
+
+        assert_eq!(parts.status, StatusCode::OK);
+        assert_eq!(response_value["status"], "success");
+        assert_eq!(response_value["message"], "Author added successfully");
+    }
+
 }

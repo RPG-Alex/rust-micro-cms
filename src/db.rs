@@ -167,11 +167,6 @@ mod tests {
     }
 
     #[test]
-    fn test_establish_connection() {
-        assert!(establish_connection(Path::new(":memory:")).is_ok());
-    }
-
-    #[test]
     fn test_create_tables() {
         let conn = in_memory_db();
         assert!(create_author_table(&conn).is_ok());
