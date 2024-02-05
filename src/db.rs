@@ -143,10 +143,10 @@ pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData
 pub fn get_all_authors(conn: &Connection) -> Result<Authors>{
     let mut stmt = conn.prepare("SELECT * FROM author")?;
     let mut author_iter = stmt.query_map((), |row| {
-    Ok(AuthorData {
-        author_id: row.get(0)?,
-        author: row.get(1)?,
-        })
+        Ok(AuthorData {
+            author_id: row.get(0)?,
+            author: row.get(1)?,
+            })
     })?;
     
     let authors: Result<Vec<AuthorData>> = author_iter.collect();
