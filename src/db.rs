@@ -140,19 +140,18 @@ pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData
     author_iter.next().expect("Failed to retrieve author")
 }
 
-
-pub fn get_all_authors(conn: &Connection) -> Result<Authors> {
-    let mut stmt = conn.prepare("SELECT id, author FROM author")?;
-    let authors_iter = stmt.query_map((), |row| {
-        Ok(AuthorData {
-            author_id: row.get(0)?,
-            author: row.get(1)?,
+pub fn get_all_authors(conn: &Connection) -> Result<Authors>{
+    let mut stmt = conn.prepare("SELECT * FROM author")?;
+    let mut author_iter = stmt.query_map((), |row| {
+    Ok(AuthorData {
+        author_id: row.get(0)?,
+        author: row.get(1)?,
         })
     })?;
-
-    let authors: Result<Vec<AuthorData>> = authors_iter.collect();
+    
+    let authors: Result<Vec<AuthorData>> = author_iter.collect();
     let authors = authors?;
-    Ok (Authors{authors})
+    Ok (Authors {authors})
 }
 
 #[cfg(test)]
