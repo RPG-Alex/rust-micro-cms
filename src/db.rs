@@ -128,7 +128,7 @@ pub fn add_author(conn: &Connection, author_name: &str) -> Result<usize> {
 }
 
 
-pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData> {
+pub fn fetch_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData> {
     let mut stmt = conn.prepare("SELECT id, author FROM author WHERE id = ?1")?;
     let mut author_iter = stmt.query_map([author_id], |row| {
     Ok(AuthorData {
@@ -140,7 +140,7 @@ pub fn get_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData
     author_iter.next().expect("Failed to retrieve author")
 }
 
-pub fn get_all_authors(conn: &Connection) -> Result<Authors>{
+pub fn fetch_all_authors(conn: &Connection) -> Result<Authors>{
     let mut stmt = conn.prepare("SELECT * FROM author")?;
     let mut author_iter = stmt.query_map((), |row| {
         Ok(AuthorData {
@@ -177,7 +177,7 @@ mod tests {
         let conn = in_memory_db();
         create_author_table(&conn).unwrap();
         let author_id = add_author(&conn, "John Doe").unwrap();
-        let fetched_id = get_author_info(&conn, author_id).unwrap().author_id;
+        let fetched_id = fetch_author_info(&conn, author_id).unwrap().author_id;
         assert_eq!(author_id, fetched_id);
     }
 
@@ -191,7 +191,7 @@ mod tests {
         add_author(&conn, "Jane Smith").unwrap();
 
         // Call get_all_authors and verify the results
-        let result = get_all_authors(&conn).unwrap();
+        let result = fetch_all_authors(&conn).unwrap();
         assert_eq!(result.authors.len(), 2);
 
         // Check that the authors are as expected

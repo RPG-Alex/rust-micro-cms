@@ -3,7 +3,6 @@ use axum::{
     Json,
     extract::Extension,
     response::IntoResponse,
-    
 };
 use chrono::Utc;
 use r2d2::Pool;
@@ -140,6 +139,12 @@ pub struct NewAuthor {
     author_name: String,
 }
 
+#[derive(Serialize)]
+pub struct AuthResponse {
+    status: String,
+    message: String, 
+}
+
 pub async fn add_author(
     db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
     Json(new_name) : Json<NewAuthor>,
@@ -150,18 +155,33 @@ pub async fn add_author(
     match db::add_author(&conn, author_name) {
         Ok(_) => (
             StatusCode::OK,
-            Json(PostResponse {
+            Json(AuthResponse {
                 status: "success".to_string(),
                 message: "Author added successfully".to_string(),
             }),
         ),
         Err(e) => (
             StatusCode::INTERNAL_SERVER_ERROR,
-            Json(PostResponse {
+            Json(AuthResponse {
                 status: "error".to_string(),
                 message: e.to_string(),
             })
         ),
+    }
+}
+
+pub async fn fetch_all_authors_as_json(
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>
+) -> Json<String> {
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+
+    match db::fetch_all_authors(&conn) {
+        Ok(authors) => {
+            let authors_json = serde_json::to_string(&authors.authors).expect("Failed to serialize Authors.");
+            Json(authors_json)
+        },
+        Err(_) => Json("Error Fetching All Posts".to_string())
     }
 }
 
