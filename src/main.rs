@@ -33,7 +33,7 @@ async fn main() {
 
         .route("/authors", get(api::fetch_all_authors_as_json))
         .route("/authors/new", post(api::add_author))
-        
+        .route("/authors/update", post(api::update_author))
 
         //All rendering goes here
         .route("/post", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts

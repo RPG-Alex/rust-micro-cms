@@ -138,6 +138,11 @@ pub async fn update_post(
 pub struct NewAuthor {
     author_name: String,
 }
+#[derive(Deserialize)]
+pub struct UpdateAuthor {
+    pub author_id: usize,
+    pub author: String,
+}
 
 #[derive(Serialize)]
 pub struct AuthResponse {
@@ -158,6 +163,30 @@ pub async fn add_author(
             Json(AuthResponse {
                 status: "success".to_string(),
                 message: "Author added successfully".to_string(),
+            }),
+        ),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(AuthResponse {
+                status: "error".to_string(),
+                message: e.to_string(),
+            })
+        ),
+    }
+}
+
+pub async fn update_author(
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
+    Json(update_name) : Json<UpdateAuthor>,
+) -> impl IntoResponse {
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from pool");
+    match db::update_author(&conn, update_name.author_id, &update_name.author) {
+        Ok(_) => (
+            StatusCode::OK,
+            Json(AuthResponse {
+                status: "success".to_string(),
+                message: "Author updated successfully".to_string(),
             }),
         ),
         Err(e) => (
