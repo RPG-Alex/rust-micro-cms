@@ -378,4 +378,40 @@ mod tests {
         assert_eq!(response_value["message"], "Author added successfully");
     }
 
+    #[tokio::test]
+    async fn test_update_author() {
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().unwrap();
+        setup_test_database(&conn);
+
+        let update_author_data = UpdateAuthor {
+            author_id: 1,
+            author: "Jane Doe".to_string(),
+        };
+        let response = update_author(db_pool, Json(update_author_data)).await.into_response();
+        let (_, body) = response.into_parts();
+        let body_bytes = hyper::body::to_bytes(body).await.unwrap();
+        let response_value: serde_json::Value = serde_json::from_slice(&body_bytes).unwrap();
+
+        assert_eq!(response_value["status"], "success");
+        assert_eq!(response_value["message"], "Author updated successfully");
+    }
+
+
+    #[tokio::test]
+    async fn test_fetch_all_authors_as_json() {
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().unwrap();
+        setup_test_database(&conn);
+
+
+        let response = fetch_all_authors_as_json(db_pool).await;
+        let response_str = &response.0;
+        let response_value: serde_json::Value = serde_json::from_str(response_str).unwrap();
+
+        assert!(response_value.is_array());
+        let authors_array = response_value.as_array().unwrap();
+        assert!(authors_array.iter().any(|author| author["author"] == "John Doe"));
+    }
+
 }
