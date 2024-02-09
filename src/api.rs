@@ -175,6 +175,22 @@ pub async fn add_author(
     }
 }
 
+pub async fn fetch_author_info_as_json(
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
+    Json(author_id) : Json<usize>,
+) -> impl IntoResponse{
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+
+    match db::fetch_author_info(&conn, author_id) {
+        Ok(author) => {
+            let author_json = serde_json::to_string(&author).expect("Failed to serialize Author Info.");
+            Json(author_json)
+        },
+        Err(_) => Json("Error Fetching Author Info".to_string())
+    }
+}
+
 pub async fn update_author(
     db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>,
     Json(update_name) : Json<UpdateAuthor>,
@@ -210,14 +226,14 @@ pub async fn fetch_all_authors_as_json(
             let authors_json = serde_json::to_string(&authors.authors).expect("Failed to serialize Authors.");
             Json(authors_json)
         },
-        Err(_) => Json("Error Fetching All Posts".to_string())
+        Err(_) => Json("Error Fetching All Authors".to_string())
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::{extract::Extension, http::response};
+    use axum::extract::Extension;
     use r2d2::Pool;
     use r2d2_sqlite::SqliteConnectionManager;
     use rusqlite::Connection;

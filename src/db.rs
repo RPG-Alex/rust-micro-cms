@@ -144,7 +144,7 @@ pub fn fetch_author_info(conn: &Connection, author_id: usize) -> Result<AuthorDa
         })
     })?;
     
-    author_iter.next().expect("Failed to retrieve author")
+    author_iter.next().expect("Failed to retrieve author from database.")
 }
 
 pub fn fetch_all_authors(conn: &Connection) -> Result<Authors>{

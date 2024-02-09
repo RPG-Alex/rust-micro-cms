@@ -3,9 +3,7 @@ mod db;
 mod render;
 
 use axum::{
-    handler::HandlerWithoutStateExt, 
-    routing::{delete, get, post}, 
-    Router
+    routing::{delete, get, post}, Json, Router
 };
 use std::net::SocketAddr;
 use std::path::Path;
@@ -23,6 +21,7 @@ async fn main() {
 
     initialize_database_tables(&pool).await.expect("Failed to initialize database tables");
 
+
     // Set up the Axum application with routes
     let app = Router::new()
         // App root and APIs
@@ -34,7 +33,8 @@ async fn main() {
         .route("/authors", get(api::fetch_all_authors_as_json))
         .route("/authors/new", post(api::add_author))
         .route("/authors/update", post(api::update_author))
-
+        .route("/authors/:id", get(api::fetch_author_info_as_json))
+        
         //All rendering goes here
         .route("/post", get(render::render_all_posts)) // "/posts" route serves HTML version of all posts
         .route("/post/:id", get(render::render_single_post)) // "/post/:id" route serves individual post in HTML
@@ -61,4 +61,41 @@ async fn initialize_database_tables(pool: &Pool<SqliteConnectionManager>) -> Res
     db::create_posts_table(&conn)?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use r2d2_sqlite::SqliteConnectionManager;
+    use rusqlite::Connection;
+
+    fn create_in_memory_db_pool() -> Pool<SqliteConnectionManager> {
+        let manager = SqliteConnectionManager::memory();
+        Pool::new(manager).expect("Failed to create an in-memory database pool.")
+    }
+
+    #[tokio::test]
+    async fn test_initialize_database_tables() {
+        let pool = create_in_memory_db_pool();
+
+        let init_result = initialize_database_tables(&pool).await;
+
+        assert!(init_result.is_ok(), "Database tables initialization failed");
+
+        let conn = pool.get().expect("Failed to get DB connection from pool");
+        let tables_exist = check_tables_exist(&conn);
+        assert!(tables_exist, "Not all required tables were created successfully");
+    }
+
+    fn check_tables_exist(conn: &Connection) -> bool {
+        let mut stmt = conn.prepare("SELECT name FROM sqlite_master WHERE type='table'").unwrap();
+        let tables_iter = stmt.query_map([], |row| row.get::<_, String>(0)).unwrap();
+
+        let mut tables = vec![];
+        for table in tables_iter {
+            tables.push(table.unwrap());
+        }
+
+        tables.contains(&"author".to_string()) && tables.contains(&"posts".to_string())
+    }
 }

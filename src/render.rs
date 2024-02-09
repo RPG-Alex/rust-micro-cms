@@ -199,10 +199,7 @@ pub async fn render_delete_post_confirmation(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::{
-        extract::{Extension, Path},
-        response::Html,
-    };
+    use axum::extract::{Extension, Path};
     use r2d2::Pool;
     use r2d2_sqlite::SqliteConnectionManager;
     use rusqlite::Connection;
