@@ -81,12 +81,12 @@ pub fn create_post(conn: &Connection, title: &str, date:&str, body: &str, author
 }
 
 //Update a post data
-pub fn update_post(conn: &Connection, post_id:usize, new_title:&str, new_date: &str, new_body: &str) -> Result<usize>{
+pub fn update_post(conn: &Connection, post_id:usize, new_title:&str, author_id: usize, new_date: &str, new_body: &str) -> Result<usize>{
     // convert the usize to a string for query
     let post_id_str = post_id.to_string();
     // update entry
-    let sql = "UPDATE posts SET title = ?1, date = ?2, body = ?3 WHERE id = ?4";
-    conn.execute(sql, &[new_title,new_date,new_body,&post_id_str])
+    let sql = "UPDATE posts SET title = ?1, date = ?2, author_id = ?3, body = ?4 WHERE id = ?5";
+    conn.execute(sql, &[new_title,new_date, &author_id.to_string(), new_body,&post_id_str])
 }
 
 //Delete a post
@@ -149,7 +149,7 @@ pub fn fetch_author_info(conn: &Connection, author_id: usize) -> Result<AuthorDa
 
 pub fn fetch_all_authors(conn: &Connection) -> Result<Authors>{
     let mut stmt = conn.prepare("SELECT * FROM author")?;
-    let mut author_iter = stmt.query_map((), |row| {
+    let author_iter = stmt.query_map((), |row| {
         Ok(AuthorData {
             author_id: row.get(0)?,
             author: row.get(1)?,
@@ -165,7 +165,6 @@ pub fn fetch_all_authors(conn: &Connection) -> Result<Authors>{
 mod tests {
     use super::*;
     use rusqlite::Connection;
-    use std::path::Path;
 
     // Helper function to create an in-memory database connection
     fn in_memory_db() -> Connection {
@@ -235,7 +234,11 @@ mod tests {
         let author_id = add_author(&conn, "John Doe").unwrap();
         let post_id = create_post(&conn, "Test Title", "2022-01-01", "Test Body", author_id).unwrap();
 
-        update_post(&conn, post_id, "Updated Title", "2022-01-02", "Updated Body").unwrap();
+        update_post(
+            &conn, post_id, "Updated Title",
+            1, 
+            "2022-01-02", 
+            "Updated Body").unwrap();
         let updated_post = fetch_single_post(&conn, post_id).unwrap();
         assert_eq!(updated_post.unwrap().title, "Updated Title");
     }

@@ -115,7 +115,13 @@ pub async fn update_post(
 
         //need to modify later, to make updating date optional
         let date = Utc::now().naive_local().date();
-        match db::update_post(&conn, update_post.post_id, &update_post.title, &date.to_string(), &update_post.body) {
+        match db::update_post(
+            &conn, 
+            update_post.post_id, 
+            &update_post.title,
+            update_post.author_id, 
+            &date.to_string(), 
+            &update_post.body) {
             Ok(_) => (
                 StatusCode::OK,
                 Json(PostResponse {
@@ -364,7 +370,6 @@ mod tests {
             author_id: 1,
             body: "Updated Post Content".to_string(),
         };
-        let post_id_to_update = 1;
         let response = update_post(db_pool, Json(update_post_data)).await.into_response();
         let (parts, body) = response.into_parts();
         let body_bytes = hyper::body::to_bytes(body).await.expect("Failed to read response body");

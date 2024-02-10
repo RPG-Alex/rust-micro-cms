@@ -3,7 +3,7 @@ mod db;
 mod render;
 
 use axum::{
-    routing::{delete, get, post}, Json, Router
+    routing::{delete, get, post}, Router
 };
 use std::net::SocketAddr;
 use std::path::Path;
