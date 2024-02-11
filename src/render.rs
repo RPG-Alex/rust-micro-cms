@@ -64,27 +64,43 @@ pub async fn render_all_posts(db_pool: Extension<Arc<Pool<SqliteConnectionManage
 }
 
 // Render form for adding a new post
-// TODO: Need to query authors to populate form (maybe this is a good argument for leptos or dioxus switchover?)
-pub async fn render_add_post_form() -> Html<String> {
-    Html(
+pub async fn render_add_post_form(
+    db_pool: Extension<Arc<Pool<SqliteConnectionManager>>>
+) -> Html<String> {
+    let pool = db_pool.0;
+    let conn = pool.get().expect("Failed to get a connection from the pool.");
+    let authors_options = match db::fetch_all_authors(&conn) {
+        Ok(authors) => {
+            // Iterate over authors to create option elements
+            authors.authors.iter().map(|author| {
+                format!("<option value='{}'>{}</option>", author.author_id, author.author)
+            }).collect::<Vec<_>>().join("\n")
+        },
+        Err(_) => {
+            // Fallback option in case of an error
+            "<option value=''>Failed to fetch authors</option>".to_string()
+        }
+    };
+
+    let form_html = format!(
         "<style>
-            form {
+            form {{
                 display: flex;
                 flex-direction: column;
                 width: 400px;
                 margin: 20px;
-            }
-            label {
+            }}
+            label {{
                 margin-top: 10px;
-            }
-            input[type='text'], textarea {
+            }}
+            input[type='text'], textarea {{
                 padding: 8px;
                 margin-top: 5px;
                 border-radius: 4px;
                 border: 1px solid #ddd;
                 font-size: 16px;
-            }
-            input[type='submit'] {
+            }}
+            input[type='submit'] {{
                 margin-top: 20px;
                 padding: 10px;
                 border: none;
@@ -93,10 +109,10 @@ pub async fn render_add_post_form() -> Html<String> {
                 border-radius: 4px;
                 cursor: pointer;
                 font-size: 16px;
-            }
-            input[type='submit']:hover {
+            }}
+            input[type='submit']:hover {{
                 background-color: #45a049;
-            }
+            }}
         </style>
         <form id='addPostForm'>
             <label for='title'>Title</label>
@@ -104,10 +120,7 @@ pub async fn render_add_post_form() -> Html<String> {
 
             <label for='author_id'>Author</label>
             <select name='author_id' id='author_id' required>
-                <option value='1'>John Doe</option>
-                <option value='2'>John Doe</option>
-                <option value='3'>John Doe</option>
-                <option value='4'>John Doe</option>
+                {authors_options}
             </select>
 
             <label for='body'>Body</label>
@@ -116,28 +129,32 @@ pub async fn render_add_post_form() -> Html<String> {
             <input type='submit' value='Add Post'>
         </form>
         <script>
-            document.getElementById('addPostForm').addEventListener('submit', function(e) {
+            document.getElementById('addPostForm').addEventListener('submit', function(e) {{
                 e.preventDefault();
 
                 var title = document.getElementById('title').value;
                 var author_id = parseInt(document.getElementById('author_id').value, 10);
                 var body = document.getElementById('body').value;
 
-                fetch('/post/add_post', {
+                fetch('/post/add_post', {{
                     method: 'POST',
-                    headers: {
+                    headers: {{
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ title, author_id, body })
-                })
-                .then(response => response.status)
-                .then(status => console.log('Submitted with status:', status))
+                    }},
+                    body: JSON.stringify({{ title, author_id, body }})
+                }})
+                .then(response => response.json())
+                .then(data => {{
+                    // Handle response data, e.g., redirect to a success page or display a message
+                    console.log('Submission successful:', data);
+                }})
                 .catch(error => console.error('Error:', error));
-            });
-        </script>
-    ".to_string()
-    )
+            }});
+        </script>");
+
+    Html(form_html)
 }
+
 
 
 
@@ -194,6 +211,10 @@ pub async fn render_delete_post_confirmation(
         Ok(None) => Html(format!("<div>No post found with ID {}</div>", post_id)),
         Err(_) => Html("<div>Error fetching post for deletion</div>".to_string()),
     }
+}
+
+pub async fn render_success_view() -> Html<String> {
+    Html("<div>Post submitted successfully!</div>".to_string())
 }
 
 #[cfg(test)]
@@ -253,7 +274,10 @@ mod tests {
 
     #[tokio::test]
     async fn test_render_add_post_form() {
-        let response = render_add_post_form().await;
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+        let response = render_add_post_form(db_pool).await;
         assert!(response.0.contains("<form id='addPostForm'>"));
         assert!(response.0.contains("<input type='submit' value='Add Post'>"));
     }
