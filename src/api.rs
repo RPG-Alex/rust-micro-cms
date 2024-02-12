@@ -211,6 +211,13 @@ pub async fn update_author(
                 message: "Author updated successfully".to_string(),
             }),
         ),
+        Err(rusqlite::Error::QueryReturnedNoRows) => (
+            StatusCode::NOT_FOUND,
+            Json(AuthResponse {
+                status: "error".to_string(),
+                message: "Author not found".to_string(),
+            })
+        ),
         Err(e) => (
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(AuthResponse {
@@ -342,6 +349,18 @@ mod tests {
     }
     
     #[tokio::test]
+    async fn test_add_post_fail() {
+        let db_pool = create_test_db_pool();
+        let invalid_post = NewPost {
+            title: "Invalid Post".to_string(),
+            author_id: 999,
+            body: "Content".to_string(),
+        };
+        let response = add_post(db_pool, Json(invalid_post)).await.into_response();
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
+    }
+
+    #[tokio::test]
     async fn test_delete_post() {
         let db_pool = create_test_db_pool();
         let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
@@ -356,6 +375,14 @@ mod tests {
         assert_eq!(parts.status, StatusCode::OK);
         assert_eq!(response_value["status"], "success");
         assert_eq!(response_value["message"], "Post deleted successfully");
+    }
+
+    #[tokio::test]
+    async fn test_delete_post_fail() {
+        let db_pool = create_test_db_pool();
+        let non_existent_post_id = Json(999); 
+        let response = delete_post(db_pool, non_existent_post_id).await.into_response();
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -381,6 +408,19 @@ mod tests {
     }
     
     #[tokio::test]
+    async fn test_update_post_fail() {
+        let db_pool = create_test_db_pool();
+        let invalid_update = Json(UpdatePost {
+            title: "Updated Title".to_string(),
+            post_id: 999,
+            author_id: 1,
+            body: "Updated Content".to_string(),
+        });
+        let response = update_post(db_pool, invalid_update).await.into_response();
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
+    }
+
+    #[tokio::test]
     async fn test_add_author() {
         let db_pool = create_test_db_pool();
         let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
@@ -397,6 +437,14 @@ mod tests {
         assert_eq!(parts.status, StatusCode::OK);
         assert_eq!(response_value["status"], "success");
         assert_eq!(response_value["message"], "Author added successfully");
+    }
+
+    #[tokio::test]
+    async fn test_add_author_fail() {
+        let db_pool = create_test_db_pool();
+        let invalid_author = Json(NewAuthor { author_name: "".to_string() });
+        let response = add_author(db_pool, invalid_author).await.into_response();
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -418,6 +466,45 @@ mod tests {
         assert_eq!(response_value["message"], "Author updated successfully");
     }
 
+    #[tokio::test]
+    async fn test_update_author_fail_auth_not_found(){
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+
+        let invalid_update_author_data = Json(UpdateAuthor {
+            author_id: 999,
+            author: "Non Existent Author".to_string(),
+        });
+        let response = update_author(db_pool, invalid_update_author_data).await.into_response();
+        let (parts, body) = response.into_parts();
+        let body_bytes = hyper::body::to_bytes(body).await.expect("Failed to read response body");
+        let response_value: serde_json::Value = serde_json::from_slice(&body_bytes).expect("Failed to parse JSON");
+
+        assert_eq!(parts.status, StatusCode::NOT_FOUND);
+
+        assert_eq!(response_value["status"], "error");
+    }
+
+    #[ignore]
+    #[tokio::test]
+    async fn test_update_author_fail_int_err(){
+        let db_pool = create_test_db_pool();
+        let conn = db_pool.0.get().expect("Failed to get a connection from the pool");
+        setup_test_database(&conn);
+    
+        // Use an author_id that does not exist to simulate a failure condition
+        let nonexistent_author_id = 9999; // Assuming this ID does not exist in your test database
+        let update_author_data = UpdateAuthor {
+            author_id: nonexistent_author_id,
+            author: "Jane Doe".to_string(),
+        };
+    
+        let response = update_author(db_pool, Json(update_author_data)).await;
+        let (parts, _) = response.into_response().into_parts();
+    
+        assert_eq!(parts.status, StatusCode::INTERNAL_SERVER_ERROR);
+    }
 
     #[tokio::test]
     async fn test_fetch_all_authors_as_json() {
@@ -433,6 +520,13 @@ mod tests {
         assert!(response_value.is_array());
         let authors_array = response_value.as_array().unwrap();
         assert!(authors_array.iter().any(|author| author["author"] == "John Doe"));
+    }
+
+    #[tokio::test]
+    async fn test_fetch_all_authors_fail() {
+        let db_pool = create_test_db_pool();
+        let response = fetch_all_authors_as_json(db_pool).await;
+        assert_eq!(response.to_string(), "Error Fetching All Authors".to_string());
     }
 
 }

@@ -128,11 +128,14 @@ pub fn add_author(conn: &Connection, author_name: &str) -> Result<usize> {
 }
 
 pub fn update_author(conn: &Connection, author_id: usize, author_new_name: &str) -> Result<usize> {
-        // convert the usize to a string for query
-        let author_id_str = author_id.to_string();
-        // update entry
+        let author_id_str = author_id.to_string();       
         let sql = "UPDATE author SET author = ?1 WHERE id = ?2";
-        conn.execute(sql, [author_new_name, &author_id_str])
+        let rows = conn.execute(sql, [author_new_name, &author_id_str])?;
+        if rows == 0 {
+            Err(rusqlite::Error::QueryReturnedNoRows)
+        } else {
+            Ok(rows)
+        }
 }
 
 pub fn fetch_author_info(conn: &Connection, author_id: usize) -> Result<AuthorData> {
