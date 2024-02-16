@@ -3,7 +3,7 @@ use axum::{
 };
 
 use dotenv::dotenv;
-use sqlx::SqlitePool;
+use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use std::env;
 use anyhow::Result;
 mod db;
@@ -14,9 +14,17 @@ mod utils;
 
 
 #[tokio::main]
-async fn main() -> Result<(), sqlx::Error> {
+async fn main() {
     dotenv().ok();
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let database_url = &env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
-    Ok(())
+    if !Sqlite::database_exists(database_url).await.unwrap_or(false) {
+        println!("Creating database {}", database_url);
+        match Sqlite::create_database(database_url).await {
+            Ok(_) => println!("Create db success"),
+            Err(error) => panic!("error: {}", error),
+        }
+    } else {
+        println!("Database already exists");
+    }
 }
