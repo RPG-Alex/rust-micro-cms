@@ -1,17 +1,14 @@
 [package]
 name = "rust-micro-cms"
-version = "0.1.0"
+version = "0.6.1"
 edition = "2021"
 authors = ["Alex Blood"]
 
 [dependencies]
-axum = { version = "0.6.20", features = ["macros"] }
-axum-util = "0.2.2"
-chrono = "0.4.31"
-hyper = "0.14.27"
-r2d2 = "0.8.10"
-r2d2_sqlite = "0.23.0"
-rusqlite = "0.30.0"  # Upgraded version
-serde = { version = "1.0.190", features = ["derive"] }
-serde_json = "1.0.108"
-tokio = {version = "1.33.0", features = ["full"]}
+anyhow = "1.0.79"
+axum = "0.7.4"
+chrono = "0.4.34"
+dotenv = "0.15.0"
+serde = "1.0.196"
+sqlx = { version = "0.7.3", features = ["runtime-tokio","sqlite"] }
+tokio = { version = "1.36.0", features = ["full"]}

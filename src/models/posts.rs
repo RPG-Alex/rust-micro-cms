@@ -1,13 +1,21 @@
 use serde::{Serialize, Deserialize};
 use chrono::NaiveDate;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+
+
+
+#[derive(Clone, Debug)]
 pub struct Post {
     pub id: Option<usize>,
     pub title: String,
     pub date: NaiveDate,
     pub body: String,
     pub author_id: usize, 
+}
+
+#[derive(Debug, Clone)]
+pub struct Posts {
+    pub posts: Vec<Post>,
 }
 
 impl Post {
@@ -20,5 +28,11 @@ impl Post {
             author_id,
         }
     }
+}
 
+// May not be necessary
+impl Posts {
+    pub fn new(posts: Vec<Post>) -> Self {
+        Posts { posts }
+    }
 }

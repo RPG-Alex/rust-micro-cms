@@ -1,3 +1,7 @@
+mod api;
+mod db;
+mod render;
+
 use axum::{
     routing::{delete, get, post}, Router
 };

@@ -50,7 +50,7 @@ pub fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
 
     let posts: Result<Vec<PostData>> = post_iter.collect();
     let posts = posts?;
-    Ok (Posts { posts})
+    Ok (Posts { posts })
 }
 
 //fetch a single post by id
