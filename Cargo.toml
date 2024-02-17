@@ -7,7 +7,7 @@ authors = ["Alex Blood"]
 [dependencies]
 anyhow = "1.0.79"
 axum = "0.7.4"
-chrono = "0.4.34"
+chrono = { version = "0.4.34", features = ["serde"] }
 dotenv = "0.15.0"
 serde = "1.0.196"
 sqlx = { version = "0.7.3", features = ["runtime-tokio","sqlite"] }
