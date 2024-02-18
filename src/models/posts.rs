@@ -1,9 +1,6 @@
 use serde::{Serialize, Deserialize};
 use chrono::NaiveDate;
 
-
-
-
 #[derive(Clone, Debug)]
 pub struct Post {
     pub id: Option<usize>,
