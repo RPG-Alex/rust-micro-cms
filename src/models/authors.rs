@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Author {
-    pub id: Option<usize>,
+    pub id: Option<i64>,
     pub name: String,
 }
 

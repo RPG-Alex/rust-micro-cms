@@ -6,7 +6,7 @@ use std::fs;
 
 
 pub struct DBConnection {
-    pool: Pool<Sqlite>,
+    pub pool: Pool<Sqlite>,
 }
 
 impl DBConnection {
