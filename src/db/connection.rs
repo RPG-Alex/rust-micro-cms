@@ -10,7 +10,6 @@ pub struct DBConnection {
 }
 
 impl DBConnection {
-    // this may
     pub async fn new(db_path: &str) -> Result<Self> {
         if !Sqlite::database_exists(db_path).await.unwrap_or(false) {
             println!("Creating database {}", db_path);
