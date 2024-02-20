@@ -2,6 +2,7 @@ use axum::{
     routing::{delete, get, post}, Router
 };
 use chrono::Utc;
+use db::posts;
 use dotenv::dotenv;
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use std::env;
@@ -25,6 +26,7 @@ async fn main() {
     let new_author = Author {
         id: None,
         name: String::from("John Doe"),
+        deleted: None
     };
 
     db_connection.insert_new_author(&new_author).await.expect("Failed to insert author");
@@ -50,5 +52,20 @@ async fn main() {
         match db_connection.insert_new_post(&post).await {
         Ok(inserted_post) => println!("Inserted post with ID: {}", inserted_post.id.unwrap()),
         Err(e) => eprintln!("Error inserting post: {}", e),
+    }
+
+    let posts = db_connection.fetch_all_posts().await;
+    match posts {
+        Ok(posts) => {
+            for post in posts.posts {
+                println!("ID: {}, Title: {}, Date: {}, Body: {}, Author ID: {}", 
+                    post.id.unwrap(), 
+                    post.title, 
+                    post.date, 
+                    post.body, 
+                    post.author_id);
+            }
+        }
+        Err(e) => eprintln!("We done messed up! {}", e),
     }
 }

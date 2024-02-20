@@ -4,6 +4,7 @@ use serde::{Serialize, Deserialize};
 pub struct Author {
     pub id: Option<i64>,
     pub name: String,
+    pub deleted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -13,7 +14,7 @@ pub struct Authors {
 
 impl Author {
     pub fn new(name: String) -> Self {
-        Author { id: None, name }
+        Author { id: None, name, deleted: None }
     }
 
 }
