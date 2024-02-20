@@ -3,11 +3,11 @@ use chrono::NaiveDate;
 
 #[derive(Clone, Debug)]
 pub struct Post {
-    pub id: Option<usize>,
+    pub id: Option<i64>,
     pub title: String,
-    pub date: NaiveDate,
+    pub date: String, //need to be a string for db querying
     pub body: String,
-    pub author_id: usize, 
+    pub author_id: i64, 
 }
 
 #[derive(Debug, Clone)]
@@ -16,7 +16,7 @@ pub struct Posts {
 }
 
 impl Post {
-    pub fn new(title: String, date: NaiveDate, body: String, author_id: usize) -> Self {
+    pub fn new(title: String, date: String, body: String, author_id: i64) -> Self {
         Post {
             id: None,
             title,

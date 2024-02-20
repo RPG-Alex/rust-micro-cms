@@ -20,16 +20,14 @@ impl DBConnection {
         Ok(())
     }
     pub async fn insert_new_post(&self, post: &Post) -> Result<Post> {
-        let mut tx = self.pool.begin().await?;
         let inserted_post = sqlx::query_as!(
             Post,
             "INSERT INTO posts (title, date, body, author_id) VALUES (?, ?, ?, ?) RETURNING *",
             post.title, post.date, post.body, post.author_id
         )
-        .fetch_one(&mut tx)
+        .fetch_one(&self.pool)
         .await?;
 
-        tx.commit().await?;
         Ok(inserted_post)
     }
 }

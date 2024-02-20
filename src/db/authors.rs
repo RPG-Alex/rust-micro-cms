@@ -17,13 +17,12 @@ impl DBConnection {
     }
 
     pub async fn insert_new_author(&self, author: &Author) -> Result<Author> {
-        let mut tx: Transaction<Sqlite> = self.pool.begin().await?;
         let inserted_author = sqlx::query_as!(
             Author,
             "INSERT INTO author (name) VALUES (?) RETURNING *",
             author.name
         )
-        .fetch_one(&mut tx) 
+        .fetch_one(&self.pool) 
         .await?;
 
         Ok(inserted_author)

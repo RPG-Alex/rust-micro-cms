@@ -32,7 +32,7 @@ async fn main() {
     let new_post = Post {
         id: None,
         title: "Example Title".to_string(),
-        date: Utc::now().naive_utc(),
+        date: Utc::now().naive_utc().to_string(),
         body: "This is an example post body.".to_string(),
         author_id: 1, // Assuming you have an author with ID 1
     };
