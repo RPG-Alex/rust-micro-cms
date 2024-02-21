@@ -4,3 +4,6 @@ frontend/dist/
 **/dist/
 **/target/
 .vscode/
+mydatabase.db
+Cargo.lock
+**/Cargo.lock
