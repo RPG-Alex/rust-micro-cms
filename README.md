@@ -141,7 +141,7 @@ To get started with Rust Micro CMS, you'll need to set up your development envir
 
 1. **Clone the Repository:** Start by cloning the Rust Micro CMS repository to your local machine.
    ```bash
-   git clone https://yourrepositorylink/rust-micro-cms.git
+   git clone https://github.com/RPG-Alex/rust-micro-cms.git
    cd rust-micro-cms
    ```
 
