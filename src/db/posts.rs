@@ -1,4 +1,3 @@
-use sqlx::{Pool, Sqlite};
 use crate::db::DBConnection;
 use crate::models::{Post, Posts};
 use anyhow::Result;

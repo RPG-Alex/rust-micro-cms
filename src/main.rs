@@ -1,3 +1,4 @@
+use anyhow::Result;
 use axum::{
     routing::{delete, get, post}, Router
 };
@@ -6,7 +7,7 @@ use db::posts;
 use dotenv::dotenv;
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use std::env;
-use anyhow::Result;
+
 mod db;
 mod errors;
 mod models;
