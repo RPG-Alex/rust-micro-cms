@@ -1,6 +1,7 @@
 use sqlx::{migrate::MigrateDatabase, Pool, Sqlite, sqlite::SqlitePool};
 use anyhow::{Result, Context};
 
+#[derive(Clone)]
 pub struct DBConnection {
     pub pool: Pool<Sqlite>,
 }
