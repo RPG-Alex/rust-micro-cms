@@ -1,3 +1,10 @@
+/*
+Todo:
+    - add draft bool to db
+    - add function(s) for updating draft status
+    - add functoin for fetching all posts for author
+*/
+
 use crate::db::DBConnection;
 use crate::models::{Post, Posts};
 use anyhow::Result;
