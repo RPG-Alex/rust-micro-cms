@@ -2,7 +2,6 @@
 Todo:
     - add column for author role
     - add table for author roles?
-    - revise author name to: author first and last names
 */
 
 use crate::db::DBConnection;
@@ -14,7 +13,8 @@ impl DBConnection {
         sqlx::query!(
             "CREATE TABLE IF NOT EXISTS author (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
+                first_name TEXT NOT NULL,
+                last_name TEXT NOT NULL,
                 deleted BOOLEAN DEFAULT FALSE
             )"
         )
@@ -26,8 +26,8 @@ impl DBConnection {
     pub async fn insert_new_author(&self, author: &Author) -> Result<Author> {
         let inserted_author = sqlx::query_as!(
             Author,
-            "INSERT INTO author (name) VALUES (?) RETURNING *",
-            author.name
+            "INSERT INTO author (first_name,last_name) VALUES (?,?) RETURNING *",
+            author.first_name, author.last_name
         )
         .fetch_one(&self.pool) 
         .await?;
@@ -58,15 +58,19 @@ impl DBConnection {
         Ok(author)
     }
 
-    pub async fn update_author(&self, author_id: i32, new_author: &str) -> Result<()> {
+    pub async fn update_author(&self, author_id: i32, new_author_first_name: &str, new_author_last_name: &str) -> Result<()> {
         sqlx::query_as!(
             Author,
-            "UPDATE author SET name = ? WHERE id = ?",
-            new_author, author_id
+            "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?",
+            new_author_first_name, new_author_last_name, author_id
         )
         .fetch_optional(&self.pool)
         .await?;
         Ok(())
+    }
+
+    pub async fn delete_author(){
+        //todo: write this function
     }
 
     pub async fn soft_delete_author(&self, author_id: i32) -> Result<()> {

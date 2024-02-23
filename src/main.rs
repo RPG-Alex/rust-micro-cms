@@ -29,27 +29,16 @@ async fn main() {
     // everything below is for hot testing (quick n dirty)
     let new_author = Author {
         id: None,
-        name: String::from("John Doe"),
+        first_name: String::from("John"),
+        last_name: String::from("Doe"),
         deleted: None
     };
 
     db_connection.insert_new_author(&new_author).await.expect("Failed to insert author");
 
-    let new_post = Post {
-        id: None,
-        title: "Example Title".to_string(),
-        date: Utc::now().naive_utc().to_string(),
-        body: "This is an example post body.".to_string(),
-        author_id: 1,
-    };
+    let new_post = models::Post::new("Example Title".to_string(), Utc::now().naive_utc().to_string(), "This is an example post body.".to_string(), 1);
 
-    let post = Post {
-        id: None, 
-        title: new_post.title,
-        date: new_post.date,
-        body: new_post.body,
-        author_id: new_post.author_id,
-    };
+    let post = models::Post::new("Example Title".to_string(), Utc::now().naive_utc().to_string(), "This is an example post body.".to_string(), 1);
 
         match db_connection.insert_new_post(&post).await {
         Ok(inserted_post) => println!("Inserted post with ID: {}", inserted_post.id.unwrap()),

@@ -17,6 +17,8 @@ impl DBConnection {
                 title TEXT NOT NULL,
                 date TEXT NOT NULL,
                 body TEXT NOT NULL,
+                deleted BOOLEAN NOT NULL DEFAULT FALSE,
+                draft BOOLEAN NOT NULL DEFAULT TRUE,
                 author_id INTEGER NOT NULL,
                 FOREIGN KEY (author_id) REFERENCES author(id)
             )"
@@ -40,7 +42,7 @@ impl DBConnection {
     pub async fn fetch_all_posts(&self) -> Result<Posts> {
         let posts = sqlx::query_as!(
             Post,
-            "SELECT id, title, date, body, author_id FROM posts"
+            "SELECT * FROM posts"
         )
         .fetch_all(&self.pool)
         .await?;
@@ -51,7 +53,7 @@ impl DBConnection {
     pub async fn fetch_post_by_id(&self, post_id: i32) -> Result<Option<Post>> {
         let post = sqlx::query_as!(
             Post,
-            "SELECT id, title, date, body, author_id FROM posts WHERE id = $1",
+            "SELECT * FROM posts WHERE id = $1",
             post_id
         )
         .fetch_optional(&self.pool)
@@ -81,5 +83,12 @@ impl DBConnection {
         .await?;
 
         Ok(())
+    }
+
+    pub async fn toggle_post_draft() {
+        //todo: write this function
+    }
+    pub async fn soft_delete_post() {
+        //todo: write this function
     }
 }

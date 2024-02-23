@@ -5,8 +5,10 @@ use chrono::NaiveDate;
 pub struct Post {
     pub id: Option<i64>,
     pub title: String,
-    pub date: String, //need to be a string for db querying
+    pub date: String, // stored in db as string
     pub body: String,
+    pub deleted: Option<bool>,
+    pub draft: Option<bool>,
     pub author_id: i64, 
 }
 
@@ -22,6 +24,8 @@ impl Post {
             title,
             date,
             body,
+            deleted: None,
+            draft: None,
             author_id,
         }
     }
