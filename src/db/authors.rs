@@ -69,8 +69,15 @@ impl DBConnection {
         Ok(())
     }
 
-    pub async fn delete_author(){
-        //todo: write this function
+    //could cause conflict due to key restraints with posts
+    pub async fn delete_author(&self, author_id: i32) -> Result<()> {
+        sqlx::query!(
+            "DELETE FROM author WHERE id = ?",
+            author_id
+        )
+        .execute(&self.pool)
+        .await?;
+        Ok(())
     }
 
     pub async fn soft_delete_author(&self, author_id: i32) -> Result<()> {

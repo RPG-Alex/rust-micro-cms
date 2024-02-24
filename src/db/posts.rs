@@ -85,10 +85,46 @@ impl DBConnection {
         Ok(())
     }
 
-    pub async fn toggle_post_draft() {
-        //todo: write this function
+    pub async fn toggle_post_draft(&self, post_id: i32) -> Result<()> {
+        let current_status = sqlx::query!(
+            "SELECT draft FROM posts WHERE id = $1",
+            post_id
+        )
+        .fetch_one(&self.pool)
+        .await?
+        .draft;
+
+        let new_status = !current_status;
+        sqlx::query!(
+            "UPDATE posts SET draft = $1 WHERE id = $2",
+            new_status, post_id
+        )
+        .execute(&self.pool)
+        .await?;
+
+        Ok(())
     }
-    pub async fn soft_delete_post() {
-        //todo: write this function
+
+    pub async fn soft_delete_post(&self, post_id: i32) -> Result<()> {
+        sqlx::query!(
+            "UPDATE posts SET deleted = TRUE WHERE id = $1",
+            post_id
+        )
+        .execute(&self.pool)
+        .await?;
+
+        Ok(())
     }
+
+    pub async fn restore_post(&self, post_id: i32) -> Result<()> {
+        sqlx::query!(
+            "UPDATE posts SET deleted = FALSE WHERE id = $1",
+            post_id
+        )
+        .execute(&self.pool)
+        .await?;
+
+        Ok(())
+    }
+
 }
