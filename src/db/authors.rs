@@ -1,9 +1,3 @@
-/*
-Todo:
-    - add column for author role
-    - add table for author roles?
-*/
-
 use crate::db::DBConnection;
 use crate::models::{Author, Authors};
 use anyhow::Result;

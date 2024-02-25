@@ -1,10 +1,3 @@
-/*
-Todo:
-    - add draft bool to db
-    - add function(s) for updating draft status
-    - add functoin for fetching all posts for author
-*/
-
 use crate::db::DBConnection;
 use crate::models::{Post, Posts};
 use anyhow::Result;
@@ -60,6 +53,19 @@ impl DBConnection {
         .await?;
 
         Ok(post)
+    }
+
+
+    pub async fn fetch_all_posts_for_author(&self, author_id: i32) -> Result<Posts> {
+        let posts = sqlx::query_as!(
+            Post,
+            "SELECT * FROM posts WHERE author_id = $1 AND deleted = FALSE",
+            author_id
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(Posts { posts })
     }
 
     pub async fn update_post(&self, post_id: i32, post: &Post) -> Result<()> {
