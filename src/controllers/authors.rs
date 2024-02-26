@@ -11,7 +11,13 @@ async fn create_author_handler(author_service: Arc<AuthorService>, Json(payload)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }
 
-pub fn app_routes(author_service: Arc<AuthorService>) -> Router {
+async fn get_all_authors_handler(author_service: Arc<AuthorService>) -> Result<Json<Authors>, StatusCode> {
+    author_service.get_all_authors().await
+        .map(Json)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
+pub async fn app_routes(author_service: Arc<AuthorService>) -> Router {
     Router::new()
         .route("/authors", post(create_author_handler).get(get_all_authors_handler))
         .layer(axum::extract::Extension(author_service))

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct NewPost {
     pub title: String,
     pub body: String,
-    pub author_id: i32,
+    pub author_id: i64,
 }
 
 impl NewPost {
@@ -14,9 +14,11 @@ impl NewPost {
         Post {
             id: None,
             title: self.title,
-            date: Utc::now().naive_local().date(),
+            date: Utc::now().naive_local().date().to_string(),
             body: self.body,
             author_id: self.author_id,
+            deleted: None,
+            draft: None
         }
     }
 }
@@ -35,7 +37,7 @@ impl UpdatePostInput {
         if let Some(body) = &self.body {
             post.body = body.clone();
         }
-        post.date = Utc::now().naive_local().date(); // Update date to current
+        post.date = Utc::now().naive_local().date().to_string(); // Update date to current
         post
     }
 }
