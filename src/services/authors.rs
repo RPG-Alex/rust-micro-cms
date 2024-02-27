@@ -3,6 +3,7 @@ use crate::models::{Author, Authors};
 use std::sync::Arc;
 use anyhow::{Result, Error};
 
+#[derive(Clone)]
 pub struct AuthorService {
     pub db: Arc<DBConnection>,
 }

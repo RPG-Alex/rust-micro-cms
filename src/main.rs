@@ -1,13 +1,10 @@
 use axum::{
-    routing::{delete, get, post}, Router
+    routing::{delete, get, post}, Router, serve
 };
-use chrono::Utc;
-use db::posts;
 use dotenv::dotenv;
-use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use std::env;
 use std::sync::Arc;
-use std::net::SocketAddr;
+use tokio::net::TcpListener; 
 
 mod db;
 mod controllers;
@@ -20,26 +17,25 @@ use crate::controllers::authors::app_routes;
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    // Setup the database connection
+
     let db_path = &env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    // Asynchronously create the DB connection and handle the Result
+
     let db_connection = db::DBConnection::new(&db_path).await.expect("Failed to create db connection");
 
-    // Create the service layer with the DB connection wrapped in an Arc
+    db_connection.create_author_table().await.expect("Failed to create author table");
+
+    let test_author = models::Author::new("John".to_string(), "Doe".to_string());
+    let inserted_author = db_connection.insert_new_author(&test_author).await.expect("Failed to insert new author");
+    println!("Inserted Author: {:?}", inserted_author);
+
     let author_service = Arc::new(services::AuthorService {
-        db: Arc::new(db_connection), // Ensure the connection is wrapped in an Arc correctly
+        db: Arc::new(db_connection), 
     });
 
-    // Setup the app's routes, passing the author service
     let app = app_routes(author_service);
 
-    // Define the address to serve on
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    println!("Listening on {}", addr);
+    let listener = TcpListener::bind("127.0.0.1:3000").await.expect("Failed to bind");
+    println!("Listening on {}", listener.local_addr().unwrap());
 
-    // Run the server
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    axum::serve(listener, app.into_make_service()).await.unwrap();
 }
