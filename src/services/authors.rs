@@ -1,5 +1,4 @@
-use crate::db::DBConnection;
-use crate::models::{Author, Authors};
+use crate::{db::DBConnection, models::{Author, Authors}};
 use std::sync::Arc;
 use anyhow::{Result, Error};
 
