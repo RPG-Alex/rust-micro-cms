@@ -68,11 +68,11 @@ impl DBConnection {
         Ok(Posts { posts })
     }
 
-    pub async fn update_post(&self, post_id: i32, post: &Post) -> Result<()> {
+    pub async fn update_post(&self, post: &Post) -> Result<()> {
         sqlx::query_as!(
             Post,
             "UPDATE posts SET title = $1, date = $2, body = $3, author_id = $4 WHERE id = $5",
-            post.title, post.date, post.body, post.author_id, post_id
+            post.title, post.date, post.body, post.author_id, post.id
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -110,7 +110,8 @@ impl DBConnection {
 
         Ok(())
     }
-
+    // This needs adjustment -> maybe redo data structure and use fetch post to evaluate 
+    // status (change to achive, not delete), then eval to either T/F for sql statement
     pub async fn soft_delete_post(&self, post_id: i32) -> Result<()> {
         sqlx::query!(
             "UPDATE posts SET deleted = TRUE WHERE id = $1",
