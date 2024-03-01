@@ -1,10 +1,11 @@
 use axum::{
-    routing::{delete, get, post}, Router, serve
+    Router,
+    routing::{get, post},
 };
+use std::sync::Arc;
+use tokio::net::TcpListener;
 use dotenv::dotenv;
 use std::env;
-use std::sync::Arc;
-use tokio::net::TcpListener; 
 
 mod db;
 mod controllers;
@@ -12,7 +13,6 @@ mod errors;
 mod models;
 mod services;
 mod utils;
-use crate::controllers::authors::app_routes;
 
 #[tokio::main]
 async fn main() {
@@ -32,7 +32,8 @@ async fn main() {
         db: Arc::new(db_connection), 
     });
 
-    let app = app_routes(author_service);
+    let app = Router::new()
+    .merge(controllers::authors::app_routes(author_service));
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.expect("Failed to bind");
     println!("Listening on {}", listener.local_addr().unwrap());
