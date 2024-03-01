@@ -7,7 +7,7 @@ pub struct Post {
     pub title: String,
     pub date: String, // stored in db as string
     pub body: String,
-    pub deleted: Option<bool>,
+    pub archived: Option<bool>,
     pub draft: Option<bool>,
     pub author_id: i64, 
 }
@@ -24,7 +24,7 @@ impl Post {
             title,
             date,
             body,
-            deleted: None,
+            archived: None,
             draft: None,
             author_id,
         }

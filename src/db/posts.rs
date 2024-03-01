@@ -10,7 +10,7 @@ impl DBConnection {
                 title TEXT NOT NULL,
                 date TEXT NOT NULL,
                 body TEXT NOT NULL,
-                deleted BOOLEAN NOT NULL DEFAULT FALSE,
+                archived BOOLEAN NOT NULL DEFAULT FALSE,
                 draft BOOLEAN NOT NULL DEFAULT TRUE,
                 author_id INTEGER NOT NULL,
                 FOREIGN KEY (author_id) REFERENCES author(id)
@@ -59,7 +59,7 @@ impl DBConnection {
     pub async fn fetch_all_posts_for_author(&self, author_id: i32) -> Result<Posts> {
         let posts = sqlx::query_as!(
             Post,
-            "SELECT * FROM posts WHERE author_id = $1 AND deleted = FALSE",
+            "SELECT * FROM posts WHERE author_id = $1 AND archived = FALSE",
             author_id
         )
         .fetch_all(&self.pool)
@@ -110,28 +110,26 @@ impl DBConnection {
 
         Ok(())
     }
-    // This needs adjustment -> maybe redo data structure and use fetch post to evaluate 
-    // status (change to achive, not delete), then eval to either T/F for sql statement
-    pub async fn soft_delete_post(&self, post_id: i32) -> Result<()> {
-        sqlx::query!(
-            "UPDATE posts SET deleted = TRUE WHERE id = $1",
+    pub async fn toggle_archive_post(&self, post_id: i32) -> Result<()> {
+        let current_status = sqlx::query!(
+            "SELECT archived FROM posts WHERE id = $1",
             post_id
+        )
+        .fetch_one(&self.pool)
+        .await?
+        .archived;
+        
+        let new_status = !current_status;
+        
+        sqlx::query!(
+            "UPDATE posts SET archived = $1 WHERE id = $2",
+            new_status, post_id
         )
         .execute(&self.pool)
         .await?;
-
+        
         Ok(())
     }
-
-    pub async fn restore_post(&self, post_id: i32) -> Result<()> {
-        sqlx::query!(
-            "UPDATE posts SET deleted = FALSE WHERE id = $1",
-            post_id
-        )
-        .execute(&self.pool)
-        .await?;
-
-        Ok(())
-    }
+    
 
 }
