@@ -1,12 +1,10 @@
-use std::sync::Arc;
 use chrono::{NaiveDate, Utc};
 use crate::{db::DBConnection, models::Post, models::Posts};
-use serde::{Deserialize, Serialize};
 use anyhow::{Result, Error};
 
 #[derive(Clone)]
 pub struct PostService {
-    pub db: Arc<DBConnection>,
+    pub db: DBConnection,
 }
 
 impl PostService {
@@ -30,5 +28,8 @@ impl PostService {
     }
     pub async fn post_draft(&self, post_id: i32) -> Result<()> {
         self.db.toggle_post_draft(post_id).await
+    }
+    pub async fn post_active(&self, post_id: i32) -> Result<()> {
+        self.db.toggle_post_active(post_id).await
     }
 }

@@ -3,11 +3,22 @@ use axum::{
 };
 use crate::services::PostService;
 use crate::models::{Post, Posts};
-use std::sync::Arc;
 use anyhow::{Result, Error}; 
 
-async fn create_post_handler(Extension(post_service): Extension<Arc<PostService>>,  Json(payload): Json<Post>) -> Result<Json<Post>, StatusCode> {
+async fn create_post_handler(Extension(post_service): Extension<PostService>, Json(payload): Json<Post>) -> Result<Json<Post>, StatusCode> {
     post_service.create_post(&payload).await
         .map(Json)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
+async fn get_all_posts_handler(Extension(post_service): Extension<PostService>) -> Result<Json<Posts>, StatusCode> {
+    post_service.get_all_posts().await
+        .map(Json)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
+pub async fn post_routes(post_service: PostService) -> Router {
+    Router::new()
+        .route("/posts", post(create_post_handler).get(get_all_posts_handler))
+        .layer(axum::extract::Extension(post_service))
 }

@@ -4,7 +4,7 @@ use anyhow::{Result, Error};
 
 #[derive(Clone)]
 pub struct AuthorService {
-    pub db: Arc<DBConnection>,
+    pub db: DBConnection,
 }
 
 impl AuthorService {

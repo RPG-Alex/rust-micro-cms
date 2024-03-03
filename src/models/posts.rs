@@ -1,7 +1,7 @@
 use serde::{Serialize, Deserialize};
 use chrono::NaiveDate;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Post {
     pub id: Option<i64>,
     pub title: String,
@@ -12,7 +12,7 @@ pub struct Post {
     pub author_id: i64, 
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Posts {
     pub posts: Vec<Post>,
 }
