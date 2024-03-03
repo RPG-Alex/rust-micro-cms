@@ -112,16 +112,16 @@ impl DBConnection {
     }
     pub async fn toggle_post_active(&self, post_id: i32) -> Result<()> {
         let current_status = sqlx::query!{
-            "SELECT deleted FROM posts WHERE id = $1",
+            "SELECT archived FROM posts WHERE id = $1",
             post_id
         }
         .fetch_one(&self.pool)
         .await?
-        .deleted;
+        .archived;
 
         let new_status = !current_status;
         sqlx::query!(
-            "UPDATE posts SET deleted = $1 WHERE id = $2",
+            "UPDATE posts SET archived = $1 WHERE id = $2",
             new_status, post_id
         )
         .execute(&self.pool)
