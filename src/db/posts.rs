@@ -43,13 +43,13 @@ impl DBConnection {
         Ok(Posts { posts })
     }
 
-    pub async fn fetch_post_by_id(&self, post_id: i32) -> Result<Option<Post>> {
+    pub async fn fetch_post_by_id(&self, post_id: i32) -> Result<Post> {
         let post = sqlx::query_as!(
             Post,
             "SELECT * FROM posts WHERE id = $1",
             post_id
         )
-        .fetch_optional(&self.pool)
+        .fetch_one(&self.pool)
         .await?;
 
         Ok(post)
@@ -68,16 +68,16 @@ impl DBConnection {
         Ok(Posts { posts })
     }
 
-    pub async fn update_post(&self, post: &Post) -> Result<()> {
-        sqlx::query_as!(
+    pub async fn update_post(&self, post: &Post) -> Result<Post> {
+        let updated_post = sqlx::query_as!(
             Post,
-            "UPDATE posts SET title = $1, date = $2, body = $3, author_id = $4 WHERE id = $5",
+            "UPDATE posts SET title = $1, date = $2, body = $3, author_id = $4 WHERE id = $5 RETURNING *",
             post.title, post.date, post.body, post.author_id, post.id
         )
-        .fetch_optional(&self.pool)
+        .fetch_one(&self.pool)
         .await?;
 
-        Ok(())
+        Ok(updated_post)
     }
 
     pub async fn delete_post(&self, post_id: i32) -> Result<()> {

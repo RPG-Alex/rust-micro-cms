@@ -14,13 +14,13 @@ impl PostService {
     pub async fn get_all_posts(&self) -> Result<Posts, Error> {
         self.db.fetch_all_posts().await
     }
-    pub async fn get_post_by_id(&self, post_id: i32) -> Result<Option<Post>> {
+    pub async fn get_post_by_id(&self, post_id: i32) -> Result<Post> {
         self.db.fetch_post_by_id(post_id).await
     }
     pub async fn get_all_posts_for_author(&self, author_id: i32) -> Result<Posts, Error> {
         self.db.fetch_all_posts_for_author(author_id).await
     }
-    pub async fn change_post(&self, post: &Post) -> Result<()> {
+    pub async fn change_post(&self, post: &Post) -> Result<Post> {
         self.db.update_post(post).await
     }
     pub async fn remove_post(&self, post_id: i32) -> Result<()> {
