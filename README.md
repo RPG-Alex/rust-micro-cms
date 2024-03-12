@@ -34,83 +34,59 @@ Originating as a project to deepen understanding of Rust, Rust Micro CMS has evo
 
 ## Roadmap:
 
-### Setup and Configuration
-- [x] **Database Management System**
-    - [x] Choose DBMS
-    - [x] Design database schema
-    - [x] Set up the database
-    - [x] Create sql file
-    - [x] Implement CRUD functionality
-- [x] **Application Configuration**
-    - [x] Use dotenv for settings
+### Milestone 1: Foundation and Setup
+- **Goals:** Establish the project's basic structure, choose a DBMS, and set up the database.
+- **Tasks:**
+  - [x] Choose SQLite as the Database Management System (DBMS).
+  - [x] Design and implement the database schema.
+  - [x] Create an SQL file for the database setup.
+  - [x] Implement CRUD functionality for basic data management.
+  - [x] Configure application settings using dotenv for environment variables.
+  
+### Milestone 2: Server-Side Rendering and Basic UI
+- **Goals:** Implement server-side rendering for HTML pages and allow for basic user-defined CSS.
+- **Tasks:**
+  - [ ] Develop server-side rendering capabilities with Rust for generating HTML pages.
+  - [ ] Implement user-defined CSS:
+    - [ ] Establish global styles.
+    - [ ] Enable post-specific styles.
+    
+### Milestone 3: Backend Infrastructure
+- **Goals:** Develop the backend using Axum, set up security measures, and ensure API readiness.
+- **Tasks:**
+  - [ ] Implement request handling using Axum framework.
+  - [ ] Utilize JSON for API requests.
+  - [ ] Enhance security with CORS, HTTPS, and rate limiting.
 
-### Server-side Rendering
-- [ ] **Server-side Rendering with Rust**
-    - [ ] Implement for HTML pages
-    - [ ] User-defined CSS
-        - [ ] Global styles
-        - [ ] Post-specific styles
+### Milestone 4: Core CMS Features
+- **Goals:** Implement essential CMS features, focusing on user authentication and core CMS functionalities.
+- **Tasks:**
+  - [ ] Develop a secure login system with password recovery and email verification.
+  - [ ] Implement user roles and permissions.
+  - [ ] Add multilingual support and a language toggle feature.
+  - [ ] Create a search functionality and keyword bank for content discovery.
 
-### Backend Development
-- [ ] **Rust using Axum**
-    - [ ] Request handling
-    - [ ] Use JSON for requests
-- [ ] **Security Measures**
-    - [ ] CORS
-    - [ ] HTTPS
-    - [ ] Rate limiting
+### Milestone 5: API Development and Integration
+- **Goals:** Finalize the REST API for content management and user interactions.
+- **Tasks:**
+  - [x] Set up database connections and define tables for posts and users.
+  - [ ] Implement Post endpoints for CRUD operations, ensuring comprehensive coverage for content management.
+  - [ ] Develop User Authentication API for registration and login processes.
+  - [ ] Standardize error handling for consistent API responses.
 
-### CMS Core Functionality
-- [ ] **User Authentication**
-    - [ ] Secure login system
-    - [ ] Password recovery
-    - [ ] email verification
-- [ ] **CMS Functionality**
-    - [ ] User roles
-    - [ ] Language support 
-    - [ ] Language toggle
-    - [ ] Search functionality
-    - [ ] Keyword bank
+### Milestone 6: Documentation, Testing, and Quality Assurance
+- **Goals:** Ensure the project is well-documented, thoroughly tested, and ready for deployment.
+- **Tasks:**
+  - [ ] Generate and maintain comprehensive API documentation.
+  - [ ] Conduct extensive testing, including API unit tests for posts and authors, database unit tests, and rendering tests for UI components.
 
-### REST API Development
-- [x] **Database Setup**
-    - [x] Connection
-    - [x] **Tables** 
-        - [x] Posts 
-        - [x] Users
-- [ ] **Post Endpoints**
-    - [ ] CRUD operations for posts
-            - [ ] Create routes and handlers for the following APIs:
-            - [ ] Fetch all posts (HTTP GET /api/posts).
-            - [ ] Fetch a specific post by ID (HTTP GET /api/posts/{id}).
-            - [ ] Create a new post (HTTP POST /api/posts).
-            - [ ] Update a specific post (HTTP PUT /api/posts/{id}).
-            - [ ] Delete a specific post (HTTP DELETE /api/posts/{id}).
-            - [ ] Fetch all posts for an author id(HTTP GET /api/posts/author/{id}).
-- [ ] **User Authentication API**
-    - [ ] Registration and login
-- [ ] **Error Handling**
-    - [ ] Consistent API responses
+### Milestone 7: Monitoring, Security, and Community Engagement
+- **Goals:** Implement logging and monitoring, finalize security measures, and foster a community around the project.
+- **Tasks:**
+  - [ ] Set up application monitoring and logging.
+  - [ ] Ensure the project adheres to best practices in security.
+  - [ ] Establish a platform for community feedback, contributions, and support.
 
-### Testing and Documentation
-- [ ] **API Documentation**
-    - [ ] Generate and maintain
-- [ ] **Testing**
-    - [ ] **API unit tests**
-        - [ ] Authors
-        - [ ] Posts
-    - [ ] **Database unit tests**
-        - [ ] Connection
-        - [ ] Authors
-        - [ ] Posts
-    - [ ] **Rendering tests** 
-        - [ ] Views
-        - [ ] Styles
-        - [ ] Forms
-
-### Monitoring and Security
-- [ ] **Logging**
-    - [ ] Setup for application monitoring
 
 ## Contributing
 
