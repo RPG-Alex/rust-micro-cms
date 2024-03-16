@@ -14,6 +14,7 @@ mod errors;
 mod models;
 mod services;
 mod utils;
+mod ssr;
 use crate::controllers::post_routes;
 use crate::controllers::author_routes;
 
@@ -45,6 +46,7 @@ async fn main() {
     };
 
     let app = Router::new()
+
         .merge(author_routes(author_service).await)
         .merge(post_routes(post_service).await);
 
