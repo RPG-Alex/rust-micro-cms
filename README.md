@@ -3,7 +3,9 @@
 <div align="center">
 <img src="images/logo.png" alt="Logo" width="80" height="80">
 </div>
-
+<div align="center">
+<img src="images/Rust-Micro-CMS-Structure.png" alt="Project Structure">
+</div>
 <details>
 	<summary>Contents</summary>
 	<ol>
