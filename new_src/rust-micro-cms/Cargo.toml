@@ -5,3 +5,4 @@ edition = "2021"
 authors = ["Alex Blood"]
 
 [dependencies]
+chrono = "0.4.35"
