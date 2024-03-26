@@ -5,4 +5,10 @@ edition = "2021"
 authors = ["Alex Blood"]
 
 [dependencies]
+axum = "0.7.5"
 chrono = "0.4.35"
+serde = "1.0.197"
+serde_json = "1.0.114"
+simple-log = "1.6.0"
+tokio = { version = "1.36.0", features = ["full"] }
+

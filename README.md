@@ -81,6 +81,7 @@ Originating as a project to deepen understanding of Rust, Rust Micro CMS has evo
 - **Tasks:**
   - [ ] Generate and maintain comprehensive API documentation.
   - [ ] Conduct extensive testing, including API unit tests for posts and authors, database unit tests, and rendering tests for UI components.
+  - [ ] Implement a logging system using tools like simple-log that can output to a log file
 
 ### Milestone 7: Monitoring, Security, and Community Engagement
 - **Goals:** Implement logging and monitoring, finalize security measures, and foster a community around the project.

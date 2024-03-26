@@ -7,3 +7,14 @@ frontend/dist/
 mydatabase.db
 Cargo.lock
 **/Cargo.lock
+**/target/
+Cargo.lock
+.env
+.idea/
+.vscode/
+*.swp
+*~
+**/log/
+*.log
+*.db
+/tmp
