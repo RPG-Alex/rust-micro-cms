@@ -1,8 +1,8 @@
-use crate::models::{Author, Authors};
+use crate::models::{NewAuthor,Author, UpdateAuthor, Authors};
 use anyhow::Result;
+use sqlx::sqlite::SqlitePool;
 
-
-pub async fn create_author_table(pool: &PgPool) -> Result<()> {
+pub async fn create_author_table(pool: &SqlitePool) -> Result<()> {
     sqlx::query!(
         "CREATE TABLE IF NOT EXISTS author (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,84 +11,84 @@ pub async fn create_author_table(pool: &PgPool) -> Result<()> {
             deleted BOOLEAN DEFAULT FALSE
         )"
     )
-    .execute(pool.pool)
+    .execute(pool)
     .await?;
     Ok(())
 }
 
-pub async fn insert_new_author(pool: &PgPool, author: &Author) -> Result<Author> {
+pub async fn insert_new_author(pool: &SqlitePool, author: &NewAuthor) -> Result<Author> {
     let inserted_author = sqlx::query_as!(
-        Author,
+        NewAuthor,
         "INSERT INTO author (first_name,last_name) VALUES (?,?) RETURNING *",
         author.first_name, author.last_name
     )
-    .fetch_one(pool.pool) 
+    .fetch_one(pool) 
     .await?;
 
     Ok(inserted_author)
 }
 
-pub async fn fetch_all_authors(pool: &PgPool) -> Result<Authors> {
+pub async fn fetch_all_authors(pool: &SqlitePool) -> Result<Authors> {
     let authors = sqlx::query_as!(
         Author,
         "SELECT * FROM author WHERE deleted = FALSE"
     )
-    .fetch_all(pool.pool)
+    .fetch_all(pool)
     .await?;
     
     Ok(Authors{authors})
 }
 
-pub async fn fetch_author_by_id(pool: &PgPool, author_id: i32) -> Result<Option<Author>> {
+pub async fn fetch_author_by_id(pool: &SqlitePool, author_id: i32) -> Result<Option<Author>> {
     let author = sqlx::query_as!(
         Author,
         "SELECT * FROM author WHERE id = ? AND deleted = false",
         author_id
     )
-    .fetch_optional(pool.pool)
+    .fetch_optional(pool)
     .await?;
 
     Ok(author)
 }
 
-pub async fn update_author(pool: &PgPool, author_id: i32, new_author_first_name: &str, new_author_last_name: &str) -> Result<()> {
+pub async fn update_author(pool: &SqlitePool, new_author: UpdateAuthor) -> Result<()> {
     sqlx::query_as!(
-        Author,
+        UpdateAuthor,
         "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?",
-        new_author_first_name, new_author_last_name, author_id
+        new_author.first_name, new_author.last_name, new_author.id
     )
-    .fetch_optional(pool.pool)
+    .fetch_optional(pool)
     .await?;
     Ok(())
 }
 
 //could cause conflict due to key restraints with posts
-pub async fn delete_author(pool: &PgPool, author_id: i32) -> Result<()> {
+pub async fn delete_author(pool: &SqlitePool, author_id: i32) -> Result<()> {
     sqlx::query!(
         "DELETE FROM author WHERE id = ?",
         author_id
     )
-    .execute(pool.pool)
+    .execute(pool)
     .await?;
     Ok(())
 }
 
-pub async fn soft_delete_author(pool: &PgPool, author_id: i32) -> Result<()> {
+pub async fn soft_delete_author(pool: &SqlitePool, author_id: i32) -> Result<()> {
     sqlx::query!(
         "UPDATE author SET deleted = TRUE WHERE id = ?",
         author_id
     )
-    .execute(pool.pool)
+    .execute(pool)
     .await?;
     Ok(())
 }
 
-pub async fn reactivate_author(pool: &PgPool, author_id: i32) -> Result<()> {
+pub async fn reactivate_author(pool: &SqlitePool, author_id: i32) -> Result<()> {
     sqlx::query!(
         "UPDATE author SET deleted = FALSE WHERE id = ?",
         author_id
     )
-    .execute(pool.pool)
+    .execute(pool)
     .await?;
     Ok(())
 }

@@ -1,5 +1,7 @@
 use axum::*;
 
+mod database;
+mod models;
 
 #[macro_use]
 extern crate simple_log;
