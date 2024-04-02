@@ -5,12 +5,12 @@ edition = "2021"
 authors = ["Alex Blood"]
 
 [dependencies]
-anyhow = "1.0.81"
-axum = "0.7.5"
-chrono = "0.4.35"
-serde = "1.0.197"
-serde_json = "1.0.114"
-simple-log = "1.6.0"
-sqlx = { version = "0.7.4", features = ["runtime-tokio", "sqlite"] }
-tokio = { version = "1.36.0", features = ["full"] }
+anyhow = { workspace = true }
+axum = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+simple-log = { workspace = true }
+sqlx = { workspace = true, features = ["runtime-tokio", "sqlite"] }
+tokio = { workspace = true, features = ["full"] }
 
