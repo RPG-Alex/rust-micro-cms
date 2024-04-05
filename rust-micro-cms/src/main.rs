@@ -6,8 +6,11 @@ mod models;
 #[macro_use]
 extern crate simple_log;
 
+use dotenv::dotenv;
+
 use simple_log::LogConfigBuilder;
-use std::error::Error;
+use sqlx::SqlitePool;
+use std::{env, error::Error};
 
 #[tokio::main]
 async fn main() {
@@ -23,5 +26,11 @@ async fn main() {
 
     simple_log::new(config);
 
+
+
+    dotenv().ok();
+    let db_path = &env::var("DATABASE_URL").expect("DATABASE_URL Must be set in .env file");
+    let pool = SqlitePool::connect(&db_path).await;
+    database::create_author_table(&pool.unwrap());
     info!("Rust Micro CMS started");
 }

@@ -8,9 +8,10 @@ authors = ["Alex Blood"]
 anyhow = { workspace = true }
 axum = { workspace = true }
 chrono = { workspace = true }
+dotenv = "0.15.0"
 serde = { workspace = true }
 serde_json = { workspace = true }
 simple-log = { workspace = true }
-sqlx = { workspace = true, features = ["runtime-tokio", "sqlite"] }
+sqlx = { workspace = true, features = ["runtime-tokio-native-tls", "sqlite"] }
 tokio = { workspace = true, features = ["full"] }
 
