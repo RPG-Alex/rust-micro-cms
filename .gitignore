@@ -9,7 +9,6 @@ Cargo.lock
 **/Cargo.lock
 **/target/
 Cargo.lock
-.env
 .idea/
 .vscode/
 *.swp
@@ -18,3 +17,4 @@ Cargo.lock
 *.log
 *.db
 /tmp
+migrations/

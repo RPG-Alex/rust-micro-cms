@@ -125,6 +125,19 @@ To get started with Rust Micro CMS, you'll need to set up your development envir
 
 4. **Database Setup:** Rust Micro CMS will automatically handle database migrations and setup when you run the application. However, make sure SQLite3 is correctly installed and accessible from your command line.
 
+  ##### SQL Configuration for Development
+  - To have sqlx setup the databse for compile time checks please make sure you ahve sqlx installed:
+  ```bash
+  cargo install sqlx
+  ```
+  Then run: 
+  ```bash
+  sqlx database create
+  ```
+  ```bash
+  sqlx migrate add <database name>
+  ```
+
 5. **Build and Run:** Compile and run the Rust Micro CMS with the following Cargo command:
    ```bash
    cargo run
