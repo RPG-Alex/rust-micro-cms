@@ -14,7 +14,6 @@ use std::{env, error::Error};
 
 #[tokio::main]
 async fn main() {
-    
     let config = LogConfigBuilder::builder()
         .path("./log/rust_micro_cms.log")
         .size(1 * 1024 * 1024) // 1 MB
@@ -25,8 +24,6 @@ async fn main() {
         .build();
 
     simple_log::new(config);
-
-
 
     dotenv().ok();
     let db_path = &env::var("DATABASE_URL").expect("DATABASE_URL Must be set in .env file");

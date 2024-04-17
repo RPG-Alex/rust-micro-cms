@@ -1,7 +1,6 @@
-use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Post {
     pub id: i64,
     pub title: String,
@@ -10,6 +9,7 @@ pub struct Post {
     pub archived: bool,
     pub draft: bool,
     pub author_id: i64,
+    pub author: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -21,7 +21,6 @@ pub struct NewPost {
     pub author_id: i64,
 }
 
-// Need to determine which values should be optional for update
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UpdatePost {
     pub id: i64,
@@ -32,3 +31,4 @@ pub struct UpdatePost {
     pub draft: bool,
     pub author_id: i64,
 }
+
