@@ -1,4 +1,4 @@
-use crate::models::{NewPost, Post, UpdatePost};
+use crate::models::{NewPost, Post, Posts, UpdatePost};
 use anyhow::Result;
 use sqlx::sqlite::SqlitePool;
 
