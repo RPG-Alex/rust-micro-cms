@@ -17,13 +17,11 @@ pub async fn create_author_table(pool: &SqlitePool) -> Result<()> {
 }
 
 pub async fn insert_new_author(pool: &SqlitePool, author: &NewAuthor) -> Result<Author> {
-    let inserted_author = sqlx::query_as!(
-        NewAuthor,
+    let inserted_author = sqlx::query!(
         "INSERT INTO author (first_name,last_name) VALUES (?,?) RETURNING *",
         author.first_name,
         author.last_name
     )
-    .fetch_one(pool)
     .await?;
 
     Ok(inserted_author)

@@ -52,7 +52,10 @@ To set up the Rust Micro CMS Backend, follow these steps to prepare your environ
    ```plaintext
    DATABASE_URL=sqlite:./path/to/your/database.db
    ```
-
+      **NOTE:** You may not be able to use a releative path for development depending on configuration. Consider using an absolute path if sqlx shows an error:
+      ```rust
+      error: error returned from database: (code: 14) unable to open database file
+      ```
 3. **Database Initialization:**
    Initialize the database and run migrations.
    ```bash
