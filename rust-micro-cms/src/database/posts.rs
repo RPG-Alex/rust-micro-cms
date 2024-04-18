@@ -63,15 +63,29 @@ pub async fn fetch_all_posts_for_author(pool: &SqlitePool, author_id: i32) -> Re
 }
 
 pub async fn update_post(pool: &SqlitePool, post: &UpdatePost) -> Result<Post> {
-    let updated_post = sqlx::query_as!(
-        UpdatePost,
-        "UPDATE posts SET title = $1, date = $2, body = $3, author_id = $4 WHERE id = $5 RETURNING *",
-        post.title, post.date, post.body, post.author_id, post.id
+    let updated_post = sqlx::query!(
+        "UPDATE posts SET title = $1, date = $2, body = $3, archived = $4, draft = $5, author_id = $6 WHERE id = $7 RETURNING *",
+        post.title, 
+        post.date, 
+        post.body, 
+        post.archived, 
+        post.draft,
+        post.author_id, 
+        post.id
     )
     .fetch_one(pool)
     .await?;
+    
 
-    Ok(updated_post)
+    Ok(Post {
+        id: updated_post.id.expect("Could not find id"),
+        title: updated_post.title,
+        date: updated_post.date,
+        body: updated_post.body,
+        archived: updated_post.archived,
+        draft: updated_post.draft,
+        author_id:  updated_post.author_id,
+    })
 }
 
 pub async fn delete_post(pool: &SqlitePool, post_id: i32) -> Result<()> {

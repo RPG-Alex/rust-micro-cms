@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT archived FROM posts WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "name": "archived",
+        "ordinal": 0,
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "04d81c508e0981c2886e2c3eb5d383a4f405284731a3467e05fbeab9a1d42ada"
+}

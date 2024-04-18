@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "cc05f926ab25ef5045ec5f180373debdd0e894c22b603541f9b62f35de0b24d8"
+}

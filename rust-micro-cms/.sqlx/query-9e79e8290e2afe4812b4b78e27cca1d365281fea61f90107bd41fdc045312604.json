@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "CREATE TABLE IF NOT EXISTS posts (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            title TEXT NOT NULL,\n            date TEXT NOT NULL,\n            body TEXT NOT NULL,\n            archived BOOLEAN NOT NULL DEFAULT FALSE,\n            draft BOOLEAN NOT NULL DEFAULT TRUE,\n            author_id INTEGER NOT NULL,\n            FOREIGN KEY (author_id) REFERENCES author(id)\n        )",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "9e79e8290e2afe4812b4b78e27cca1d365281fea61f90107bd41fdc045312604"
+}

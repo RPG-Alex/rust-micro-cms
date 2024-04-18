@@ -1,0 +1,56 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE posts SET title = $1, date = $2, body = $3, archived = $4, draft = $5, author_id = $6 WHERE id = $7 RETURNING *",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Int64"
+      },
+      {
+        "name": "title",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "date",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "body",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "archived",
+        "ordinal": 4,
+        "type_info": "Bool"
+      },
+      {
+        "name": "draft",
+        "ordinal": 5,
+        "type_info": "Bool"
+      },
+      {
+        "name": "author_id",
+        "ordinal": 6,
+        "type_info": "Int64"
+      }
+    ],
+    "parameters": {
+      "Right": 7
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "397d426e1cdb6a142af7d3131e0457f74df6b35fb16de2a42899092adc0cb02a"
+}
