@@ -62,9 +62,9 @@ pub async fn fetch_all_posts_for_author(pool: &SqlitePool, author_id: i32) -> Re
     Ok(Posts { posts })
 }
 
-pub async fn update_post(pool: &SqlitePool, post: &Post) -> Result<Post> {
+pub async fn update_post(pool: &SqlitePool, post: &UpdatePost) -> Result<Post> {
     let updated_post = sqlx::query_as!(
-        Post,
+        UpdatePost,
         "UPDATE posts SET title = $1, date = $2, body = $3, author_id = $4 WHERE id = $5 RETURNING *",
         post.title, post.date, post.body, post.author_id, post.id
     )

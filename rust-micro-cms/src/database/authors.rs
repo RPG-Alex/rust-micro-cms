@@ -22,15 +22,23 @@ pub async fn insert_new_author(pool: &SqlitePool, author: &NewAuthor) -> Result<
         author.first_name,
         author.last_name
     )
+    .fetch_one(pool)
     .await?;
 
-    Ok(inserted_author)
+    Ok( Author {
+        id: inserted_author.id,
+        first_name: inserted_author.first_name,
+        last_name: inserted_author.last_name,
+        deleted: Some(inserted_author.deleted),
+    })
 }
 
 pub async fn fetch_all_authors(pool: &SqlitePool) -> Result<Authors> {
-    let authors = sqlx::query_as!(Author, "SELECT * FROM author WHERE deleted = FALSE")
-        .fetch_all(pool)
-        .await?;
+    let authors = sqlx::query_as!(
+        Author, "SELECT * FROM author WHERE deleted = FALSE"
+    )
+    .fetch_all(pool)
+    .await?;
 
     Ok(Authors { authors })
 }

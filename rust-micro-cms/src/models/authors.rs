@@ -11,7 +11,7 @@ pub struct Author {
     pub id: i64,
     pub first_name: String,
     pub last_name: String,
-    pub deleted: bool,
+    pub deleted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
