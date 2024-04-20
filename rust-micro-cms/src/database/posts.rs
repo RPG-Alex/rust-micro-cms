@@ -65,17 +65,16 @@ pub async fn fetch_all_posts_for_author(pool: &SqlitePool, author_id: i32) -> Re
 pub async fn update_post(pool: &SqlitePool, post: &UpdatePost) -> Result<Post> {
     let updated_post = sqlx::query!(
         "UPDATE posts SET title = $1, date = $2, body = $3, archived = $4, draft = $5, author_id = $6 WHERE id = $7 RETURNING *",
-        post.title, 
-        post.date, 
-        post.body, 
-        post.archived, 
+        post.title,
+        post.date,
+        post.body,
+        post.archived,
         post.draft,
-        post.author_id, 
+        post.author_id,
         post.id
     )
     .fetch_one(pool)
     .await?;
-    
 
     Ok(Post {
         id: updated_post.id.expect("Could not find id"),
@@ -84,7 +83,7 @@ pub async fn update_post(pool: &SqlitePool, post: &UpdatePost) -> Result<Post> {
         body: updated_post.body,
         archived: updated_post.archived,
         draft: updated_post.draft,
-        author_id:  updated_post.author_id,
+        author_id: updated_post.author_id,
     })
 }
 

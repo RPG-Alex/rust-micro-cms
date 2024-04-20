@@ -34,6 +34,5 @@ pub struct UpdatePost {
 }
 
 pub struct Posts {
-    pub posts: Vec<Post>
+    pub posts: Vec<Post>,
 }
-

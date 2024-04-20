@@ -60,6 +60,7 @@ To set up the Rust Micro CMS Backend, follow these steps to prepare your environ
    Initialize the database and run migrations.
    ```bash
    sqlx database create
+   sqlx migrate add <migration name - usually create_initial_schema>
    sqlx migrate run
    ```
 
