@@ -35,7 +35,8 @@ async fn main() {
     let pool = SqlitePool::connect(&db_path).await;
 
     info!("Rust Micro CMS started");
-    let app = Router::new();
+    let app = Router::new()
+        .route("/", get(StatusCode::OK.with_body("under construction")));
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.expect("Failed to bind");
     println!("Listening on {}", listener.local_addr().unwrap());
