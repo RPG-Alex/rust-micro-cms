@@ -1,8 +1,17 @@
 use axum::{
-    extract::Extension,
-    http::StatusCode,
-    routing::{delete, get, post, put},
-    Json, Router,
+    extract::Extension, handler::{Handler, HandlerWithoutStateExt}, 
+    http::{
+        header,
+        StatusCode
+    }, 
+    routing::{
+        delete, 
+        get, 
+        post, 
+        put
+    }, 
+    Json, 
+    Router
 };
 
 mod database;
@@ -36,7 +45,14 @@ async fn main() {
 
     info!("Rust Micro CMS started");
     let app = Router::new()
-        .route("/", get(StatusCode::OK.with_body("under construction")));
+        .route("/", get(
+            //tmp route
+            (
+                StatusCode::OK,
+                [(header::CONTENT_TYPE, "text/plain")],
+                "Under Construction",
+        )
+        ));
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.expect("Failed to bind");
     println!("Listening on {}", listener.local_addr().unwrap());
