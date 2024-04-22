@@ -19,7 +19,7 @@ pub async fn create_posts_table(pool: &SqlitePool) -> Result<()> {
     .await?;
     Ok(())
 }
-pub async fn insert_new_post(pool: &SqlitePool, post: &Post) -> Result<Post> {
+pub async fn insert_new_post(pool: &SqlitePool, post: &NewPost) -> Result<Post> {
     let inserted_post = sqlx::query_as!(
         Post,
         "INSERT INTO posts (title, date, body, author_id) VALUES (?, ?, ?, ?) RETURNING *",

@@ -33,6 +33,7 @@ pub struct UpdatePost {
     pub author_id: i64,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Posts {
     pub posts: Vec<Post>,
 }

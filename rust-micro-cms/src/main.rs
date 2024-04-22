@@ -39,7 +39,7 @@ async fn main() {
 
     info!("Rust Micro CMS started");
     let app = Router::new()
-        //.route("/authors", get(handlers::authors::get_authors).post(handlers::authors::add_author))
+        .route("/posts", get(handlers::posts::get_all_posts))
         .route("/authors/:id", get(handlers::authors::get_author))
         .layer(Extension(pool));
     let listener = TcpListener::bind("127.0.0.1:3000")
