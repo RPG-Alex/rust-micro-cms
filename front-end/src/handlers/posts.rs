@@ -31,4 +31,3 @@ pub struct UpdatePost {
     pub draft: bool,
     pub author_id: i64,
 }
-

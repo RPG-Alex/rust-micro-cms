@@ -1,6 +1,6 @@
 use crate::handlers::{posts::*, site_info::SiteInfo, use_state::PostComponent};
-use yew::prelude::*;
 use web_sys::window;
+use yew::prelude::*;
 
 #[function_component(App)]
 pub fn app() -> Html {
@@ -8,12 +8,15 @@ pub fn app() -> Html {
         site_name: "Site Name Not Set".to_string(),
     };
 
-    use_effect_with_deps(move |site_info| {
-        let document = window().unwrap().document().unwrap();
-        document.set_title(&site_info.site_name);
+    use_effect_with_deps(
+        move |site_info| {
+            let document = window().unwrap().document().unwrap();
+            document.set_title(&site_info.site_name);
 
-        || ()
-    }, site_info.clone()); 
+            || ()
+        },
+        site_info.clone(),
+    );
 
     let sample_post = Post {
         id: 0,
@@ -49,8 +52,6 @@ pub fn app() -> Html {
             author: "Another Sample Author".to_string(),
         },
     ];
-
-
 
     html! {
         <>
