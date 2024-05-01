@@ -16,3 +16,4 @@ reqwest = { version = "0.12.4", features = ["json"] }
 serde = { workspace = true, features = ["derive"] }
 web-sys = "0.3.69"
 yew = { version="0.20", features=["csr"] }
+yew-router = { git = "https://github.com/yewstack/yew.git", package = "yew-router" }
