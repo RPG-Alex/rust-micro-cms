@@ -1,5 +1,8 @@
 mod app;
-mod handlers;
+//mod handlers;
+mod models;
+mod views;
+
 
 use app::App;
 
