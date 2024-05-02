@@ -18,7 +18,6 @@
 				<li><a href="#goals">Goals</a></li>
 			</ul>
 		</li>
-		<li><a href="#roadmap">Roadmap</a></li>
 		<li><a href="#contributing">Contributing</a></li>
 	</ol>
 </details>
@@ -33,62 +32,6 @@ Currently under active development, Rust Micro CMS is continuously evolving, wit
 ### Goals
 
 Originating as a project to deepen understanding of Rust, Rust Micro CMS has evolved with a focused mission: to provide a streamlined content management solution that leverages Rust's renowned performance and reliability. The current goal is to deliver a CMS with a minimalist footprint, ensuring swift, efficient operations while simplifying the complexities typically associated with content management systems. Rust Micro CMS is engineered to offer an uncomplicated yet robust platform, minimizing setup and operational overhead, and making it an ideal choice for projects where speed, security, and simplicity are paramount. Active development and enhancements aim to enrich its features, catering to the growing needs of its users while maintaining its core principle of minimalism.
-
-## Roadmap:
-
-### Milestone 1: Foundation and Setup
-- **Goals:** Establish the project's basic structure, choose a DBMS, and set up the database.
-- **Tasks:**
-  - [x] Choose SQLite as the Database Management System (DBMS).
-  - [x] Design and implement the database schema.
-  - [x] Create an SQL file for the database setup.
-  - [x] Implement CRUD functionality for basic data management.
-  - [x] Configure application settings using dotenv for environment variables.
-  
-### Milestone 2: Server-Side Rendering and Basic UI
-- **Goals:** Implement server-side rendering for HTML pages and allow for basic user-defined CSS.
-- **Tasks:**
-  - [ ] Develop server-side rendering capabilities with Rust for generating HTML pages.
-  - [ ] Implement user-defined CSS:
-    - [ ] Establish global styles.
-    - [ ] Enable post-specific styles.
-    
-### Milestone 3: Backend Infrastructure
-- **Goals:** Develop the backend using Axum, set up security measures, and ensure API readiness.
-- **Tasks:**
-  - [ ] Implement request handling using Axum framework.
-  - [ ] Utilize JSON for API requests.
-  - [ ] Enhance security with CORS, HTTPS, and rate limiting.
-
-### Milestone 4: Core CMS Features
-- **Goals:** Implement essential CMS features, focusing on user authentication and core CMS functionalities.
-- **Tasks:**
-  - [ ] Develop a secure login system with password recovery and email verification.
-  - [ ] Implement user roles and permissions.
-  - [ ] Add multilingual support and a language toggle feature.
-  - [ ] Create a search functionality and keyword bank for content discovery.
-
-### Milestone 5: API Development and Integration
-- **Goals:** Finalize the REST API for content management and user interactions.
-- **Tasks:**
-  - [x] Set up database connections and define tables for posts and users.
-  - [ ] Implement Post endpoints for CRUD operations, ensuring comprehensive coverage for content management.
-  - [ ] Develop User Authentication API for registration and login processes.
-  - [ ] Standardize error handling for consistent API responses.
-
-### Milestone 6: Documentation, Testing, and Quality Assurance
-- **Goals:** Ensure the project is well-documented, thoroughly tested, and ready for deployment.
-- **Tasks:**
-  - [ ] Generate and maintain comprehensive API documentation.
-  - [ ] Conduct extensive testing, including API unit tests for posts and authors, database unit tests, and rendering tests for UI components.
-  - [ ] Implement a logging system using tools like simple-log that can output to a log file
-
-### Milestone 7: Monitoring, Security, and Community Engagement
-- **Goals:** Implement logging and monitoring, finalize security measures, and foster a community around the project.
-- **Tasks:**
-  - [ ] Set up application monitoring and logging.
-  - [ ] Ensure the project adheres to best practices in security.
-  - [ ] Establish a platform for community feedback, contributions, and support.
 
 
 ## Contributing
