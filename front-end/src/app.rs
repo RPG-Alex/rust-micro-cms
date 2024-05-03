@@ -1,9 +1,12 @@
-use crate::models::posts::Post;
+use crate::models::{
+    posts::Post,
+    styling::Style,
+};
 use yew::prelude::*;
-use yew::functional::*;
 use yew_router::prelude::*;
 use crate::views::{
     nav_bar::NavBar,
+    styling::StyleInjector,
     posts::{
         all_posts::PostList,
         recent_posts::RecentPosts,
@@ -24,12 +27,17 @@ enum Route {
 
 #[function_component(App)]
 pub fn app() -> Html {
+    let default_style = Style::default();
+
     html! {
         <div>
+        <title>{ "Micro CMS!" }</title>
+        <StyleInjector style={default_style} />
+        <NavBar />
             <BrowserRouter>
-                <title>{ "Micro CMS!" }</title>
-                <NavBar />
-                <Switch<Route> render={switch} />
+                <div class="content">
+                    <Switch<Route> render={switch} />
+                </div>
             </BrowserRouter>
         </div>
     }
