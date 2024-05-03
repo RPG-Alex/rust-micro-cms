@@ -1,5 +1,6 @@
 use crate::models::posts::Post;
 use yew::prelude::*;
+use yew::functional::*;
 use yew_router::prelude::*;
 use crate::views::{
     nav_bar::NavBar,
@@ -9,21 +10,33 @@ use crate::views::{
     }
 };
 
+
+#[derive(Clone, Debug, Routable, PartialEq)]
+enum Route {
+    #[at("/")]
+    Home,
+    #[at("/all_blog_posts")]
+    AllPosts,
+    #[not_found]
+    #[at("/404")]
+    NotFound,
+}
+
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
-        <>
-            <title>{ "Micro CMS!" }</title>
-            <NavBar />
+        <div>
             <BrowserRouter>
-                <Switch<Route> render={Switch::render(switch)} />
+                <title>{ "Micro CMS!" }</title>
+                <NavBar />
+                <Switch<Route> render={switch} />
             </BrowserRouter>
-        </>
+        </div>
     }
 } 
 
-fn switch(routes: &Route) -> Html {
-        // Example posts data
+fn switch(routes: Route) -> Html {
+        // Example posts data 
         let example_posts = vec![
             Post {
                 id: 1,
@@ -145,16 +158,5 @@ fn switch(routes: &Route) -> Html {
     }
 }
 
-
-#[derive(Clone, Routable, PartialEq)]
-enum Route {
-    #[at("/")]
-    Home,
-    #[at("/all_blog_posts")]
-    AllPosts,
-    #[not_found]
-    #[at("/404")]
-    NotFound,
-}
 
  
