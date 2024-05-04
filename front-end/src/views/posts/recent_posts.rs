@@ -1,14 +1,15 @@
-use yew::prelude::*;
-use serde::{Deserialize, Serialize};
 use crate::models::posts::Post;
-use chrono::{NaiveDate, Local, Duration};
+use chrono::{Duration, Local, NaiveDate};
+use yew::prelude::*;
 
 #[function_component(RecentPosts)]
 pub fn recent_posts(props: &RecentPostsProps) -> Html {
-    let now = Local::today().naive_local();
+    let now = Local::now().date_naive();
     let three_months_ago = now - Duration::days(90);
 
-    let recent_posts: Vec<&Post> = props.posts.iter()
+    let recent_posts: Vec<&Post> = props
+        .posts
+        .iter()
         .filter(|post| {
             NaiveDate::parse_from_str(&post.date, "%Y-%m-%d")
                 .map(|post_date| post_date > three_months_ago)

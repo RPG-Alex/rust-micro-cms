@@ -2,7 +2,7 @@ use yew::prelude::*;
 
 #[function_component(NavBar)]
 pub fn nav_bar() -> Html {
-    html!{
+    html! {
         <nav>
             <div class="content">
                 <div class="img-container">

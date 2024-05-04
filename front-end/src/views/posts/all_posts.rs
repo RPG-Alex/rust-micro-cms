@@ -1,6 +1,5 @@
-use yew::prelude::*;
-use serde::{Deserialize, Serialize};
 use crate::models::posts::Post;
+use yew::prelude::*;
 
 #[function_component(PostList)]
 pub fn post_list(props: &PostListProps) -> Html {
@@ -23,4 +22,3 @@ pub fn post_list(props: &PostListProps) -> Html {
 pub struct PostListProps {
     pub posts: Vec<Post>,
 }
-

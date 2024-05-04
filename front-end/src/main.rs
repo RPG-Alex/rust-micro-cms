@@ -3,7 +3,6 @@ mod app;
 mod models;
 mod views;
 
-
 use app::App;
 
 fn main() {

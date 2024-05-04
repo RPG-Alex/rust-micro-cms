@@ -64,7 +64,8 @@ impl Default for Style {
                 cursor: pointer;
                 margin-top: 10px;
             }
-        "#.to_string();
+        "#
+        .to_string();
 
         Style { css }
     }
