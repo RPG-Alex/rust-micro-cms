@@ -2,8 +2,10 @@ use crate::models::{posts::Post, styling::Style};
 use crate::views::{
     nav_bar::NavBar,
     posts::{all_posts::PostList, recent_posts::RecentPosts},
-    styling::StyleInjector,
-    update_styling::StyleForm,
+    styling::{
+        styling::StyleInjector,
+        update_styling::StyleForm,
+    }
 };
 use yew::prelude::*;
 use yew_router::prelude::*;
