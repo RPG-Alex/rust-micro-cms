@@ -1,4 +1,3 @@
-use crate::models::styling;
 use crate::models::{posts::Post, styling::Style};
 use crate::views::{
     nav_bar::NavBar,
