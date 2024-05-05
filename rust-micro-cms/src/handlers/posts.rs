@@ -1,15 +1,17 @@
-use axum::{
-    extract::{Extension, Json, Path},
-    response::Response,
-    http::StatusCode,
+use crate::database::posts::{
+    delete_post, fetch_all_posts, fetch_post_by_id, insert_new_post, update_post,
 };
 use crate::models::posts::{NewPost, Post, Posts, UpdatePost};
-use crate::database::posts::{insert_new_post, fetch_all_posts, fetch_post_by_id, update_post, delete_post};
+use axum::{
+    extract::{Extension, Json, Path},
+    http::StatusCode,
+    response::Response,
+};
 use sqlx::SqlitePool;
 
 // Handler to fetch all posts
 pub async fn get_all_posts(
-    Extension(pool): Extension<SqlitePool>
+    Extension(pool): Extension<SqlitePool>,
 ) -> Result<Json<Posts>, Response> {
     match fetch_all_posts(&pool).await {
         Ok(posts) => Ok(Json(posts)),
@@ -23,7 +25,7 @@ pub async fn get_all_posts(
 // Handler to add a new post
 pub async fn add_post(
     Json(new_post): Json<NewPost>,
-    Extension(pool): Extension<SqlitePool>
+    Extension(pool): Extension<SqlitePool>,
 ) -> Result<Json<Post>, Response> {
     match insert_new_post(&pool, &new_post).await {
         Ok(post) => Ok(Json(post)),
@@ -33,4 +35,3 @@ pub async fn add_post(
             .unwrap()),
     }
 }
-

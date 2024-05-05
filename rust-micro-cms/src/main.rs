@@ -35,7 +35,9 @@ async fn main() {
 
     dotenv().ok();
     let db_path = &env::var("DATABASE_URL").expect("DATABASE_URL Must be set in .env file");
-    let pool = SqlitePool::connect(&db_path).await.expect("FAILED to load database");
+    let pool = SqlitePool::connect(&db_path)
+        .await
+        .expect("FAILED to load database");
 
     info!("Rust Micro CMS started");
     let app = Router::new()

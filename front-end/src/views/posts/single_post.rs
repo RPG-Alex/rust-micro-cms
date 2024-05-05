@@ -1,7 +1,7 @@
 use crate::models::posts::Post;
 use yew::prelude::*;
 
-#[derive(Properties, PartialEq)]
+#[derive(Clone, Properties, PartialEq)]
 pub struct PostProps {
     pub post: Post,
 }

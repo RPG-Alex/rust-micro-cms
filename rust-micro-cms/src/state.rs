@@ -1,4 +1,3 @@
-
 use sqlx::SqlitePool;
 
 pub struct AppState {

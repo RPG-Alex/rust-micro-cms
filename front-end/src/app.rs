@@ -1,7 +1,12 @@
 use crate::models::{posts::Post, styling::Style};
 use crate::views::{
     nav_bar::NavBar,
-    posts::{all_posts::PostList, recent_posts::RecentPosts},
+    posts::{
+        all_posts::PostList, 
+        recent_posts::RecentPosts,
+        single_post::SinglePost
+    },
+
     styling::{
         styling::StyleInjector,
         update_styling::StyleForm,
@@ -16,6 +21,8 @@ enum Route {
     Home,
     #[at("/all")]
     AllPosts,
+    #[at("/post/:id")]
+    Post {id: i64},
     #[at("/style_update")]
     Style,
     #[not_found]
@@ -158,6 +165,15 @@ fn switch(routes: Route) -> Html {
                 <PostList posts={example_posts} />
             </>
         },
+        Route::Post { id } => html! {
+
+            if let Some(post) = find_post(&example_posts, id ) {
+                <SinglePost post={post.to_owned()} />
+            } else {
+                <h1>{"Post does not exist"}</h1>
+            }
+            
+        },
         Route::Style => html!(
             <>
                 <h1>{"Update Blog Styling"}</h1>
@@ -168,4 +184,8 @@ fn switch(routes: Route) -> Html {
             <h1>{"404 Not Found"}</h1>
         },
     }
+}
+
+fn find_post(posts: &[Post], id: i64) -> Option<&Post> {
+    posts.iter().find(|p| p.id == id)
 }
