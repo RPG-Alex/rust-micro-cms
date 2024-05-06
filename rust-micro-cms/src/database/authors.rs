@@ -1,5 +1,5 @@
 use crate::models::{Author, Authors, NewAuthor, UpdateAuthor};
-use rusqlite::{Connection, Result};
+use rusqlite::{Connection, Error, Result};
 
 pub async fn create_author_table(conn: &Connection) -> Result<()> {
     let sql = 
@@ -35,20 +35,36 @@ pub async fn insert_new_author(conn: &Connection, author: &NewAuthor) -> Result<
 
 pub async fn fetch_all_authors(conn: &Connection) -> Result<Authors> {
     let sql = "SELECT * FROM author WHERE deleted = FALSE";
-    let authors = conn.execute(sql, ());
-    
-   }
+    let mut stmt = conn.prepare(sql)?;
+    let author_iter = stmt.query_map([], |row| {
+        Ok(Author {
+            id: row.get(0)?,
+            first_name: row.get(1)?,
+            last_name: row.get(2)?,
+            deleted: Some(row.get(3)?)
+        })
+    })?;
+
+    let mut authors = Vec::new();
+    for author in author_iter {
+        authors.push(author?);
+    }
+
+    Ok(Authors {authors})
+}
 
 pub async fn fetch_author_by_id(conn: &Connection, author_id: i32) -> Result<Option<Author>> {
-    let author = sqlx::query_as!(
-        Author,
-        "SELECT * FROM author WHERE id = ? AND deleted = false",
-        author_id
-    )
-    .fetch_optional(pool)
-    .await?;
+    let sql = "SELECT * FROM author WHERE id = ? AND deleted = false";
+    let stmt = conn.query_row(sql, [author_id], |row| {
+        Ok(Author {
+            id: row.get(0)?,
+            first_name: row.get(1)?,
+            last_name: row.get(2)?,
+            deleted: Some(row.get(3)?)
+        })
+    })?;
 
-    Ok(author)
+    Ok(Some(stmt))
 }
 
 pub async fn update_author(conn: &Connection, new_author: UpdateAuthor) -> Result<()> {
