@@ -67,17 +67,23 @@ pub async fn fetch_author_by_id(conn: &Connection, author_id: i32) -> Result<Opt
     Ok(Some(stmt))
 }
 
-pub async fn update_author(conn: &Connection, new_author: UpdateAuthor) -> Result<()> {
-    sqlx::query_as!(
-        UpdateAuthor,
-        "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?",
+pub async fn update_author(conn: &Connection, new_author: UpdateAuthor) -> Result<Author> {
+    // need to test this query works!
+    let sql = "UPDATE author SET first_name = ?, last_name = ? WHERE id = ? RETURNING *";
+
+    let stmt = conn.query_row(sql, [
         new_author.first_name,
         new_author.last_name,
-        new_author.id
-    )
-    .fetch_optional(pool)
-    .await?;
-    Ok(())
+        new_author.id.to_string()
+    ], |row| {
+        Ok(Author {
+            id: row.get(0)?,
+            first_name: row.get(1)?,
+            last_name: row.get(2)?,
+            deleted: Some(row.get(3)?)
+        })
+    })?;
+    Ok(stmt)
 }
 
 //could cause conflict due to key restraints with posts
