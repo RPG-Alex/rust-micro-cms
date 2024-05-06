@@ -1,47 +1,45 @@
 use crate::models::{Author, Authors, NewAuthor, UpdateAuthor};
-use anyhow::Result;
-use sqlx::sqlite::SqlitePool;
+use rusqlite::{Connection, Result};
 
-pub async fn create_author_table(pool: &SqlitePool) -> Result<()> {
-    sqlx::query!(
+pub async fn create_author_table(conn: &Connection) -> Result<()> {
+    let sql = 
         "CREATE TABLE IF NOT EXISTS author (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
             deleted BOOLEAN DEFAULT FALSE
-        )"
-    )
-    .execute(pool)
-    .await?;
+        )";
+    conn.execute(sql, ());
     Ok(())
 }
 
-pub async fn insert_new_author(pool: &SqlitePool, author: &NewAuthor) -> Result<Author> {
-    let inserted_author = sqlx::query!(
-        "INSERT INTO author (first_name,last_name) VALUES (?,?) RETURNING *",
-        author.first_name,
-        author.last_name
-    )
-    .fetch_one(pool)
-    .await?;
+pub async fn insert_new_author(conn: &Connection, author: &NewAuthor) -> Result<Author> {
+    let sql = "INSERT INTO author (first_name,last_name) VALUES (?,?)";
 
-    Ok(Author {
-        id: inserted_author.id,
-        first_name: inserted_author.first_name,
-        last_name: inserted_author.last_name,
-        deleted: Some(inserted_author.deleted),
-    })
+    conn.execute(sql, [author.first_name.to_owned(),
+        author.last_name.to_owned()]).expect("add error handling!");
+    
+    let last_id = conn.last_insert_rowid();
+    let mut stmt = conn.prepare("SELECT id, first_name, last_name FROM author WHERE id = ?1")?;
+    let author = stmt.query_row([last_id], |row| {
+        Ok(Author {
+            id: row.get(0)?,
+            first_name: row.get(1)?,
+            last_name: row.get(2)?,
+            deleted: Some(row.get(3)?)
+        })
+    })?;
+
+    Ok(author)
 }
 
-pub async fn fetch_all_authors(pool: &SqlitePool) -> Result<Authors> {
-    let authors = sqlx::query_as!(Author, "SELECT * FROM author WHERE deleted = FALSE")
-        .fetch_all(pool)
-        .await?;
+pub async fn fetch_all_authors(conn: &Connection) -> Result<Authors> {
+    let sql = "SELECT * FROM author WHERE deleted = FALSE";
+    let authors = conn.execute(sql, ());
+    
+   }
 
-    Ok(Authors { authors })
-}
-
-pub async fn fetch_author_by_id(pool: &SqlitePool, author_id: i32) -> Result<Option<Author>> {
+pub async fn fetch_author_by_id(conn: &Connection, author_id: i32) -> Result<Option<Author>> {
     let author = sqlx::query_as!(
         Author,
         "SELECT * FROM author WHERE id = ? AND deleted = false",
@@ -53,7 +51,7 @@ pub async fn fetch_author_by_id(pool: &SqlitePool, author_id: i32) -> Result<Opt
     Ok(author)
 }
 
-pub async fn update_author(pool: &SqlitePool, new_author: UpdateAuthor) -> Result<()> {
+pub async fn update_author(conn: &Connection, new_author: UpdateAuthor) -> Result<()> {
     sqlx::query_as!(
         UpdateAuthor,
         "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?",
@@ -67,21 +65,21 @@ pub async fn update_author(pool: &SqlitePool, new_author: UpdateAuthor) -> Resul
 }
 
 //could cause conflict due to key restraints with posts
-pub async fn delete_author(pool: &SqlitePool, author_id: i32) -> Result<()> {
+pub async fn delete_author(conn: &Connection, author_id: i32) -> Result<()> {
     sqlx::query!("DELETE FROM author WHERE id = ?", author_id)
         .execute(pool)
         .await?;
     Ok(())
 }
 
-pub async fn soft_delete_author(pool: &SqlitePool, author_id: i32) -> Result<()> {
+pub async fn soft_delete_author(conn: &Connection, author_id: i32) -> Result<()> {
     sqlx::query!("UPDATE author SET deleted = TRUE WHERE id = ?", author_id)
         .execute(pool)
         .await?;
     Ok(())
 }
 
-pub async fn reactivate_author(pool: &SqlitePool, author_id: i32) -> Result<()> {
+pub async fn reactivate_author(conn: &Connection, author_id: i32) -> Result<()> {
     sqlx::query!("UPDATE author SET deleted = FALSE WHERE id = ?", author_id)
         .execute(pool)
         .await?;

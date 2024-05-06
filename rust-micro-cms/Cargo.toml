@@ -9,9 +9,11 @@ anyhow = { workspace = true }
 axum = { workspace = true }
 chrono = { workspace = true }
 dotenv = "0.15.0"
+r2d2 = "0.8.10"
+r2d2_sqlite = "0.24.0"
+rusqlite = "0.31.0"
 serde = { workspace = true }
 serde_json = { workspace = true }
 simple-log = { workspace = true }
-sqlx = { workspace = true, features = ["runtime-tokio-native-tls", "sqlite"] }
 tokio = { workspace = true, features = ["full"] }
 

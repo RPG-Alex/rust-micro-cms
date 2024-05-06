@@ -15,8 +15,9 @@ mod state;
 extern crate simple_log;
 
 use dotenv::dotenv;
+use r2d2::Pool;
+use r2d2_sqlite::SqliteConnectionManager;
 use simple_log::LogConfigBuilder;
-use sqlx::SqlitePool;
 use std::{env, error::Error};
 use tokio::net::TcpListener;
 
@@ -35,9 +36,8 @@ async fn main() {
 
     dotenv().ok();
     let db_path = &env::var("DATABASE_URL").expect("DATABASE_URL Must be set in .env file");
-    let pool = SqlitePool::connect(&db_path)
-        .await
-        .expect("FAILED to load database");
+    let db_conn = SqliteConnectionManager::file(db_path);
+    let pool = Pool::new(db_conn).expect("start using error hanlding!");
 
     info!("Rust Micro CMS started");
     let app = Router::new()
