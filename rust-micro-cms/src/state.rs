@@ -1,5 +1,5 @@
-use r2d2_sqlite::SqliteConnectionManager;
 use r2d2::Pool;
+use r2d2_sqlite::SqliteConnectionManager;
 
 #[derive(Clone)]
 pub struct AppState {

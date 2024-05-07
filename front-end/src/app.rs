@@ -1,16 +1,8 @@
 use crate::models::{posts::Post, styling::Style};
 use crate::views::{
     nav_bar::NavBar,
-    posts::{
-        all_posts::PostList, 
-        recent_posts::RecentPosts,
-        single_post::SinglePost
-    },
-
-    styling::{
-        styling::StyleInjector,
-        update_styling::StyleForm,
-    }
+    posts::{all_posts::PostList, recent_posts::RecentPosts, single_post::SinglePost},
+    styling::{styling::StyleInjector, update_styling::StyleForm},
 };
 use yew::prelude::*;
 use yew_router::prelude::*;
@@ -22,7 +14,7 @@ enum Route {
     #[at("/all")]
     AllPosts,
     #[at("/post/:id")]
-    Post {id: i64},
+    Post { id: i64 },
     #[at("/style_update")]
     Style,
     #[not_found]
@@ -166,16 +158,16 @@ fn switch(routes: Route) -> Html {
             </>
         },
         Route::Post { id } => html! {
-            
+
             if let Some(post) = find_post(&example_posts, id ) {
                 <SinglePost post={
-                    
+
                     post.to_owned()
                 } />
             } else {
                 <h1>{"Post does not exist"}</h1>
             }
-            
+
         },
         Route::Style => html!(
             <>

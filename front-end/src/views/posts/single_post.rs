@@ -8,7 +8,7 @@ pub struct PostProps {
 
 #[function_component(SinglePost)]
 pub fn post_view(props: &PostProps) -> Html {
-    html!{
+    html! {
         <div class="post">
             <h2>{ &props.post.title }</h2>
             <h3>{ format!("by {} on {}", &props.post.author, &props.post.date) }</h3>

@@ -8,11 +8,11 @@ use std::env;
 use tokio::net::TcpListener;
 
 mod database;
+mod errors;
 mod handlers;
 mod models;
-mod state;
-mod errors;
 mod routes;
+mod state;
 
 #[tokio::main]
 async fn main() {
@@ -23,11 +23,13 @@ async fn main() {
     let app = Router::new()
         //.route("/posts", get(handlers::posts::get_all_posts))
         //.route("/authors/:id", get(handlers::authors::get_author))
-        .layer(Extension(state));  
+        .layer(Extension(state));
 
     let addr = "127.0.0.1:3000";
     let listener = TcpListener::bind(addr).await.expect("Failed to bind");
     println!("Listening on {}", addr);
 
-    axum::serve(listener, app.into_make_service()).await.unwrap();
+    axum::serve(listener, app.into_make_service())
+        .await
+        .unwrap();
 }
