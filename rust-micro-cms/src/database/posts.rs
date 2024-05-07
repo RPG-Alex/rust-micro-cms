@@ -2,7 +2,7 @@ use crate::models::{NewPost, Post, Posts, UpdatePost};
 use rusqlite::{Connection, Error, Result};
 
 
-pub async fn create_posts_table(conn: &Connection) -> Result<()> {
+pub async fn create_posts_table(conn: &Connection) -> Result<usize> {
     let sql = 
         "CREATE TABLE IF NOT EXISTS posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,8 +14,8 @@ pub async fn create_posts_table(conn: &Connection) -> Result<()> {
             author_id INTEGER NOT NULL,
             FOREIGN KEY (author_id) REFERENCES author(id)
         )";
-        conn.execute(sql, ())?;
-    Ok(())
+        let result = conn.execute(sql, ())?;
+    Ok(result)
 }
 pub async fn insert_new_post(conn: &Connection, post: &NewPost) -> Result<Post> {
     let inserted_post = sqlx::query_as!(
