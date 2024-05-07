@@ -1,5 +1,5 @@
 use crate::models::{NewPost, Post, Posts, UpdatePost};
-use rusqlite::{Connection, Error, Result};
+use rusqlite::{Connection, Result};
 
 
 pub async fn create_posts_table(conn: &Connection) -> Result<usize> {
@@ -125,40 +125,40 @@ pub async fn delete_post(conn: &Connection, post_id: i32) -> Result<bool> {
     }
 }
 
-pub async fn toggle_post_draft(conn: &Connection, post_id: i32) -> Result<()> {
-    let current_status = sqlx::query!("SELECT draft FROM posts WHERE id = $1", post_id)
-        .fetch_one(pool)
-        .await?
-        .draft;
+// pub async fn toggle_post_draft(conn: &Connection, post_id: i32) -> Result<()> {
+//     let current_status = sqlx::query!("SELECT draft FROM posts WHERE id = $1", post_id)
+//         .fetch_one(pool)
+//         .await?
+//         .draft;
 
-    let new_status = !current_status;
-    sqlx::query!(
-        "UPDATE posts SET draft = $1 WHERE id = $2",
-        new_status,
-        post_id
-    )
-    .execute(pool)
-    .await?;
+//     let new_status = !current_status;
+//     sqlx::query!(
+//         "UPDATE posts SET draft = $1 WHERE id = $2",
+//         new_status,
+//         post_id
+//     )
+//     .execute(pool)
+//     .await?;
 
-    Ok(())
-}
-pub async fn toggle_post_active(conn: &Connection, post_id: i32) -> Result<()> {
-    let current_status = sqlx::query! {
-        "SELECT archived FROM posts WHERE id = $1",
-        post_id
-    }
-    .fetch_one(pool)
-    .await?
-    .archived;
+//     Ok(())
+// }
+// pub async fn toggle_post_active(conn: &Connection, post_id: i32) -> Result<()> {
+//     let current_status = sqlx::query! {
+//         "SELECT archived FROM posts WHERE id = $1",
+//         post_id
+//     }
+//     .fetch_one(pool)
+//     .await?
+//     .archived;
 
-    let new_status = !current_status;
-    sqlx::query!(
-        "UPDATE posts SET archived = $1 WHERE id = $2",
-        new_status,
-        post_id
-    )
-    .execute(pool)
-    .await?;
+//     let new_status = !current_status;
+//     sqlx::query!(
+//         "UPDATE posts SET archived = $1 WHERE id = $2",
+//         new_status,
+//         post_id
+//     )
+//     .execute(pool)
+//     .await?;
 
-    Ok(())
-}
+//     Ok(())
+// }

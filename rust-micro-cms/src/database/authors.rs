@@ -1,5 +1,5 @@
 use crate::models::{Author, Authors, NewAuthor, UpdateAuthor};
-use rusqlite::{Connection, Error, Result};
+use rusqlite::{Connection, Result};
 
 pub async fn create_author_table(conn: &Connection) -> Result<usize> {
     let sql = 

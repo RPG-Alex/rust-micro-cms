@@ -1,55 +1,38 @@
 use axum::{
     extract::Extension,
-    handler::{Handler, HandlerWithoutStateExt},
-    http::{header, StatusCode},
-    routing::{delete, get, post, put},
-    Json, Router,
+    routing::{get, post},
+    Router,
 };
+use dotenv::dotenv;
+use r2d2_sqlite::SqliteConnectionManager;
+use r2d2::Pool;
+use std::env;
+use tokio::net::TcpListener;
 
 mod database;
 mod handlers;
 mod models;
 mod state;
-
-#[macro_use]
-extern crate simple_log;
-
-use dotenv::dotenv;
-use r2d2::Pool;
-use r2d2_sqlite::SqliteConnectionManager;
-use simple_log::LogConfigBuilder;
-use std::{env, error::Error};
-use tokio::net::TcpListener;
+mod errors;
+mod routes;
 
 #[tokio::main]
 async fn main() {
-    let config = LogConfigBuilder::builder()
-        .path("./log/rust_micro_cms.log")
-        .size(1 * 1024 * 1024) // 1 MB
-        .roll_count(5)
-        .level("info")
-        .output_file()
-        .output_console()
-        .build();
-
-    simple_log::new(config);
-
     dotenv().ok();
-    let db_path = &env::var("DATABASE_URL").expect("DATABASE_URL Must be set in .env file");
-    let db_conn = SqliteConnectionManager::file(db_path);
-    let pool = Pool::new(db_conn).expect("start using error hanlding!");
+    let db_path = env::var("DATABASE_URL").expect("DATABASE_URL must be set in .env file");
+    let manager = SqliteConnectionManager::file(db_path);
+    let pool = Pool::new(manager).expect("Failed to create pool");
 
-    info!("Rust Micro CMS started");
+    let state = state::AppState::new(pool);
+
     let app = Router::new()
-        .route("/posts", get(handlers::posts::get_all_posts))
-        .route("/authors/:id", get(handlers::authors::get_author))
-        .layer(Extension(pool));
-    let listener = TcpListener::bind("127.0.0.1:3000")
-        .await
-        .expect("Failed to bind");
-    println!("Listening on {}", listener.local_addr().unwrap());
+        //.route("/posts", get(handlers::posts::get_all_posts))
+        //.route("/authors/:id", get(handlers::authors::get_author))
+        .layer(Extension(state));  // Passing the AppState
 
-    axum::serve(listener, app.into_make_service())
-        .await
-        .unwrap();
+    let addr = "127.0.0.1:3000";
+    let listener = TcpListener::bind(addr).await.expect("Failed to bind");
+    println!("Listening on {}", addr);
+
+    axum::serve(listener, app.into_make_service()).await.unwrap();
 }

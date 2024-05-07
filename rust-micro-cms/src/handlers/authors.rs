@@ -6,7 +6,6 @@ use axum::{
     http::StatusCode,
     response::Response,
 };
-use sqlx::SqlitePool;
 
 // Handler to add a new author
 pub async fn add_author(
