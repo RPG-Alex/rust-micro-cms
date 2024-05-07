@@ -41,10 +41,23 @@ pub async fn insert_new_post(conn: &Connection, post: &NewPost) -> Result<Post> 
 }
 
 pub async fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
-    let posts = sqlx::query_as!(Post, "SELECT * FROM posts")
-        .fetch_all(pool)
-        .await?;
-
+    let sql = "SELECT * FROM posts";
+    let mut stmt = conn.prepare(sql)?;
+    let post_iter = stmt.query_map([], |row| {
+        Ok(Post {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            date: row.get(2)?,
+            body: row.get(3)?,
+            archived: row.get(4)?,
+            draft: row.get(5)?,
+            author_id: row.get(6)?,
+        })
+    })?;
+    let mut posts = Vec::new();
+    for post in post_iter {
+        posts.push(post?);
+    }
     Ok(Posts { posts })
 }
 
