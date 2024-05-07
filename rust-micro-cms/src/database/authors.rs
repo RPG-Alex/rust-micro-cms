@@ -6,7 +6,7 @@ use rusqlite::{params, OptionalExtension, Result};
 pub async fn create_author_table(pool: &Pool<SqliteConnectionManager>) -> Result<usize> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?; // Custom error handling
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?; // Custom error handling
     let sql = "CREATE TABLE IF NOT EXISTS author (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             first_name TEXT NOT NULL,
@@ -22,7 +22,7 @@ pub async fn insert_new_author(
 ) -> Result<Author> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "INSERT INTO author (first_name, last_name) VALUES (?, ?)";
     conn.execute(sql, params![author.first_name, author.last_name])?;
 
@@ -44,7 +44,7 @@ pub async fn insert_new_author(
 pub async fn fetch_all_authors(pool: &Pool<SqliteConnectionManager>) -> Result<Authors> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "SELECT id, first_name, last_name, deleted FROM author WHERE deleted = FALSE";
     let mut stmt = conn.prepare(sql)?;
     let author_iter = stmt.query_map([], |row| {
@@ -72,7 +72,7 @@ pub async fn fetch_author_by_id(
 ) -> Result<Option<Author>> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql =
         "SELECT id, first_name, last_name, deleted FROM author WHERE id = ? AND deleted = FALSE";
     conn.query_row(sql, params![author_id], |row| {
@@ -92,7 +92,7 @@ pub async fn update_author(
 ) -> Result<Author> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "UPDATE author SET first_name = ?, last_name = ? WHERE id = ? RETURNING *";
     conn.query_row(
         sql,

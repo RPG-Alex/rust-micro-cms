@@ -6,7 +6,7 @@ use rusqlite::{params, OptionalExtension, Result};
 pub async fn create_posts_table(pool: &Pool<SqliteConnectionManager>) -> Result<usize> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "CREATE TABLE IF NOT EXISTS posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
@@ -23,7 +23,7 @@ pub async fn create_posts_table(pool: &Pool<SqliteConnectionManager>) -> Result<
 pub async fn insert_new_post(pool: &Pool<SqliteConnectionManager>, post: &NewPost) -> Result<Post> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "INSERT INTO posts (title, date, body, author_id) VALUES (?, ?, ?, ?)";
     conn.execute(
         sql,
@@ -51,7 +51,7 @@ pub async fn insert_new_post(pool: &Pool<SqliteConnectionManager>, post: &NewPos
 pub async fn fetch_all_posts(pool: &Pool<SqliteConnectionManager>) -> Result<Posts> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "SELECT * FROM posts WHERE NOT archived";
     let mut stmt = conn.prepare(sql)?;
     let post_iter = stmt.query_map([], |row| {
@@ -80,7 +80,7 @@ pub async fn fetch_post_by_id(
 ) -> Result<Option<Post>> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "SELECT * FROM posts WHERE id = ?";
     conn.query_row(sql, params![post_id], |row| {
         Ok(Post {
@@ -99,7 +99,7 @@ pub async fn fetch_post_by_id(
 pub async fn update_post(pool: &Pool<SqliteConnectionManager>, post: UpdatePost) -> Result<Post> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "UPDATE posts SET title = ?, date = ?, body = ?, archived = ?, draft = ?, author_id = ? WHERE id = ? RETURNING *";
     conn.query_row(
         sql,
@@ -129,7 +129,7 @@ pub async fn update_post(pool: &Pool<SqliteConnectionManager>, post: UpdatePost)
 pub async fn delete_post(pool: &Pool<SqliteConnectionManager>, post_id: i32) -> Result<bool> {
     let conn = pool
         .get()
-        .map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "DELETE FROM posts WHERE id = ?";
     let affected_rows = conn.execute(sql, [post_id])?;
     Ok(affected_rows > 0)

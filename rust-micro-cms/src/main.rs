@@ -1,6 +1,5 @@
 use axum::{
     extract::Extension,
-    routing::{get, post},
     Router,
 };
 use dotenv::dotenv;
