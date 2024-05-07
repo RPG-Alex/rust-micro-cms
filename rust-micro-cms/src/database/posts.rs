@@ -115,12 +115,14 @@ pub async fn update_post(conn: &Connection, post: &UpdatePost) -> Result<Post> {
     Ok(stmt)
 }
 
-pub async fn delete_post(conn: &Connection, post_id: i32) -> Result<()> {
-    sqlx::query!("DELETE FROM posts WHERE id = $1", post_id)
-        .execute(pool)
-        .await?;
-
-    Ok(())
+pub async fn delete_post(conn: &Connection, post_id: i32) -> Result<bool> {
+    let sql = "DELETE FROM posts WHERE id = $1";
+    let stmt = conn.execute(sql, [post_id])?;
+    if stmt > 0 {
+        Ok(true)
+    } else {
+        Ok(false)
+    }
 }
 
 pub async fn toggle_post_draft(conn: &Connection, post_id: i32) -> Result<()> {
