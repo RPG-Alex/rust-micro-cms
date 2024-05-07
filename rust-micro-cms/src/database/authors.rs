@@ -1,7 +1,7 @@
 use crate::models::{Author, Authors, NewAuthor, UpdateAuthor};
 use rusqlite::{Connection, Error, Result};
 
-pub async fn create_author_table(conn: &Connection) -> Result<()> {
+pub async fn create_author_table(conn: &Connection) -> Result<usize> {
     let sql = 
         "CREATE TABLE IF NOT EXISTS author (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -9,8 +9,8 @@ pub async fn create_author_table(conn: &Connection) -> Result<()> {
             last_name TEXT NOT NULL,
             deleted BOOLEAN DEFAULT FALSE
         )";
-    conn.execute(sql, ())?;
-    Ok(())
+    let result = conn.execute(sql, ())?;
+    Ok(result)
 }
 
 pub async fn insert_new_author(conn: &Connection, author: &NewAuthor) -> Result<Author> {
