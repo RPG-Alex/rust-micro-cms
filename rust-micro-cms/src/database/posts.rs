@@ -1,8 +1,8 @@
 use crate::models::{NewPost, Post, Posts, UpdatePost};
-use anyhow::Result;
-use sqlx::sqlite::SqlitePool;
+use rusqlite::{Connection, Error, Result};
 
-pub async fn create_posts_table(pool: &SqlitePool) -> Result<()> {
+
+pub async fn create_posts_table(conn: &Connection) -> Result<()> {
     sqlx::query!(
         "CREATE TABLE IF NOT EXISTS posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,7 +19,7 @@ pub async fn create_posts_table(pool: &SqlitePool) -> Result<()> {
     .await?;
     Ok(())
 }
-pub async fn insert_new_post(pool: &SqlitePool, post: &NewPost) -> Result<Post> {
+pub async fn insert_new_post(conn: &Connection, post: &NewPost) -> Result<Post> {
     let inserted_post = sqlx::query_as!(
         Post,
         "INSERT INTO posts (title, date, body, author_id) VALUES (?, ?, ?, ?) RETURNING *",
@@ -34,7 +34,7 @@ pub async fn insert_new_post(pool: &SqlitePool, post: &NewPost) -> Result<Post> 
     Ok(inserted_post)
 }
 
-pub async fn fetch_all_posts(pool: &SqlitePool) -> Result<Posts> {
+pub async fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
     let posts = sqlx::query_as!(Post, "SELECT * FROM posts")
         .fetch_all(pool)
         .await?;
@@ -42,7 +42,7 @@ pub async fn fetch_all_posts(pool: &SqlitePool) -> Result<Posts> {
     Ok(Posts { posts })
 }
 
-pub async fn fetch_post_by_id(pool: &SqlitePool, post_id: i32) -> Result<Post> {
+pub async fn fetch_post_by_id(conn: &Connection, post_id: i32) -> Result<Post> {
     let post = sqlx::query_as!(Post, "SELECT * FROM posts WHERE id = $1", post_id)
         .fetch_one(pool)
         .await?;
@@ -50,7 +50,7 @@ pub async fn fetch_post_by_id(pool: &SqlitePool, post_id: i32) -> Result<Post> {
     Ok(post)
 }
 
-pub async fn fetch_all_posts_for_author(pool: &SqlitePool, author_id: i32) -> Result<Posts> {
+pub async fn fetch_all_posts_for_author(conn: &Connection, author_id: i32) -> Result<Posts> {
     let posts = sqlx::query_as!(
         Post,
         "SELECT * FROM posts WHERE author_id = $1 AND archived = FALSE",
@@ -62,7 +62,7 @@ pub async fn fetch_all_posts_for_author(pool: &SqlitePool, author_id: i32) -> Re
     Ok(Posts { posts })
 }
 
-pub async fn update_post(pool: &SqlitePool, post: &UpdatePost) -> Result<Post> {
+pub async fn update_post(conn: &Connection, post: &UpdatePost) -> Result<Post> {
     let updated_post = sqlx::query!(
         "UPDATE posts SET title = $1, date = $2, body = $3, archived = $4, draft = $5, author_id = $6 WHERE id = $7 RETURNING *",
         post.title,
@@ -87,7 +87,7 @@ pub async fn update_post(pool: &SqlitePool, post: &UpdatePost) -> Result<Post> {
     })
 }
 
-pub async fn delete_post(pool: &SqlitePool, post_id: i32) -> Result<()> {
+pub async fn delete_post(conn: &Connection, post_id: i32) -> Result<()> {
     sqlx::query!("DELETE FROM posts WHERE id = $1", post_id)
         .execute(pool)
         .await?;
@@ -95,7 +95,7 @@ pub async fn delete_post(pool: &SqlitePool, post_id: i32) -> Result<()> {
     Ok(())
 }
 
-pub async fn toggle_post_draft(pool: &SqlitePool, post_id: i32) -> Result<()> {
+pub async fn toggle_post_draft(conn: &Connection, post_id: i32) -> Result<()> {
     let current_status = sqlx::query!("SELECT draft FROM posts WHERE id = $1", post_id)
         .fetch_one(pool)
         .await?
@@ -112,7 +112,7 @@ pub async fn toggle_post_draft(pool: &SqlitePool, post_id: i32) -> Result<()> {
 
     Ok(())
 }
-pub async fn toggle_post_active(pool: &SqlitePool, post_id: i32) -> Result<()> {
+pub async fn toggle_post_active(conn: &Connection, post_id: i32) -> Result<()> {
     let current_status = sqlx::query! {
         "SELECT archived FROM posts WHERE id = $1",
         post_id

@@ -87,23 +87,23 @@ pub async fn update_author(conn: &Connection, new_author: UpdateAuthor) -> Resul
 }
 
 //could cause conflict due to key restraints with posts
-pub async fn delete_author(conn: &Connection, author_id: i32) -> Result<()> {
-    sqlx::query!("DELETE FROM author WHERE id = ?", author_id)
-        .execute(pool)
-        .await?;
-    Ok(())
-}
+// pub async fn delete_author(conn: &Connection, author_id: i32) -> Result<()> {
+//     sqlx::query!("DELETE FROM author WHERE id = ?", author_id)
+//         .execute(pool)
+//         .await?;
+//     Ok(())
+// }
 
-pub async fn soft_delete_author(conn: &Connection, author_id: i32) -> Result<()> {
-    sqlx::query!("UPDATE author SET deleted = TRUE WHERE id = ?", author_id)
-        .execute(pool)
-        .await?;
-    Ok(())
-}
+// pub async fn soft_delete_author(conn: &Connection, author_id: i32) -> Result<()> {
+//     sqlx::query!("UPDATE author SET deleted = TRUE WHERE id = ?", author_id)
+//         .execute(pool)
+//         .await?;
+//     Ok(())
+// }
 
-pub async fn reactivate_author(conn: &Connection, author_id: i32) -> Result<()> {
-    sqlx::query!("UPDATE author SET deleted = FALSE WHERE id = ?", author_id)
-        .execute(pool)
-        .await?;
-    Ok(())
-}
+// pub async fn reactivate_author(conn: &Connection, author_id: i32) -> Result<()> {
+//     sqlx::query!("UPDATE author SET deleted = FALSE WHERE id = ?", author_id)
+//         .execute(pool)
+//         .await?;
+//     Ok(())
+// }
