@@ -166,9 +166,12 @@ fn switch(routes: Route) -> Html {
             </>
         },
         Route::Post { id } => html! {
-
+            
             if let Some(post) = find_post(&example_posts, id ) {
-                <SinglePost post={post.to_owned()} />
+                <SinglePost post={
+                    
+                    post.to_owned()
+                } />
             } else {
                 <h1>{"Post does not exist"}</h1>
             }

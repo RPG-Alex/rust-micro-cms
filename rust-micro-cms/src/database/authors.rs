@@ -1,7 +1,10 @@
+use rusqlite::{params, Result, OptionalExtension};
+use r2d2::Pool;
+use r2d2_sqlite::SqliteConnectionManager;
 use crate::models::{Author, Authors, NewAuthor, UpdateAuthor};
-use rusqlite::{Connection, Result};
 
-pub async fn create_author_table(conn: &Connection) -> Result<usize> {
+pub async fn create_author_table(pool: &Pool<SqliteConnectionManager>) -> Result<usize> {
+    let conn = pool.get().map_err(|e| rusqlite::Error::ExecuteReturnedResults)?; // Custom error handling
     let sql = 
         "CREATE TABLE IF NOT EXISTS author (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -9,81 +12,70 @@ pub async fn create_author_table(conn: &Connection) -> Result<usize> {
             last_name TEXT NOT NULL,
             deleted BOOLEAN DEFAULT FALSE
         )";
-    let result = conn.execute(sql, ())?;
-    Ok(result)
+    conn.execute(sql, ())
 }
 
-pub async fn insert_new_author(conn: &Connection, author: &NewAuthor) -> Result<Author> {
-    let sql = "INSERT INTO author (first_name,last_name) VALUES (?,?)";
-
-    conn.execute(sql, [author.first_name.to_owned(),
-        author.last_name.to_owned()])?;
+pub async fn insert_new_author(pool: &Pool<SqliteConnectionManager>, author: &NewAuthor) -> Result<Author> {
+    let conn = pool.get().map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+    let sql = "INSERT INTO author (first_name, last_name) VALUES (?, ?)";
+    conn.execute(sql, params![author.first_name, author.last_name])?;
     
     let last_id = conn.last_insert_rowid();
-    let mut stmt = conn.prepare("SELECT id, first_name, last_name FROM author WHERE id = ?1")?;
-    let author = stmt.query_row([last_id], |row| {
+    conn.query_row("SELECT id, first_name, last_name, deleted FROM author WHERE id = ?", params![last_id], |row| {
         Ok(Author {
             id: row.get(0)?,
             first_name: row.get(1)?,
             last_name: row.get(2)?,
-            deleted: Some(row.get(3)?)
+            deleted: row.get(3)?
         })
-    })?;
-
-    Ok(author)
+    })
 }
 
-pub async fn fetch_all_authors(conn: &Connection) -> Result<Authors> {
-    let sql = "SELECT * FROM author WHERE deleted = FALSE";
+pub async fn fetch_all_authors(pool: &Pool<SqliteConnectionManager>) -> Result<Authors> {
+    let conn = pool.get().map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+    let sql = "SELECT id, first_name, last_name, deleted FROM author WHERE deleted = FALSE";
     let mut stmt = conn.prepare(sql)?;
     let author_iter = stmt.query_map([], |row| {
         Ok(Author {
             id: row.get(0)?,
             first_name: row.get(1)?,
             last_name: row.get(2)?,
-            deleted: Some(row.get(3)?)
+            deleted: row.get(3)?
         })
     })?;
 
-    let mut authors = Vec::new();
+    let mut authors = Authors { authors: Vec::new() };
     for author in author_iter {
-        authors.push(author?);
+        authors.authors.push(author?);
     }
 
-    Ok(Authors {authors})
+    Ok(authors)
 }
 
-pub async fn fetch_author_by_id(conn: &Connection, author_id: i32) -> Result<Option<Author>> {
-    let sql = "SELECT * FROM author WHERE id = ? AND deleted = false";
-    let stmt = conn.query_row(sql, [author_id], |row| {
+pub async fn fetch_author_by_id(pool: &Pool<SqliteConnectionManager>, author_id: i32) -> Result<Option<Author>> {
+    let conn = pool.get().map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
+    let sql = "SELECT id, first_name, last_name, deleted FROM author WHERE id = ? AND deleted = FALSE";
+    conn.query_row(sql, params![author_id], |row| {
         Ok(Author {
             id: row.get(0)?,
             first_name: row.get(1)?,
             last_name: row.get(2)?,
-            deleted: Some(row.get(3)?)
+            deleted: row.get(3)?
         })
-    })?;
-
-    Ok(Some(stmt))
+    }).optional()
 }
 
-pub async fn update_author(conn: &Connection, new_author: UpdateAuthor) -> Result<Author> {
-    // need to test this query works!
+pub async fn update_author(pool: &Pool<SqliteConnectionManager>, new_author: UpdateAuthor) -> Result<Author> {
+    let conn = pool.get().map_err(|e| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "UPDATE author SET first_name = ?, last_name = ? WHERE id = ? RETURNING *";
-
-    let stmt = conn.query_row(sql, [
-        new_author.first_name,
-        new_author.last_name,
-        new_author.id.to_string()
-    ], |row| {
+    conn.query_row(sql, params![new_author.first_name, new_author.last_name, new_author.id.to_string()], |row| {
         Ok(Author {
             id: row.get(0)?,
             first_name: row.get(1)?,
             last_name: row.get(2)?,
-            deleted: Some(row.get(3)?)
+            deleted: row.get(3)?
         })
-    })?;
-    Ok(stmt)
+    })
 }
 
 //could cause conflict due to key restraints with posts
