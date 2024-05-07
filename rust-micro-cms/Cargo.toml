@@ -5,7 +5,6 @@ edition = "2021"
 authors = ["Alex Blood"]
 
 [dependencies]
-anyhow = { workspace = true }
 axum = { workspace = true }
 chrono = { workspace = true }
 dotenv = "0.15.0"

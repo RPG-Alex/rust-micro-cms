@@ -61,12 +61,21 @@ pub async fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
     Ok(Posts { posts })
 }
 
-pub async fn fetch_post_by_id(conn: &Connection, post_id: i32) -> Result<Post> {
-    let post = sqlx::query_as!(Post, "SELECT * FROM posts WHERE id = $1", post_id)
-        .fetch_one(pool)
-        .await?;
+pub async fn fetch_post_by_id(conn: &Connection, post_id: i32) -> Result<Option<Post>> {
+    let sql = "SELECT * FROM posts WHERE id = $1";
+    let stmt = conn.query_row(sql, [post_id], |row| {
+        Ok(Post {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            date: row.get(2)?,
+            body: row.get(3)?,
+            archived: row.get(4)?,
+            draft: row.get(5)?,
+            author_id: row.get(6)?,
+        })
+    })?;
 
-    Ok(post)
+    Ok(Some(stmt))
 }
 
 pub async fn fetch_all_posts_for_author(conn: &Connection, author_id: i32) -> Result<Posts> {
