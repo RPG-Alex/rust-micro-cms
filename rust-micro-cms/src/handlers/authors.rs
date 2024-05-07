@@ -5,8 +5,7 @@ use axum::{
     http::StatusCode,
     response::Response,
 };
-use r2d2_sqlite::SqliteConnectionManager;
-use r2d2::Pool;
+
 
 // Handler to add a new author
 pub async fn add_author(

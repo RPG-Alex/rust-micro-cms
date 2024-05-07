@@ -1,4 +1,5 @@
-use tokio_rusqlite::{Connection, Error, params, Result};
+use axum::Error;
+use tokio_rusqlite::{Connection, params, Result};
 use crate::models::{Author, Authors, NewAuthor, UpdateAuthor};
 
 pub async fn create_author_table(conn: &Connection) -> Result<usize> {
@@ -10,7 +11,11 @@ pub async fn create_author_table(conn: &Connection) -> Result<usize> {
                 last_name TEXT NOT NULL,
                 deleted BOOLEAN DEFAULT FALSE
             )";
-        conn.execute(sql, [])
+
+        match conn.execute(sql, [],) {
+            Ok(val) => Ok(val),
+            Err(e) => Err(tokio_rusqlite::Error::Rusqlite(e))
+        }
     }).await
 }
 

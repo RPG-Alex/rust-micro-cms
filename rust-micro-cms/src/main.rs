@@ -4,8 +4,6 @@ use axum::{
     Router,
 };
 use dotenv::dotenv;
-use r2d2_sqlite::SqliteConnectionManager;
-use r2d2::Pool;
 use std::env;
 use tokio::net::TcpListener;
 
@@ -20,10 +18,7 @@ mod routes;
 async fn main() {
     dotenv().ok();
     let db_path = env::var("DATABASE_URL").expect("DATABASE_URL must be set in .env file");
-    let manager = SqliteConnectionManager::file(db_path);
-    let pool = Pool::new(manager).expect("Failed to create pool");
-
-    let state = state::AppState::new(pool);
+    let state = state::AppState::new(&db_path);
 
     let app = Router::new()
         .route("/posts", get(handlers::posts::get_all_posts))

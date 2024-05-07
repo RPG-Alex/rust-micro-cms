@@ -1,15 +1,12 @@
-use r2d2_sqlite::SqliteConnectionManager;
-use r2d2::Pool;
+use tokio_rusqlite::{Connection, Result};
 
-#[derive(Clone)]
 pub struct AppState {
-    pub pool: Pool<SqliteConnectionManager>,
+    conn: Connection,
 }
 
 impl AppState {
-    pub fn new(pool: Pool<SqliteConnectionManager>) -> AppState {
-        AppState {
-            pool,
-        }
+    pub async fn new(db_path: &str) -> Result<Self> {
+        let conn = Connection::open(db_path).await?;
+        Ok(Self { conn })
     }
 }

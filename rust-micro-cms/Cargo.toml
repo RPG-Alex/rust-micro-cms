@@ -8,6 +8,7 @@ authors = ["Alex Blood"]
 axum = { workspace = true, features = ["macros"] }
 chrono = { workspace = true }
 dotenv = "0.15.0"
+rusqlite = "0.31.0"
 serde = { workspace = true }
 serde_json = { workspace = true }
 simple-log = { workspace = true }

@@ -9,8 +9,6 @@ use axum::{
     http::StatusCode,
     response::Response,
 };
-use r2d2_sqlite::SqliteConnectionManager;
-use r2d2::Pool;
 
 // Handler to fetch all posts
 #[debug_handler]
