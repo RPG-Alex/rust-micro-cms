@@ -3,7 +3,7 @@ use rusqlite::{Connection, Error, Result};
 
 
 pub async fn create_posts_table(conn: &Connection) -> Result<()> {
-    sqlx::query!(
+    let sql = 
         "CREATE TABLE IF NOT EXISTS posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
@@ -13,10 +13,8 @@ pub async fn create_posts_table(conn: &Connection) -> Result<()> {
             draft BOOLEAN NOT NULL DEFAULT TRUE,
             author_id INTEGER NOT NULL,
             FOREIGN KEY (author_id) REFERENCES author(id)
-        )"
-    )
-    .execute(pool)
-    .await?;
+        )";
+        conn.execute(sql, ())?;
     Ok(())
 }
 pub async fn insert_new_post(conn: &Connection, post: &NewPost) -> Result<Post> {

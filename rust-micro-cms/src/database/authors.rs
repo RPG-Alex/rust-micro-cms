@@ -9,7 +9,7 @@ pub async fn create_author_table(conn: &Connection) -> Result<()> {
             last_name TEXT NOT NULL,
             deleted BOOLEAN DEFAULT FALSE
         )";
-    conn.execute(sql, ());
+    conn.execute(sql, ())?;
     Ok(())
 }
 
