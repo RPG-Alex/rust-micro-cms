@@ -21,8 +21,8 @@ async fn main() {
     let state = state::AppState::new(&db_path);
 
     let app = Router::new()
-        .route("/posts", get(handlers::posts::get_all_posts))
-        .route("/authors/:id", get(handlers::authors::get_author))
+        //.route("/posts", get(handlers::posts::get_all_posts))
+        //.route("/authors/:id", get(handlers::authors::get_author))
         .layer(Extension(state));  
 
     let addr = "127.0.0.1:3000";

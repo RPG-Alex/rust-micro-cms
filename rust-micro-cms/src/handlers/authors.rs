@@ -1,42 +1,91 @@
-use crate::database::authors::{fetch_author_by_id, insert_new_author};
-use crate::models::authors::{Author, NewAuthor};
 use axum::{
-    extract::{Extension, Json, Path},
+    extract::{Extension, Path},
+    Json,
+    response::IntoResponse,
     http::StatusCode,
-    response::Response,
 };
+use crate::state::AppState;
+use crate::models::{NewAuthor, UpdateAuthor};
+use crate::database::authors;
+use serde_json::json;
 
 
-// Handler to add a new author
-pub async fn add_author(
-    Json(new_author): Json<NewAuthor>,
-    Extension(pool): Extension<Pool<SqliteConnectionManager>>,
-) -> Result<Json<Author>, Response> {
-    let conn = pool.get().expect("Failed to get DB connection from pool");
-    match insert_new_author(&conn, &new_author).await {
-        Ok(author) => Ok(Json(author)),
-        Err(_) => Err(Response::builder()
-            .status(StatusCode::INTERNAL_SERVER_ERROR)
-            .body("Failed to add author".into())
-            .unwrap()),
+pub async fn create_author_handler(
+    Extension(state): Extension<AppState>,
+    Json(new_author): Json<NewAuthor>
+) -> impl IntoResponse {
+    let conn = match state.pool.get() {
+        Ok(conn) => conn,
+        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
+    };
+
+    match authors::insert_new_author(&conn, &new_author).await {
+        Ok(author) => {
+            match serde_json::to_value(author) {
+                Ok(json_value) => (StatusCode::CREATED, Json(json_value)),
+                Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": "Serialization failed: ".to_owned() + &e.to_string()})))
+            }
+        },
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
     }
 }
 
-// Handler to fetch an author by ID
-pub async fn get_author(
-    Path(author_id): Path<i32>,
-    Extension(pool): Extension<Pool<SqliteConnectionManager>>,
-) -> Result<Json<Author>, Response> {
-    let conn = pool.get().expect("Failed to get DB connection from pool");
-    match fetch_author_by_id(&conn, author_id).await {
-        Ok(Some(author)) => Ok(Json(author)),
-        Ok(None) => Err(Response::builder()
-            .status(StatusCode::NOT_FOUND)
-            .body("Author not found".into())
-            .unwrap()),
-        Err(_) => Err(Response::builder()
-            .status(StatusCode::INTERNAL_SERVER_ERROR)
-            .body("Failed to retrieve author".into())
-            .unwrap()),
+pub async fn get_all_authors_handler(
+    Extension(state): Extension<AppState>
+) -> impl IntoResponse {
+    let conn = match state.pool.get() {
+        Ok(conn) => conn,
+        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
+    };
+
+    match authors::fetch_all_authors(&conn).await {
+        Ok(authors) => {
+            match serde_json::to_value(authors) {
+                Ok(json_value) => (StatusCode::OK, Json(json_value)),
+                Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": "Serialization failed: ".to_owned() + &e.to_string()})))
+            }
+        },
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
+    }
+}
+
+pub async fn get_author_by_id_handler(
+    Extension(state): Extension<AppState>,
+    Path(author_id): Path<i32>
+) -> impl IntoResponse {
+    let conn = match state.pool.get() {
+        Ok(conn) => conn,
+        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
+    };
+
+    match authors::fetch_author_by_id(&conn, author_id).await {
+        Ok(Some(author)) => {
+            match serde_json::to_value(author) {
+                Ok(json_value) => (StatusCode::OK, Json(json_value)),
+                Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": "Serialization failed: ".to_owned() + &e.to_string()})))
+            }
+        },
+        Ok(None) => (StatusCode::NOT_FOUND, Json(json!({"error": "Author not found"}))),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
+    }
+}
+
+pub async fn update_author_handler(
+    Extension(state): Extension<AppState>,
+    Json(update_author): Json<UpdateAuthor>
+) -> impl IntoResponse {
+    let conn = match state.pool.get() {
+        Ok(conn) => conn,
+        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
+    };
+
+    match authors::update_author(&conn, update_author).await {
+        Ok(author) => {
+            match serde_json::to_value(author) {
+                Ok(json_value) => (StatusCode::OK, Json(json_value)),
+                Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": "Serialization failed: ".to_owned() + &e.to_string()})))
+            }
+        },
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": e.to_string()})))
     }
 }
