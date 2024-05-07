@@ -14,7 +14,6 @@ use crate::models::{
 use crate::database::posts;
 use serde_json::json;
 
-#[axum::debug_handler]
 pub async fn create_post_handler(
     Extension(state): Extension<AppState>,
     Json(new_post): Json<NewPost>
