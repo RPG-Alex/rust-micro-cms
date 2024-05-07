@@ -18,18 +18,26 @@ pub async fn create_posts_table(conn: &Connection) -> Result<usize> {
     Ok(result)
 }
 pub async fn insert_new_post(conn: &Connection, post: &NewPost) -> Result<Post> {
-    let inserted_post = sqlx::query_as!(
-        Post,
-        "INSERT INTO posts (title, date, body, author_id) VALUES (?, ?, ?, ?) RETURNING *",
-        post.title,
-        post.date,
-        post.body,
-        post.author_id
-    )
-    .fetch_one(pool)
-    .await?;
+    let sql = "INSERT INTO posts (title, date, body, author_id) VALUES (?, ?, ?, ?) RETURNING *";
 
-    Ok(inserted_post)
+    let stmt = conn.query_row(sql, [
+        post.title.to_owned(),
+        post.date.to_owned(),
+        post.body.to_owned(),
+        post.author_id.to_string()        
+    ], |row| {
+        Ok(Post {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            date: row.get(2)?,
+            body: row.get(3)?,
+            archived: row.get(4)?,
+            draft: row.get(5)?,
+            author_id: row.get(6)?,
+        })
+    })?;
+
+    Ok(stmt)
 }
 
 pub async fn fetch_all_posts(conn: &Connection) -> Result<Posts> {
