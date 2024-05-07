@@ -19,9 +19,13 @@ async fn main() {
     let db_path = env::var("DATABASE_URL").expect("DATABASE_URL must be set in .env file");
     let state = state::AppState::new(&db_path);
 
-    let app = Router::new()
-        //.route("/posts", get(handlers::posts::get_all_posts))
-        //.route("/authors/:id", get(handlers::authors::get_author))
+    if let Err(e) = database::posts::create_posts_table(&state.pool).await {
+        eprintln!("Failed to create posts table: {}", e);
+        return; 
+    }
+
+    
+    let app = routes::app_routes().await
         .layer(Extension(state));
 
     let addr = "127.0.0.1:3000";

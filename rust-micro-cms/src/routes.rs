@@ -16,7 +16,7 @@ pub async fn app_routes() -> Router {
             "/authors/:id",
             get(authors::get_author_by_id_handler).put(authors::update_author_handler),
         )
-        // // Post routes
+        // Post routes
         .route(
             "/posts",
             get(posts::get_all_posts_handler).post(posts::create_post_handler),
