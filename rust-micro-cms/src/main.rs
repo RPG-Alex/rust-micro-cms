@@ -26,9 +26,9 @@ async fn main() {
     let state = state::AppState::new(pool);
 
     let app = Router::new()
-        //.route("/posts", get(handlers::posts::get_all_posts))
-        //.route("/authors/:id", get(handlers::authors::get_author))
-        .layer(Extension(state));  // Passing the AppState
+        .route("/posts", get(handlers::posts::get_all_posts))
+        .route("/authors/:id", get(handlers::authors::get_author))
+        .layer(Extension(state));  
 
     let addr = "127.0.0.1:3000";
     let listener = TcpListener::bind(addr).await.expect("Failed to bind");

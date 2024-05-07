@@ -5,14 +5,12 @@ edition = "2021"
 authors = ["Alex Blood"]
 
 [dependencies]
-axum = { workspace = true }
+axum = { workspace = true, features = ["macros"] }
 chrono = { workspace = true }
 dotenv = "0.15.0"
-r2d2 = "0.8.10"
-r2d2_sqlite = "0.24.0"
-rusqlite = "0.31.0"
 serde = { workspace = true }
 serde_json = { workspace = true }
 simple-log = { workspace = true }
 tokio = { workspace = true, features = ["full"] }
+tokio-rusqlite = "0.5.1"
 
