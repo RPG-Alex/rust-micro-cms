@@ -23,7 +23,7 @@ pub fn recent_posts(props: &RecentPostsProps) -> Html {
                 html! {
                     <div class="post">
                         <h2>{ &post.title }</h2>
-                        <h3>{ format!("by {} on {}", &post.author, &post.date) }</h3>
+                        <h3>{ format!("{}", &post.date) }</h3>
                         <p>{ &post.body }</p>
                     </div>
                 }

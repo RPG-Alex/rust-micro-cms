@@ -8,8 +8,6 @@ pub struct Post {
     pub body: String,
     pub archived: bool,
     pub draft: bool,
-    pub author_id: i64,
-    pub author: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -18,7 +16,6 @@ pub struct NewPost {
     pub date: String,
     pub body: String,
     pub draft: bool,
-    pub author_id: i64,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -29,5 +26,9 @@ pub struct UpdatePost {
     pub body: String,
     pub archived: bool,
     pub draft: bool,
-    pub author_id: i64,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Posts {
+    pub posts: Vec<Post>,
 }

@@ -50,8 +50,6 @@ fn switch(routes: Route) -> Html {
             body: "This is the first post's body content.".to_string(),
             archived: false,
             draft: false,
-            author_id: 1,
-            author: "Author One".to_string(),
         },
         Post {
             id: 2,
@@ -60,8 +58,7 @@ fn switch(routes: Route) -> Html {
             body: "This is the second post's body content.".to_string(),
             archived: false,
             draft: false,
-            author_id: 2,
-            author: "Author Two".to_string(),
+
         },
         Post {
             id: 3,
@@ -70,8 +67,7 @@ fn switch(routes: Route) -> Html {
             body: "Details about the third post.".to_string(),
             archived: false,
             draft: false,
-            author_id: 3,
-            author: "Author Three".to_string(),
+
         },
         Post {
             id: 4,
@@ -80,8 +76,7 @@ fn switch(routes: Route) -> Html {
             body: "Insights from the fourth post.".to_string(),
             archived: false,
             draft: false,
-            author_id: 4,
-            author: "Author Four".to_string(),
+
         },
         Post {
             id: 5,
@@ -90,8 +85,6 @@ fn switch(routes: Route) -> Html {
             body: "Discussion on the fifth post topic.".to_string(),
             archived: false,
             draft: false,
-            author_id: 5,
-            author: "Author Five".to_string(),
         },
         Post {
             id: 6,
@@ -100,8 +93,7 @@ fn switch(routes: Route) -> Html {
             body: "Exploration of the sixth post's theme.".to_string(),
             archived: false,
             draft: false,
-            author_id: 6,
-            author: "Author Six".to_string(),
+
         },
         Post {
             id: 7,
@@ -110,8 +102,7 @@ fn switch(routes: Route) -> Html {
             body: "Seventh post’s revelations and thoughts.".to_string(),
             archived: false,
             draft: false,
-            author_id: 7,
-            author: "Author Seven".to_string(),
+
         },
         Post {
             id: 8,
@@ -120,8 +111,7 @@ fn switch(routes: Route) -> Html {
             body: "Analyzing the topic discussed in the eighth post.".to_string(),
             archived: false,
             draft: false,
-            author_id: 8,
-            author: "Author Eight".to_string(),
+
         },
         Post {
             id: 9,
@@ -130,8 +120,7 @@ fn switch(routes: Route) -> Html {
             body: "Perspectives from the ninth post.".to_string(),
             archived: false,
             draft: false,
-            author_id: 9,
-            author: "Author Nine".to_string(),
+
         },
         Post {
             id: 10,
@@ -140,8 +129,7 @@ fn switch(routes: Route) -> Html {
             body: "Summary of thoughts on the tenth topic.".to_string(),
             archived: false,
             draft: false,
-            author_id: 10,
-            author: "Author Ten".to_string(),
+
         },
     ];
     match routes {
