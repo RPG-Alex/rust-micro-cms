@@ -13,7 +13,6 @@ pub struct Post {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct NewPost {
     pub title: String,
-    pub date: String,
     pub body: String,
     pub draft: bool,
 }

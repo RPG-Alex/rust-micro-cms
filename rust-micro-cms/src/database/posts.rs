@@ -1,3 +1,4 @@
+use chrono::{Utc, DateTime};
 use crate::models::{NewPost, Post, Posts, UpdatePost};
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
@@ -19,13 +20,16 @@ pub async fn create_posts_table(pool: &Pool<SqliteConnectionManager>) -> Result<
 }
 
 pub async fn insert_new_post(pool: &Pool<SqliteConnectionManager>, post: &NewPost) -> Result<Post> {
+    let current_date: DateTime<Utc> = Utc::now();
+    let date = current_date.format("%Y-%m-%d %H:%M:%S").to_string();
+
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
-    let sql = "INSERT INTO posts (title, date, body) VALUES (?, ?, ?)";
+    let sql = "INSERT INTO posts (title, date, body, draft) VALUES (?, ?, ?, ?)";
     conn.execute(
         sql,
-        params![post.title, post.date, post.body],
+        params![post.title, date.to_string(), post.body, post.draft],
     )?;
 
     let last_id = conn.last_insert_rowid();
