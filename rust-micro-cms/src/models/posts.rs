@@ -15,6 +15,7 @@ pub struct NewPost {
     pub title: String,
     pub date: String,
     pub body: String,
+    pub draft: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
