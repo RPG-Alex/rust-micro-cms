@@ -13,9 +13,7 @@ pub async fn create_posts_table(pool: &Pool<SqliteConnectionManager>) -> Result<
             date TEXT NOT NULL,
             body TEXT NOT NULL,
             archived BOOLEAN NOT NULL DEFAULT FALSE,
-            draft BOOLEAN NOT NULL DEFAULT TRUE,
-            author_id INTEGER NOT NULL,
-            FOREIGN KEY (author_id) REFERENCES author(id)
+            draft BOOLEAN NOT NULL DEFAULT TRUE
         )";
     conn.execute(sql, ())
 }
@@ -24,15 +22,15 @@ pub async fn insert_new_post(pool: &Pool<SqliteConnectionManager>, post: &NewPos
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
-    let sql = "INSERT INTO posts (title, date, body, author_id) VALUES (?, ?, ?, ?)";
+    let sql = "INSERT INTO posts (title, date, body) VALUES (?, ?, ?)";
     conn.execute(
         sql,
-        params![post.title, post.date, post.body, post.author_id],
+        params![post.title, post.date, post.body],
     )?;
 
     let last_id = conn.last_insert_rowid();
     conn.query_row(
-        "SELECT id, title, date, body, archived, draft, author_id FROM posts WHERE id = ?",
+        "SELECT id, title, date, body, archived, draft FROM posts WHERE id = ?",
         params![last_id],
         |row| {
             Ok(Post {
@@ -42,7 +40,6 @@ pub async fn insert_new_post(pool: &Pool<SqliteConnectionManager>, post: &NewPos
                 body: row.get(3)?,
                 archived: row.get(4)?,
                 draft: row.get(5)?,
-                author_id: row.get(6)?,
             })
         },
     )
@@ -62,7 +59,6 @@ pub async fn fetch_all_posts(pool: &Pool<SqliteConnectionManager>) -> Result<Pos
             body: row.get(3)?,
             archived: row.get(4)?,
             draft: row.get(5)?,
-            author_id: row.get(6)?,
         })
     })?;
 
@@ -90,7 +86,6 @@ pub async fn fetch_post_by_id(
             body: row.get(3)?,
             archived: row.get(4)?,
             draft: row.get(5)?,
-            author_id: row.get(6)?,
         })
     })
     .optional()
@@ -100,7 +95,7 @@ pub async fn update_post(pool: &Pool<SqliteConnectionManager>, post: UpdatePost)
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
-    let sql = "UPDATE posts SET title = ?, date = ?, body = ?, archived = ?, draft = ?, author_id = ? WHERE id = ? RETURNING *";
+    let sql = "UPDATE posts SET title = ?, date = ?, body = ?, archived = ?, draft = ? WHERE id = ? RETURNING *";
     conn.query_row(
         sql,
         params![
@@ -109,7 +104,6 @@ pub async fn update_post(pool: &Pool<SqliteConnectionManager>, post: UpdatePost)
             post.body,
             post.archived,
             post.draft,
-            post.author_id,
             post.id
         ],
         |row| {
@@ -120,7 +114,6 @@ pub async fn update_post(pool: &Pool<SqliteConnectionManager>, post: UpdatePost)
                 body: row.get(3)?,
                 archived: row.get(4)?,
                 draft: row.get(5)?,
-                author_id: row.get(6)?,
             })
         },
     )

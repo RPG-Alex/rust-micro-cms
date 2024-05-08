@@ -1,7 +1,4 @@
-use axum::{
-    extract::Extension,
-    Router,
-};
+use axum::extract::Extension;
 use dotenv::dotenv;
 use std::env;
 use tokio::net::TcpListener;
