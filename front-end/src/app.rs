@@ -7,6 +7,7 @@ use crate::views::{
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+
 #[derive(Clone, Debug, Routable, PartialEq)]
 enum Route {
     #[at("/")]
