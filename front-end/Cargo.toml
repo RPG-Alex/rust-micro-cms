@@ -12,7 +12,9 @@ categories = ["gui", "wasm", "web-programming"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 chrono.workspace = true
+gloo-net = "0.5.0"
 reqwest = { version = "0.12.4", features = ["json"] }
 serde = { workspace = true, features = ["derive"] }
+wasm-bindgen-futures = "0.4.42"
 yew = { version = "0.21.0", features = ["csr"] }
 yew-router = {version = "0.18.0" }

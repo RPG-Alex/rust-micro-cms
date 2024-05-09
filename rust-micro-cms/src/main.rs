@@ -1,7 +1,13 @@
-use axum::extract::Extension;
+use axum::{
+    extract::Extension,
+    http::{HeaderValue, Method},
+    Router,
+};
 use dotenv::dotenv;
 use std::env;
+use std::net::SocketAddr;
 use tokio::net::TcpListener;
+use tower_http::cors::CorsLayer;
 
 mod database;
 mod errors;
@@ -18,14 +24,18 @@ async fn main() {
 
     if let Err(e) = database::posts::create_posts_table(&state.pool).await {
         eprintln!("Failed to create posts table: {}", e);
-        return; 
+        return;
     }
 
-    
-    let app = routes::app_routes().await
-        .layer(Extension(state));
+    let cors = CorsLayer::new()
+        .allow_origin(HeaderValue::from_static("http://127.0.0.1:8080"))
+        .allow_methods(vec![Method::GET, Method::POST]);
 
-    let addr = "127.0.0.1:3000";
+    let app = routes::app_routes().await
+        .layer(Extension(state))
+        .layer(cors); // Adding CorsLayer here
+
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     let listener = TcpListener::bind(addr).await.expect("Failed to bind");
     println!("Listening on {}", addr);
 

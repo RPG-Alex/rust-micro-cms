@@ -30,3 +30,11 @@ pub struct UpdatePost {
 pub struct Posts {
     pub posts: Vec<Post>,
 }
+
+impl Default for Posts {
+    fn default() -> Self {
+        Posts {
+            posts: Vec::new(),
+        }
+    }
+}
