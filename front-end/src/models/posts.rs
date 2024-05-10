@@ -26,7 +26,7 @@ pub struct UpdatePost {
     pub draft: bool,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Posts {
     pub posts: Vec<Post>,
 }
