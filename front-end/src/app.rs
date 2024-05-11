@@ -1,11 +1,6 @@
 use crate::models::{
-    posts::{
-        NewPost,
-        Post,
-        Posts,
-        UpdatePost,
-    }, 
-    styling::Style
+    posts::{NewPost, Post, Posts, UpdatePost},
+    styling::Style,
 };
 use crate::views::{
     nav_bar::NavBar,
@@ -32,10 +27,12 @@ enum Routes {
     NotFound,
 }
 
+
+
 #[function_component(App)]
 pub fn app() -> Html {
     let default_style = Style::default();
-    
+
     let posts = use_state(Posts::default);
     {
         let posts = posts.clone();
@@ -54,8 +51,7 @@ pub fn app() -> Html {
             || ()
         });
     }
-
-
+    
     html! {
         <div>
             <title>{ "Micro CMS!" }</title>
@@ -68,8 +64,10 @@ pub fn app() -> Html {
     }
 }
 
+
+
 fn switch(routes: Routes) -> Html {
-    let posts = 
+
     match routes {
         Routes::Home => html! {
             <RecentPosts posts={posts.posts.clone()} />
@@ -83,7 +81,7 @@ fn switch(routes: Routes) -> Html {
             } else {
                 html! { <h1>{"Post does not exist"}</h1> }
             }
-        },
+        }
         Routes::Style => html! {
             <StyleForm style={Style::default()} />
         },
