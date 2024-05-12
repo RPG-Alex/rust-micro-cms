@@ -55,13 +55,14 @@ pub fn app() -> Html {
     html! {
         <div>
             <title>{ "Micro CMS!" }</title>
-            <StyleInjector style={default_style} />
+
             <NavBar />
             <BrowserRouter>
                 <ContextProvider<Posts> context={(*posts).clone()}>
                     <CMSRoutes />
                 </ContextProvider<Posts>>
             </BrowserRouter>
+            <StyleInjector style={default_style} />
         </div>
     }    
 }
