@@ -9,10 +9,14 @@ pub struct StyleProps {
 #[function_component(StyleForm)]
 pub fn style_form(props: &StyleProps) -> Html {
     html! {
-        <form>
-            <textarea id="style_update_text" value={props.style.css.clone()} />
-            <input type="submit" value="update style" />
-            <input type="reset" value="reset" />
-        </form>
+        <div class="posts">
+            <form>
+                <textarea id="style_update_text" value={props.style.css.clone()} />
+                <div class="form-buttons">
+                    <input type="submit" value="update style" class="submit-button" />
+                    <input type="reset" value="reset" class="reset-button" />
+                </div>
+            </form>
+        </div>
     }
 }

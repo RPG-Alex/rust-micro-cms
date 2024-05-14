@@ -8,12 +8,12 @@ pub struct Style {
 impl Default for Style {
     fn default() -> Self {
         let css = r#"
-        /* Ensuring the body has no margin or padding */
+        
         body {
             margin: 0;
             padding: 0;
         }
-        /* Fixed navbar with specified width and a solid border */
+        
         nav {
             position: fixed;
             top: 0;
@@ -22,11 +22,11 @@ impl Default for Style {
             height: 100%;
             border-right: 2px solid #ccc;
             padding: 20px;
-            box-sizing: border-box; /* Includes padding and border in the width */
+            box-sizing: border-box; 
         }
-        /* Content offset from the left by the width of the navbar */
+        
         .content {
-            margin-left: calc(30% + 2px); /* Accounts for the border width */
+            margin-left: calc(30% + 2px); 
             padding: 20px;
             box-sizing: border-box;
         }
@@ -38,14 +38,14 @@ impl Default for Style {
             content: "» » ";
             color: #333;
         }
-        /* Styling for posts */
+        
         .posts {
-            position: absolute; /* Ensures the posts div is positioned independently of other elements */
-            top: 0;             /* Aligns the top of the div with the top of the viewport */
-            left: 30%;          /* Offsets the div from the left by the width of the navbar */
-            width: 70%;         /* Allocates the remaining 70% of the viewport width to the posts div */
+            position: absolute; 
+            top: 0;             
+            left: 30%;          
+            width: 70%;         
             padding: 20px;
-            box-sizing: border-box; /* Ensures padding is included within the width */
+            box-sizing: border-box; 
         }
         .post {
             background-color: #fff;
@@ -72,7 +72,50 @@ impl Default for Style {
             cursor: pointer;
             margin-top: 10px;
         }
+        textarea#style_update_text {
+            width: 100%;
+            height: 300px; 
+            box-sizing: border-box;
+        }
+    
         
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+    
+        
+        .form-buttons input {
+            width: 48%; 
+        }
+        .submit-button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+        
+        .reset-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+        
+        .submit-button:hover {
+            background-color: darkgreen;
+        }
+    
+        .reset-button:hover {
+            background-color: darkred;
+        }
         "#
         .to_string();
 
