@@ -55,36 +55,41 @@ pub fn app() -> Html {
     html! {
         <div>
             <title>{ "Micro CMS!" }</title>
-            <StyleInjector style={default_style} />
+
             <NavBar />
             <BrowserRouter>
-                <Switch<Routes> render={switch} />
+                <ContextProvider<Posts> context={(*posts).clone()}>
+                    <CMSRoutes />
+                </ContextProvider<Posts>>
             </BrowserRouter>
+            <StyleInjector style={default_style} />
         </div>
-    }
+    }    
 }
 
 
+#[function_component(CMSRoutes)]
+fn cms_routes() -> Html {
+    let route = use_route::<Routes>();
+    let posts_context = use_context::<Posts>().expect("context not found");
 
-fn switch(routes: Routes) -> Html {
-
-    match routes {
-        Routes::Home => html! {
-            <RecentPosts posts={posts.posts.clone()} />
+    match route {
+        Some(Routes::Home) => html! {
+            <RecentPosts posts={posts_context.posts.clone()} />
         },
-        Routes::AllPosts => html! {
-            <PostList posts={posts.posts.clone()} />
+        Some(Routes::AllPosts) => html! {
+            <PostList posts={posts_context.posts.clone()} />
         },
-        Routes::Post { id } => {
-            if let Some(post) = posts.posts.iter().find(|p| p.id == id) {
+        Some(Routes::Post { id }) => {
+            if let Some(post) = posts_context.posts.iter().find(|p| p.id == id) {
                 html! { <SinglePost post={post.to_owned()} /> }
             } else {
                 html! { <h1>{"Post does not exist"}</h1> }
             }
-        }
-        Routes::Style => html! {
+        },
+        Some(Routes::Style) => html! {
             <StyleForm style={Style::default()} />
         },
-        Routes::NotFound => html! { <h1>{"404 Not Found"}</h1> },
+        Some(Routes::NotFound) | None => html! { <h1>{"404 Not Found"}</h1> },
     }
 }

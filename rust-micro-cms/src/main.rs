@@ -1,7 +1,6 @@
 use axum::{
     extract::Extension,
     http::{HeaderValue, Method},
-    Router,
 };
 use dotenv::dotenv;
 use std::env;
@@ -33,7 +32,7 @@ async fn main() {
 
     let app = routes::app_routes().await
         .layer(Extension(state))
-        .layer(cors); // Adding CorsLayer here
+        .layer(cors); 
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     let listener = TcpListener::bind(addr).await.expect("Failed to bind");
