@@ -46,7 +46,7 @@ pub fn cms_routes() -> Html {
             }
         },
         Some(Routes::Style) => html! {
-            <StyleForm style={Style::default()} />
+            <StyleForm style={Style::default()} posts={posts_context.posts.clone()} />
         },
         Some(Routes::NotFound) | None => html! { <h1>{"404 Not Found"}</h1> },
     }
