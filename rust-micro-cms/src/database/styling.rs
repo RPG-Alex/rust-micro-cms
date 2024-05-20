@@ -9,7 +9,49 @@ pub async fn create_style_db(pool: &Pool<SqliteConnectionManager>) -> Result<usi
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "CREATE TABLE IF NOT EXISTS styling {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
         styling TEXT NOT NULL
     }";
     conn.execute(sql, ())
+}
+
+pub async fn fetch_all_styles(pool: &Pool<SqliteConnectionManager>) -> Result<Vec<Style>>{
+    let conn = pool
+        .get()
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
+    let sql = "SELECT * FROM styling";
+    let mut stmt = conn.prepare(sql)?;
+    let styling_iter = stmt.query_map([], |row| {
+        Ok(Style{
+            css: row.get(2)?
+        })
+    })?;
+    let mut styles = Vec::new();
+    for post in styling_iter {
+        styles.push(post?);
+    }
+
+    Ok(styles)
+}
+
+pub async fn insert_style(pool: &Pool<SqliteConnectionManager>,style: Style) -> Result<Style> {
+    let conn = pool
+        .get()
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
+    let sql = "INSERT INTO styling (styling) VALUES (?)";
+    conn.execute(
+        sql,
+        params![style.css],
+    )?;
+
+    let last_id = conn.last_insert_rowid();
+    conn.query_row(
+        "SELECT styling FROM styling WHERE id = ?",
+        params![last_id],
+        |row| {
+            Ok(Style{
+                css: row.get(0)?
+            })
+        },
+    )
 }
