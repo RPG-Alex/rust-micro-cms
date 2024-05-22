@@ -28,3 +28,21 @@ pub async fn create_style_handler(
         )
     }
 }
+
+pub async fn fetch_styles_handler(
+    Extension(state): Extension<AppState>
+) -> impl IntoResponse {
+    match styling::fetch_all_styles(&state.pool).await {
+        Ok(styles) => match  serde_json::to_value(styles) {
+            Ok(json_value) => (StatusCode::OK, Json(json_value)),
+            Err(e) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(json!({"error!":"Serialization Failed".to_owned() + &e.to_string()})),
+            ),
+        },
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({"error": e.to_string()})),
+        )
+    }
+}
