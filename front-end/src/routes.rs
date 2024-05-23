@@ -1,7 +1,4 @@
-use crate::models::{
-    posts::Posts,
-    styling::Style,
-};
+use crate::models::{posts::Posts, styling::Style};
 use crate::views::{
     posts::{all_posts::PostList, recent_posts::RecentPosts, single_post::SinglePost},
     styling::update_styling::StyleForm,
@@ -25,7 +22,6 @@ pub enum Routes {
     NotFound,
 }
 
-
 #[function_component(CMSRoutes)]
 pub fn cms_routes() -> Html {
     let route = use_route::<Routes>();
@@ -44,7 +40,7 @@ pub fn cms_routes() -> Html {
             } else {
                 html! { <h1>{"Post does not exist"}</h1> }
             }
-        },
+        }
         Some(Routes::Style) => html! {
             <StyleForm style={Style::default()} posts={posts_context.posts.clone()} />
         },

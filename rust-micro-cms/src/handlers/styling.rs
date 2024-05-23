@@ -1,9 +1,8 @@
-use crate::{database::styling, state};
-use crate::models::styling::Style;
+use crate::models::styling::NewStyle;
 use crate::state::AppState;
-use axum::response::IntoResponseParts;
+use crate::database::styling;
 use axum::{
-    extract::{Extension, Path},
+    extract::Extension,
     http::StatusCode,
     response::IntoResponse,
     Json,
@@ -12,7 +11,7 @@ use serde_json::json;
 
 pub async fn create_style_handler(
     Extension(state): Extension<AppState>,
-    Json(new_style): Json<Style>,
+    Json(new_style): Json<NewStyle>,
 ) -> impl IntoResponse {
     match styling::insert_style(&state.pool, new_style).await {
         Ok(style) => match serde_json::to_value(style) {
@@ -25,15 +24,13 @@ pub async fn create_style_handler(
         Err(e) => (
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(json!({"error": e.to_string()})),
-        )
+        ),
     }
 }
 
-pub async fn fetch_styles_handler(
-    Extension(state): Extension<AppState>
-) -> impl IntoResponse {
+pub async fn fetch_styles_handler(Extension(state): Extension<AppState>) -> impl IntoResponse {
     match styling::fetch_all_styles(&state.pool).await {
-        Ok(styles) => match  serde_json::to_value(styles) {
+        Ok(styles) => match serde_json::to_value(styles) {
             Ok(json_value) => (StatusCode::OK, Json(json_value)),
             Err(e) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -43,6 +40,6 @@ pub async fn fetch_styles_handler(
         Err(e) => (
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(json!({"error": e.to_string()})),
-        )
+        ),
     }
 }

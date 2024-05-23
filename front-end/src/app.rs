@@ -1,12 +1,6 @@
-use crate::models::{
-    posts::Posts,
-    styling::Style,
-};
-use crate::views::{
-    nav_bar::NavBar,
-    styling::styling::StyleInjector,
-};
+use crate::models::{posts::Posts, styling::Style};
 use crate::routes::CMSRoutes;
+use crate::views::{nav_bar::NavBar, styling::styling::StyleInjector};
 use gloo_net::http::Request;
 use yew::prelude::*;
 use yew_router::prelude::*;
@@ -33,7 +27,7 @@ pub fn app() -> Html {
             || ()
         });
     }
-    
+
     html! {
         <div>
             <title>{ "Micro CMS!" }</title>
@@ -46,6 +40,5 @@ pub fn app() -> Html {
             </BrowserRouter>
             <StyleInjector style={default_style} />
         </div>
-    }    
+    }
 }
-

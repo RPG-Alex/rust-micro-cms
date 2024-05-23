@@ -1,8 +1,5 @@
 use crate::handlers::{posts, styling};
-use axum::{
-    routing::get,
-    Router,
-};
+use axum::{routing::get, Router};
 
 pub async fn app_routes() -> Router {
     Router::new()

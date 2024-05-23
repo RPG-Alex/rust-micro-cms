@@ -33,8 +33,6 @@ pub struct Posts {
 
 impl Default for Posts {
     fn default() -> Self {
-        Posts {
-            posts: Vec::new(),
-        }
+        Posts { posts: Vec::new() }
     }
 }

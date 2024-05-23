@@ -1,9 +1,9 @@
 mod app;
 
-mod routes;
-mod models;
-mod views;
 mod errors;
+mod models;
+mod routes;
+mod views;
 
 use app::App;
 

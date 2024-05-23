@@ -1,8 +1,8 @@
-use yew::prelude::*;
-use wasm_bindgen::JsCast;
-use web_sys::HtmlTextAreaElement;
 use crate::models::{posts::Post, styling::Style};
 use crate::views::posts::recent_posts::RecentPosts;
+use wasm_bindgen::JsCast;
+use web_sys::HtmlTextAreaElement;
+use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct StyleProps {
@@ -33,7 +33,10 @@ pub fn style_form(props: &StyleProps) -> Html {
     let on_style_change = {
         let style = style.clone();
         Callback::from(move |e: InputEvent| {
-            if let Some(target) = e.target().and_then(|t| t.dyn_into::<HtmlTextAreaElement>().ok()) {
+            if let Some(target) = e
+                .target()
+                .and_then(|t| t.dyn_into::<HtmlTextAreaElement>().ok())
+            {
                 let mut new_style = (*style).clone();
                 new_style.css = target.value();
                 style.set(new_style);
@@ -51,7 +54,7 @@ pub fn style_form(props: &StyleProps) -> Html {
                     </style>
                     <div class="form-buttons posts">
                         <button class="submit-button" onclick={on_update_click}>{ "Back to edit" }</button>
-                    </div> 
+                    </div>
                 </div>
             } else {
                 <div class="posts">

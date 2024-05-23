@@ -26,13 +26,19 @@ async fn main() {
         return;
     }
 
+    if let Err(e) = database::styling::create_style_db(&state.pool).await {
+        eprintln!("Failed to create styles table: {}", e);
+        return;
+    }
+
     let cors = CorsLayer::new()
         .allow_origin(HeaderValue::from_static("http://127.0.0.1:8080"))
         .allow_methods(vec![Method::GET, Method::POST]);
 
-    let app = routes::app_routes().await
+    let app = routes::app_routes()
+        .await
         .layer(Extension(state))
-        .layer(cors); 
+        .layer(cors);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     let listener = TcpListener::bind(addr).await.expect("Failed to bind");
