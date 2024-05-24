@@ -116,6 +116,15 @@ impl Default for Style {
         .reset-button:hover {
             background-color: darkred;
         }
+
+        .error-message {
+            color: red;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
         "#
         .to_string();
 

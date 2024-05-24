@@ -1,6 +1,13 @@
-use crate::models::{posts::Posts, styling::Style};
+use crate::models::{
+    posts::Posts,
+    styling::Style,
+};
+use crate::views::{
+    nav_bar::NavBar,
+    styling::styling::StyleInjector,
+};
 use crate::routes::CMSRoutes;
-use crate::views::{nav_bar::NavBar, styling::styling::StyleInjector};
+use crate::errors::FrontendError;
 use gloo_net::http::Request;
 use yew::prelude::*;
 use yew_router::prelude::*;
@@ -10,19 +17,31 @@ pub fn app() -> Html {
     let default_style = Style::default();
 
     let posts = use_state(Posts::default);
+    let error_message = use_state(|| None);
+
     {
         let posts = posts.clone();
+        let error_message = error_message.clone();
         use_effect_with((), move |_| {
             let posts = posts.clone();
+            let error_message = error_message.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                let fetched_posts: Posts = Request::get("http://127.0.0.1:3000/posts")
+                match Request::get("http://127.0.0.1:3000/posts")
                     .send()
                     .await
-                    .unwrap()
-                    .json()
-                    .await
-                    .unwrap();
-                posts.set(fetched_posts);
+                {
+                    Ok(response) => match response.json::<Posts>().await {
+                        Ok(fetched_posts) => {
+                            posts.set(fetched_posts);
+                        }
+                        Err(_) => {
+                            error_message.set(Some(FrontendError::FetchError.to_string()));
+                        }
+                    },
+                    Err(_) => {
+                        error_message.set(Some(FrontendError::NetworkError("Failed to connect to the server".to_string()).to_string()));
+                    }
+                }
             });
             || ()
         });
@@ -39,6 +58,13 @@ pub fn app() -> Html {
                 </ContextProvider<Posts>>
             </BrowserRouter>
             <StyleInjector style={default_style} />
+            {
+                if let Some(error) = (*error_message).as_ref() {
+                    html! { <div class="error-message">{ error }</div> }
+                } else {
+                    html! {}
+                }
+            }
         </div>
-    }
+    }    
 }
