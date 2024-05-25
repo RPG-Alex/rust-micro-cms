@@ -10,11 +10,21 @@ pub struct Post {
     pub draft: bool,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NewPost {
     pub title: String,
     pub body: String,
     pub draft: bool,
+}
+
+impl NewPost {
+    pub fn new() -> Self {
+        NewPost {
+            title: "".to_string(),
+            body: "".to_string(),
+            draft: true,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
