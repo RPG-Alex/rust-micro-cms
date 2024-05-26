@@ -17,16 +17,6 @@ pub struct NewPost {
     pub draft: bool,
 }
 
-impl NewPost {
-    pub fn new() -> Self {
-        NewPost {
-            title: "".to_string(),
-            body: "".to_string(),
-            draft: true,
-        }
-    }
-}
-
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UpdatePost {
     pub id: i64,

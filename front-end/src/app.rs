@@ -7,8 +7,7 @@ use crate::views::{
     styling::styling::StyleInjector,
 };
 use crate::routes::CMSRoutes;
-use crate::errors::FrontendError;
-use gloo_net::http::Request;
+use crate::api::fetch_posts;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -26,20 +25,12 @@ pub fn app() -> Html {
             let posts = posts.clone();
             let error_message = error_message.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                match Request::get("http://127.0.0.1:3000/posts")
-                    .send()
-                    .await
-                {
-                    Ok(response) => match response.json::<Posts>().await {
-                        Ok(fetched_posts) => {
-                            posts.set(fetched_posts);
-                        }
-                        Err(_) => {
-                            error_message.set(Some(FrontendError::FetchError.to_string()));
-                        }
-                    },
-                    Err(_) => {
-                        error_message.set(Some(FrontendError::NetworkError("Failed to connect to the server".to_string()).to_string()));
+                match fetch_posts().await {
+                    Ok(fetched_posts) => {
+                        posts.set(fetched_posts);
+                    }
+                    Err(e) => {
+                        error_message.set(Some(e.to_string()));
                     }
                 }
             });

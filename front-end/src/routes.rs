@@ -16,7 +16,7 @@ use yew_router::prelude::*;
 pub enum Routes {
     #[at("/")]
     Home,
-    #[at("/all")]
+    #[at("/all-posts")]
     AllPosts,
     #[at("/post/:id")]
     Post { id: i64 },

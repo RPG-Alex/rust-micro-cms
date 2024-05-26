@@ -1,9 +1,10 @@
 mod app;
-
-mod errors;
-mod models;
+mod handlers;
 mod routes;
+mod models;
 mod views;
+mod errors;
+mod api;
 
 use app::App;
 
