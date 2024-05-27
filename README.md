@@ -22,7 +22,6 @@
 	</ol>
 </details>
 
-
 ## About this Project
 
 Rust Micro CMS represents a streamlined approach to content management, designed with simplicity and ease of use at its core. Leveraging SQLite for file-based data storage, this system streamlines the processes of backup and migration, ensuring a hassle-free experience for users. Despite its minimalistic design, Rust Micro CMS doesn't compromise on functionality. It boasts a comprehensive suite of RESTful API features coupled with server-side rendering capabilities, catering to a broad spectrum of CMS requirements.
@@ -32,7 +31,6 @@ Currently under active development, Rust Micro CMS is continuously evolving, wit
 ### Goals
 
 Originating as a project to deepen understanding of Rust, Rust Micro CMS has evolved with a focused mission: to provide a streamlined content management solution that leverages Rust's renowned performance and reliability. The current goal is to deliver a CMS with a minimalist footprint, ensuring swift, efficient operations while simplifying the complexities typically associated with content management systems. Rust Micro CMS is engineered to offer an uncomplicated yet robust platform, minimizing setup and operational overhead, and making it an ideal choice for projects where speed, security, and simplicity are paramount. Active development and enhancements aim to enrich its features, catering to the growing needs of its users while maintaining its core principle of minimalism.
-
 
 ## Contributing
 
@@ -56,39 +54,25 @@ To get started with Rust Micro CMS, you'll need to set up your development envir
    cd rust-micro-cms
    ```
 
-2. **Install Dependencies:** While Rust Micro CMS primarily relies on Rust and Cargo-managed packages, ensure all dependencies are up to date by running:
+   Install Dependencies: While Rust Micro CMS primarily relies on Rust and Cargo-managed packages, ensure all dependencies are up to date by running:
+
    ```bash
    cargo update
    ```
 
-3. **Environment Variables:** Copy the `.env.example` file to a new file named `.env` and update the `DATABASE_URL` to point to your SQLite database file. This file will be automatically created if it does not exist when you run the application.
-   ```plaintext
-   DATABASE_URL=sqlite:database.db
-   ```
+2. **Environment Variables**: Copy the .env.example file to a new file named .env and update the DATABASE_URL to point to your SQLite database file. This file will be automatically created if it does not exist when you run the application.
 
-4. **Database Setup:** Rust Micro CMS will automatically handle database migrations and setup when you run the application. However, make sure SQLite3 is correctly installed and accessible from your command line.
+   `DATABASE_URL=sqlite:database.db`
 
-  ##### SQL Configuration for Development
-  - To have sqlx setup the databse for compile time checks please make sure you ahve sqlx installed:
-  ```bash
-  cargo install sqlx
-  ```
-  Then run: 
-  ```bash
-  sqlx database create
-  ```
-  ```bash
-  sqlx migrate add <database name>
-  ```
+3. **Database Setup**: Rust Micro CMS will automatically handle database migrations and setup when you run the application. However, make sure SQLite3 is correctly installed and accessible from your command line.
 
-5. **Build and Run:** Compile and run the Rust Micro CMS with the following Cargo command:
+   Build and Run: Compile and run the Rust Micro CMS with the following Cargo command:
+
    ```bash
    cargo run
    ```
-   This command compiles the project and starts the server, making the CMS accessible locally.
+    This command compiles the project and starts the server, making the CMS accessible locally.
 
-6. **Accessing the CMS:** Once running, you can access the CMS through the API endpoints or by navigating to the provided web interface URL in your browser.
-
-
+    Accessing the CMS: Once running, you can access the CMS through the API endpoints or by navigating to the provided web interface URL in your browser.
 
 <p align="center">[<a href="#readme-top">RETURN TO TOP</a>]</p>
