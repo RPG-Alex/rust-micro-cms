@@ -54,3 +54,18 @@ pub async fn delete_post(id: i64) -> Result<(), FrontendError> {
         Err(_) => Err(FrontendError::NetworkError("Failed to connect to the server".to_string())),
     }
 }
+
+pub async fn add_style(style: Style) -> Result<Style, FrontendError> {
+    match Request::post(&format!("http://127.0.0.1:3000/styles"))
+        .json(&style)
+        .unwrap()
+        .send()
+        .await
+        {
+            Ok(response) => match response.json::<Style>().await{
+                Ok(created_style) => Ok(created_style),
+                Err(_) => Err(FrontendError::FetchError)
+            },
+            Err(_) => Err(FrontendError::NetworkError("Failed to connect to server".to_string()))
+        }
+}

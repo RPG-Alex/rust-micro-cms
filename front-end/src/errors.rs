@@ -7,7 +7,4 @@ pub enum FrontendError {
     
     #[error("Failed to fetch data")]
     FetchError,
-    
-    #[error("Unexpected error: {0}")]
-    UnexpectedError(String),
 }
