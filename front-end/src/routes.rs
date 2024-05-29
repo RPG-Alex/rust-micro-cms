@@ -1,10 +1,7 @@
 use crate::models::{posts::Posts, styling::Style};
 use crate::views::{
     posts::{
-        all_posts::PostList, 
-        new_post::PostForm,
-        recent_posts::RecentPosts, 
-        single_post::SinglePost
+        all_posts::PostList, new_post::PostForm, recent_posts::RecentPosts, single_post::SinglePost,
     },
     styling::update_styling::StyleForm,
 };
@@ -51,7 +48,7 @@ pub fn cms_routes() -> Html {
         Some(Routes::Style) => html! {
             <StyleForm style={Style::default()} posts={posts_context.posts.clone()} />
         },
-        Some(Routes::NewPost) => html!{
+        Some(Routes::NewPost) => html! {
             <PostForm />
         },
         Some(Routes::NotFound) | None => html! { <h1>{"404 Not Found"}</h1> },

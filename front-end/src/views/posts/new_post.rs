@@ -1,5 +1,5 @@
-use crate::handlers::posts::handle_create_post;
 use crate::errors::*;
+use crate::handlers::posts::handle_create_post;
 use crate::models::posts::{NewPost, Post};
 use chrono::Utc;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
@@ -71,16 +71,20 @@ pub fn post_form() -> Html {
             };
             let error_message = error_message.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                handle_create_post(new_post, Callback::from(move |result: Result<Post, FrontendError>| {
-                    match result {
-                        Ok(_) => {
-                            //still need to handle succesfully adding a post
+                handle_create_post(
+                    new_post,
+                    Callback::from(move |result: Result<Post, FrontendError>| {
+                        match result {
+                            Ok(_) => {
+                                //still need to handle succesfully adding a post
+                            }
+                            Err(e) => {
+                                error_message.set(Some(e.to_string()));
+                            }
                         }
-                        Err(e) => {
-                            error_message.set(Some(e.to_string()));
-                        }
-                    }
-                })).await;
+                    }),
+                )
+                .await;
             });
         })
     };

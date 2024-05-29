@@ -1,17 +1,16 @@
-use crate::models::{posts::*, styling::Style};
 use crate::errors::FrontendError;
+use crate::models::{posts::*, styling::Style};
 use gloo_net::http::Request;
 
 pub async fn fetch_posts() -> Result<Posts, FrontendError> {
-    match Request::get("http://127.0.0.1:3000/posts")
-        .send()
-        .await
-    {
+    match Request::get("http://127.0.0.1:3000/posts").send().await {
         Ok(response) => match response.json::<Posts>().await {
             Ok(fetched_posts) => Ok(fetched_posts),
             Err(_) => Err(FrontendError::FetchError),
         },
-        Err(_) => Err(FrontendError::NetworkError("Failed to connect to the server".to_string())),
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
     }
 }
 
@@ -26,7 +25,9 @@ pub async fn create_post(new_post: NewPost) -> Result<Post, FrontendError> {
             Ok(created_post) => Ok(created_post),
             Err(_) => Err(FrontendError::FetchError),
         },
-        Err(_) => Err(FrontendError::NetworkError("Failed to connect to the server".to_string())),
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
     }
 }
 
@@ -41,7 +42,9 @@ pub async fn update_post(id: i64, updated_post: Post) -> Result<Post, FrontendEr
             Ok(post) => Ok(post),
             Err(_) => Err(FrontendError::FetchError),
         },
-        Err(_) => Err(FrontendError::NetworkError("Failed to connect to the server".to_string())),
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
     }
 }
 
@@ -51,7 +54,9 @@ pub async fn delete_post(id: i64) -> Result<(), FrontendError> {
         .await
     {
         Ok(_) => Ok(()),
-        Err(_) => Err(FrontendError::NetworkError("Failed to connect to the server".to_string())),
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
     }
 }
 
@@ -61,11 +66,13 @@ pub async fn add_style(style: Style) -> Result<Style, FrontendError> {
         .unwrap()
         .send()
         .await
-        {
-            Ok(response) => match response.json::<Style>().await{
-                Ok(created_style) => Ok(created_style),
-                Err(_) => Err(FrontendError::FetchError)
-            },
-            Err(_) => Err(FrontendError::NetworkError("Failed to connect to server".to_string()))
-        }
+    {
+        Ok(response) => match response.json::<Style>().await {
+            Ok(created_style) => Ok(created_style),
+            Err(_) => Err(FrontendError::FetchError),
+        },
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to server".to_string(),
+        )),
+    }
 }

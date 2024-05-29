@@ -9,10 +9,9 @@ pub struct Style {
 
 #[derive(Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub struct NewStyle {
-     pub name: String,
+    pub name: String,
     pub css: String,
 }
-
 
 impl Default for Style {
     fn default() -> Self {
@@ -128,10 +127,10 @@ impl Default for Style {
         "#
         .to_string();
 
-        Style { 
+        Style {
             id: i64::MAX,
             name: "template".to_string(),
-            css 
+            css,
         }
     }
 }

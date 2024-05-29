@@ -1,6 +1,6 @@
 use axum::{
     extract::Extension,
-    http::{HeaderValue, Method},
+    http::{HeaderName, HeaderValue, Method},
 };
 use dotenv::dotenv;
 use std::env;
@@ -33,7 +33,9 @@ async fn main() {
 
     let cors = CorsLayer::new()
         .allow_origin(HeaderValue::from_static("http://127.0.0.1:8080"))
-        .allow_methods(vec![Method::GET, Method::POST]);
+        .allow_methods(vec![Method::GET, Method::POST, Method::PUT, Method::DELETE])
+        .allow_headers(vec![HeaderName::from_static("content-type")]);
+
 
     let app = routes::app_routes()
         .await

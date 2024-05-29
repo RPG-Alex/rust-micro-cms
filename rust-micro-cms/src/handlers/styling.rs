@@ -1,12 +1,7 @@
+use crate::database::styling;
 use crate::models::styling::NewStyle;
 use crate::state::AppState;
-use crate::database::styling;
-use axum::{
-    extract::Extension,
-    http::StatusCode,
-    response::IntoResponse,
-    Json,
-};
+use axum::{extract::Extension, http::StatusCode, response::IntoResponse, Json};
 use serde_json::json;
 
 pub async fn create_style_handler(

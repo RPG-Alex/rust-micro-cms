@@ -1,13 +1,7 @@
-use crate::models::{
-    posts::Posts,
-    styling::Style,
-};
-use crate::views::{
-    nav_bar::NavBar,
-    styling::styling::StyleInjector,
-};
-use crate::routes::CMSRoutes;
 use crate::api::fetch_posts;
+use crate::models::{posts::Posts, styling::Style};
+use crate::routes::CMSRoutes;
+use crate::views::{nav_bar::NavBar, styling::styling::StyleInjector};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -57,5 +51,5 @@ pub fn app() -> Html {
                 }
             }
         </div>
-    }    
+    }
 }

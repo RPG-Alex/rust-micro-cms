@@ -21,11 +21,13 @@ pub async fn fetch_all_styles(pool: &Pool<SqliteConnectionManager>) -> Result<Ve
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "SELECT * FROM styles";
     let mut stmt = conn.prepare(sql)?;
-    let styling_iter = stmt.query_map([], |row| Ok(Style { 
-        id: row.get(0)?,
-        name: row.get(1)?,
-        css: row.get(2)? 
-    }))?;
+    let styling_iter = stmt.query_map([], |row| {
+        Ok(Style {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            css: row.get(2)?,
+        })
+    })?;
     let mut styles = Vec::new();
     for post in styling_iter {
         styles.push(post?);
@@ -45,10 +47,12 @@ pub async fn insert_style(pool: &Pool<SqliteConnectionManager>, style: NewStyle)
     conn.query_row(
         "SELECT * FROM styles WHERE id = ?",
         params![last_id],
-        |row| Ok(Style { 
-            id: row.get(0)?,
-            name: row.get(1)?,
-            css: row.get(2)? 
-        }),
+        |row| {
+            Ok(Style {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                css: row.get(2)?,
+            })
+        },
     )
 }

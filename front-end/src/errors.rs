@@ -4,7 +4,7 @@ use thiserror::Error;
 pub enum FrontendError {
     #[error("Network error: {0}")]
     NetworkError(String),
-    
+
     #[error("Failed to fetch data")]
     FetchError,
 }
