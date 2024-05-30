@@ -17,7 +17,7 @@ pub struct NewPost {
     pub draft: bool,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UpdatePost {
     pub id: i64,
     pub title: String,

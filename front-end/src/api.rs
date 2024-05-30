@@ -31,14 +31,15 @@ pub async fn create_post(new_post: NewPost) -> Result<Post, FrontendError> {
     }
 }
 
-pub async fn update_post(id: i64, updated_post: Post) -> Result<Post, FrontendError> {
+pub async fn update_post(updated_post: UpdatePost) -> Result<UpdatePost, FrontendError> {
+    let id = updated_post.id;
     match Request::put(&format!("http://127.0.0.1:3000/posts/{}", id))
         .json(&updated_post)
         .unwrap()
         .send()
         .await
     {
-        Ok(response) => match response.json::<Post>().await {
+        Ok(response) => match response.json::<UpdatePost>().await {
             Ok(post) => Ok(post),
             Err(_) => Err(FrontendError::FetchError),
         },

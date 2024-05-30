@@ -1,7 +1,11 @@
 use crate::models::{posts::Posts, styling::Style};
 use crate::views::{
     posts::{
-        all_posts::PostList, new_post::PostForm, recent_posts::RecentPosts, single_post::SinglePost,
+        all_posts::PostList, 
+        new_post::PostForm,
+        recent_posts::RecentPosts, 
+        single_post::SinglePost,
+        update_post::UpdatePostForm,
     },
     styling::update_styling::StyleForm,
 };
@@ -17,6 +21,8 @@ pub enum Routes {
     AllPosts,
     #[at("/post/:id")]
     Post { id: i64 },
+    #[at("/post/:id/edit")]
+    UpdatePost { id: i64 },
     #[at("/post/new")]
     NewPost,
     #[at("/style_update")]
@@ -44,7 +50,14 @@ pub fn cms_routes() -> Html {
             } else {
                 html! { <h1>{"Post does not exist"}</h1> }
             }
-        }
+        },
+        Some(Routes::UpdatePost { id }) => {
+            if let Some(post) = posts_context.posts.iter().find(|p| p.id == id) {
+                html! { <UpdatePostForm post={post.to_owned()} /> }
+            } else {
+                html! { <h1>{"Post does not exist"}</h1> }
+            }
+        },
         Some(Routes::Style) => html! {
             <StyleForm style={Style::default()} posts={posts_context.posts.clone()} />
         },
