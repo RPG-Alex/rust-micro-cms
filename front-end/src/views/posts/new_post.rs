@@ -1,9 +1,11 @@
 use crate::errors::*;
 use crate::handlers::posts::handle_create_post;
 use crate::models::posts::{NewPost, Post};
+use crate::routes::Routes;
 use chrono::Utc;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
 use yew::prelude::*;
+use yew_router::prelude::*;
 use yew::Callback;
 
 #[derive(Properties, PartialEq)]
@@ -18,6 +20,7 @@ pub fn post_form() -> Html {
     let is_draft = use_state(|| true); // Default to draft
     let is_preview = use_state(|| false);
     let error_message = use_state(|| None);
+    let navigator = use_navigator().unwrap();
 
     let on_preview_click = {
         let is_preview = is_preview.clone();
@@ -62,6 +65,7 @@ pub fn post_form() -> Html {
         let post_body = post_body.clone();
         let is_draft = is_draft.clone();
         let error_message = error_message.clone();
+        let navigator = navigator.clone();
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
             let new_post = NewPost {
@@ -70,21 +74,19 @@ pub fn post_form() -> Html {
                 draft: *is_draft,
             };
             let error_message = error_message.clone();
+            let navigator = navigator.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                handle_create_post(
-                    new_post,
-                    Callback::from(move |result: Result<Post, FrontendError>| {
-                        match result {
-                            Ok(_) => {
-                                //still need to handle succesfully adding a post
-                            }
-                            Err(e) => {
-                                error_message.set(Some(e.to_string()));
-                            }
+                handle_create_post(new_post, Callback::from(move |result: Result<Post, FrontendError>| {
+                    match result {
+                        Ok(post) => {
+                            let post_id: i64 = post.id;
+                            navigator.push(&Routes::Post { id: post_id });
                         }
-                    }),
-                )
-                .await;
+                        Err(e) => {
+                            error_message.set(Some(e.to_string()));
+                        }
+                    }
+                })).await;
             });
         })
     };

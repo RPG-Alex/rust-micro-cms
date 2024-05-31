@@ -37,6 +37,10 @@ pub fn cms_routes() -> Html {
     let route = use_route::<Routes>();
     let posts_context = use_context::<Posts>().expect("context not found");
 
+    if posts_context.posts.is_empty() {
+        return html! { <h1 class="posts">{"Loading..."}</h1> };
+    }
+
     match route {
         Some(Routes::Home) => html! {
             <RecentPosts posts={posts_context.posts.clone()} />
@@ -48,14 +52,14 @@ pub fn cms_routes() -> Html {
             if let Some(post) = posts_context.posts.iter().find(|p| p.id == id) {
                 html! { <SinglePost post={post.to_owned()} /> }
             } else {
-                html! { <h1>{"Post does not exist"}</h1> }
+                html! { <h1 class="posts">{"Post does not exist"}</h1> }
             }
         },
         Some(Routes::UpdatePost { id }) => {
             if let Some(post) = posts_context.posts.iter().find(|p| p.id == id) {
                 html! { <UpdatePostForm post={post.to_owned()} /> }
             } else {
-                html! { <h1>{"Post does not exist"}</h1> }
+                html! { <h1 class="posts">{"Post does not exist"}</h1> }
             }
         },
         Some(Routes::Style) => html! {
@@ -64,6 +68,6 @@ pub fn cms_routes() -> Html {
         Some(Routes::NewPost) => html! {
             <PostForm />
         },
-        Some(Routes::NotFound) | None => html! { <h1>{"404 Not Found"}</h1> },
+        Some(Routes::NotFound) | None => html! { <h1 class="posts">{"404 Not Found"}</h1> },
     }
 }
