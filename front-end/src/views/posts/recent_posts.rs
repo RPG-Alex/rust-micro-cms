@@ -1,5 +1,5 @@
 use crate::models::posts::Post;
-use chrono::{Duration, Local, NaiveDate};
+use chrono::{Duration, Local, NaiveDate, NaiveDateTime};
 use yew::prelude::*;
 
 #[function_component(RecentPosts)]
@@ -11,8 +11,8 @@ pub fn recent_posts(props: &RecentPostsProps) -> Html {
         .posts
         .iter()
         .filter(|post| {
-            NaiveDate::parse_from_str(&post.date, "%Y-%m-%d")
-                .map(|post_date| post_date > three_months_ago)
+            NaiveDateTime::parse_from_str(&post.date, "%Y-%m-%d %H:%M:%S")
+                .map(|post_date| post_date.date() > three_months_ago)
                 .unwrap_or(false)
         })
         .collect();

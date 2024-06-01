@@ -31,7 +31,7 @@ pub fn app() -> Html {
             || ()
         });
     }
-
+    
     html! {
         <div>
             <title>{ "Micro CMS!" }</title>
