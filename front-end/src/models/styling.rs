@@ -124,6 +124,21 @@ impl Default for Style {
             border-radius: 5px;
             margin-top: 10px;
         }
+
+        .delete-button {
+            background-color: #ff6666;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .delete-button:hover {
+            background-color: #cc0000;
+        }
+        
         
         "#
         .to_string();

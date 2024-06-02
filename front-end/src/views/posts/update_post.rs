@@ -1,9 +1,11 @@
-use crate::handlers::posts::handle_update_post;
+use crate::handlers::posts::{handle_update_post, handle_delete_post};
 use crate::errors::*;
 use crate::models::posts::{Post, UpdatePost};
+use crate::routes::Routes;
 use chrono::Utc;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
 use yew::prelude::*;
+use yew_router::{navigator, prelude::*};
 use yew::Callback;
 
 #[derive(Properties, PartialEq)]
@@ -19,6 +21,7 @@ pub fn update_post_form(props: &UpdatePostProps) -> Html {
     let is_archived = use_state(|| props.post.archived);
     let is_preview = use_state(|| false);
     let error_message = use_state(|| None);
+    let navigator = use_navigator().unwrap();
 
     let on_preview_click = {
         let is_preview = is_preview.clone();
@@ -73,6 +76,8 @@ pub fn update_post_form(props: &UpdatePostProps) -> Html {
         let is_draft = is_draft.clone();
         let is_archived = is_archived.clone();
         let error_message = error_message.clone();
+        let navigator = navigator.clone();
+
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
             let updated_post = UpdatePost {
@@ -83,11 +88,12 @@ pub fn update_post_form(props: &UpdatePostProps) -> Html {
                 draft: *is_draft,
             };
             let error_message = error_message.clone();
+            let navigator = navigator.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 handle_update_post(updated_post, Callback::from(move |result: Result<UpdatePost, FrontendError>| {
                     match result {
                         Ok(_) => {
-                            // Handle success (e.g., navigate to the post list or show a success message)
+                            navigator.push(&Routes::Home);
                         }
                         Err(e) => {
                             error_message.set(Some(e.to_string()));
@@ -95,6 +101,32 @@ pub fn update_post_form(props: &UpdatePostProps) -> Html {
                     }
                 })).await;
             });
+        })
+    };
+
+    let on_delete_click = {
+        let post_id = props.post.id;
+        let error_message = error_message.clone();
+        let navigator = navigator.clone();
+
+        Callback::from(move |_| {
+            if web_sys::window().unwrap().confirm_with_message("Are you sure you want to delete this post?").unwrap() {
+                let error_message = error_message.clone();
+                let navigator = navigator.clone();
+                wasm_bindgen_futures::spawn_local(async move {
+                    handle_delete_post(post_id, Callback::from(move |result: Result<(), FrontendError>| {
+                        match result {
+                            Ok(_) => {
+                                navigator.push(&Routes::Home);
+
+                            }
+                            Err(e) => {
+                                error_message.set(Some(e.to_string()));
+                            }
+                        }
+                    })).await;
+                });
+            }
         })
     };
 
@@ -125,6 +157,7 @@ pub fn update_post_form(props: &UpdatePostProps) -> Html {
                         <label for="archived-check">{"Archived"}</label>
                         <input type="submit" value="Update Post" class="submit-button" />
                         <input type="reset" value="reset" class="reset-button" />
+                        <button type="button" onclick={on_delete_click} class="delete-button">{ "Delete Post" }</button>
                     </div>
                 </form>
                 {

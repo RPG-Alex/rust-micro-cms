@@ -1,5 +1,5 @@
 use crate::models::posts::Post;
-use chrono::{Duration, Local, NaiveDate, NaiveDateTime};
+use chrono::{Duration, Local, NaiveDateTime};
 use yew::prelude::*;
 
 #[function_component(RecentPosts)]
