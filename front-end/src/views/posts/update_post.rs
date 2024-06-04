@@ -5,7 +5,7 @@ use crate::routes::Routes;
 use chrono::Utc;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
 use yew::prelude::*;
-use yew_router::{navigator, prelude::*};
+use yew_router::prelude::*;
 use yew::Callback;
 
 #[derive(Properties, PartialEq)]

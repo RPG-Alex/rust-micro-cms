@@ -96,6 +96,9 @@ pub async fn fetch_post_by_id(
 }
 
 pub async fn update_post(pool: &Pool<SqliteConnectionManager>, post: UpdatePost) -> Result<Post> {
+    let current_date: DateTime<Utc> = Utc::now();
+    let date = current_date.format("%Y-%m-%d %H:%M:%S").to_string();
+
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
@@ -104,7 +107,7 @@ pub async fn update_post(pool: &Pool<SqliteConnectionManager>, post: UpdatePost)
         sql,
         params![
             post.title,
-            post.date,
+            date,
             post.body,
             post.archived,
             post.draft,
