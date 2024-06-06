@@ -2,6 +2,14 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub struct Style {
+    pub id: i64,
+    pub name: String,
+    pub css: String,
+}
+
+#[derive(Clone, PartialEq, Serialize, Deserialize, Debug)]
+pub struct NewStyle {
+    pub name: String,
     pub css: String,
 }
 
@@ -143,6 +151,10 @@ impl Default for Style {
         "#
         .to_string();
 
-        Style { css }
+        Style { 
+            id: 0,
+            name: "default".to_string(),
+            css: css, 
+        }
     }
 }
