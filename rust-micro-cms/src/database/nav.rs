@@ -1,4 +1,4 @@
-use crate::models::nav::{Nav, Social};
+use crate::models::nav::{Nav, NavItem, NavItemType, NewNavItem};
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use rusqlite::{params, OptionalExtension, Result};
@@ -7,7 +7,7 @@ pub async fn create_nav_bar_table(pool: &Pool<SqliteConnectionManager>) -> Resul
     let conn = pool
     .get()
     .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
-    let sql = "CREATE TABLE IF NOT EXISTS posts (
+    let sql = "CREATE TABLE IF NOT EXISTS nav (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         item TEXT NOT NULL,
         content TEXT NOT NULL,
@@ -16,61 +16,54 @@ pub async fn create_nav_bar_table(pool: &Pool<SqliteConnectionManager>) -> Resul
     conn.execute(sql, ())
 }
 
-pub async fn insert_new_item(pool: &Pool<SqliteConnectionManager>, ) -> Result<Nav> {
-    let current_date: DateTime<Utc> = Utc::now();
-    let date = current_date.format("%Y-%m-%d %H:%M:%S").to_string();
-
+pub async fn insert_new_item(pool: &Pool<SqliteConnectionManager>, new_nav_item: NewNavItem) -> Result<NavItem> {
+    
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
-    let sql = "INSERT INTO posts (title, date, body, draft) VALUES (?, ?, ?, ?)";
+    let sql = "INSERT INTO nav (item, content, url) VALUES (?, ?, ?)";
     conn.execute(
         sql,
-        params![post.title, date.to_string(), post.body, post.draft],
+        params![new_nav_item.item_type.to_string(), new_nav_item.content, new_nav_item.url],
     )?;
 
     let last_id = conn.last_insert_rowid();
     conn.query_row(
-        "SELECT id, title, date, body, archived, draft FROM posts WHERE id = ?",
+        "SELECT * from  WHERE id nav = ?",
         params![last_id],
         |row| {
-            Ok(Post {
+            Ok(NavItem {
                 id: row.get(0)?,
-                title: row.get(1)?,
-                date: row.get(2)?,
-                body: row.get(3)?,
-                archived: row.get(4)?,
-                draft: row.get(5)?,
+                item_type: row.get::<_, String>(1)?.parse::<NavItemType>().map_err(|_| rusqlite::Error::InvalidColumnName("Unable to return item type".to_string()))?,
+                content: row.get(2)?,
+                url: row.get(3)?,
             })
         },
     )
 }
 
-pub async fn fetch_all_posts(pool: &Pool<SqliteConnectionManager>) -> Result<Posts> {
+pub async fn fetch_all_nav_items(pool: &Pool<SqliteConnectionManager>) -> Result<Nav> {
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
-    let sql = "SELECT * FROM posts WHERE NOT archived";
+    let sql = "SELECT id, item, content, url FROM nav";
     let mut stmt = conn.prepare(sql)?;
-    let post_iter = stmt.query_map([], |row| {
-        Ok(Post {
+    let nav_item_iter = stmt.query_map([], |row| {
+        Ok(NavItem {
             id: row.get(0)?,
-            title: row.get(1)?,
-            date: row.get(2)?,
-            body: row.get(3)?,
-            archived: row.get(4)?,
-            draft: row.get(5)?,
+            item_type: row.get(1)?,
+            content: row.get(2)?,
+            url: row.get(3)?,
         })
     })?;
 
-    let mut posts = Posts { posts: Vec::new() };
-    for post in post_iter {
-        posts.posts.push(post?);
+    let mut nav = Nav { nav_items: Vec::new() };
+    for item in nav_item_iter {
+        nav.nav_items.push(item?);
     }
 
-    Ok(posts)
+    Ok(nav)
 }
-
 pub async fn delete_post(pool: &Pool<SqliteConnectionManager>, post_id: i32) -> Result<bool> {
     let conn = pool
         .get()
