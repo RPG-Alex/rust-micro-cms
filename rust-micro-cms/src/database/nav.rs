@@ -70,11 +70,11 @@ pub async fn fetch_all_nav_items(pool: &Pool<SqliteConnectionManager>) -> Result
     Ok(nav)
 }
 
-pub async fn delete_post(pool: &Pool<SqliteConnectionManager>, post_id: i32) -> Result<bool> {
+pub async fn delete_nav_item(pool: &Pool<SqliteConnectionManager>, item_id: i32) -> Result<bool> {
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
-    let sql = "DELETE FROM posts WHERE id = ?";
-    let affected_rows = conn.execute(sql, [post_id])?;
+    let sql = "DELETE FROM nav WHERE id = ?";
+    let affected_rows = conn.execute(sql, [item_id])?;
     Ok(affected_rows > 0)
 }
