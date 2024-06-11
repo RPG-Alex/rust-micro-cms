@@ -1,6 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::str::FromStr;
-use std::fmt;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum NavItemType {
@@ -9,26 +7,19 @@ pub enum NavItemType {
     SocialLink,
 }
 
-impl FromStr for NavItemType {
-    type Err = ();
-
-    fn from_str(input: &str) -> Result<NavItemType, Self::Err> {
-        match input.to_lowercase().as_str() {
-            "thumbnailurl" => Ok(NavItemType::ThumbnailUrl),
-            "blogsummary" => Ok(NavItemType::BlogSummary),
-            "sociallink" => Ok(NavItemType::SocialLink),
-            _ => Err(()),
+impl NavItemType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            NavItemType::ThumbnailUrl => "ThumbnailUrl",
+            NavItemType::BlogSummary => "BlogSummary",
+            NavItemType::SocialLink => "SocialLink",
         }
     }
-}
-
-
-impl fmt::Display for NavItemType {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            NavItemType::ThumbnailUrl => write!(f, "thumbnailurl"),
-            NavItemType::BlogSummary => write!(f, "blogsummary"),
-            NavItemType::SocialLink => write!(f, "sociallink"),
+    pub fn from_str(s: &str) -> NavItemType {
+        match s.to_lowercase().as_str() {
+            "ThumbnailUrl" => NavItemType::ThumbnailUrl,
+            "BlogSummary" => NavItemType::BlogSummary,
+            _ => NavItemType::SocialLink,
         }
     }
 }
