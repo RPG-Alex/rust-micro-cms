@@ -1,4 +1,4 @@
-use crate::handlers::{posts, styling};
+use crate::handlers::{nav, posts, styling};
 use axum::{routing::get, Router};
 
 pub async fn app_routes() -> Router {
@@ -18,5 +18,9 @@ pub async fn app_routes() -> Router {
         .route(
             "/styles",
             get(styling::fetch_styles_handler).post(styling::create_style_handler),
+        )
+        // Nav Routes
+        .route(
+            "/nav", get(nav::fetch_nav_items_handler).post(nav::create_nav_item_handler),
         )
 }

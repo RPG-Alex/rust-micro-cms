@@ -31,6 +31,11 @@ async fn main() {
         return;
     }
 
+    if let Err(e) = database::nav::create_nav_bar_table(&state.pool).await {
+        eprintln!("Failed to create nav table: {}", e);
+        return;
+    }
+
     let cors = CorsLayer::new()
         .allow_origin(HeaderValue::from_static("http://127.0.0.1:8080"))
         .allow_methods(vec![Method::GET, Method::POST, Method::PUT, Method::DELETE])
