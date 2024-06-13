@@ -39,3 +39,21 @@ pub async fn fetch_nav_items_handler(Extension(state): Extension<AppState>) -> i
     }
 }
 
+pub async fn delete_nav_item_handler(
+    Extension(state): Extension<AppState>,
+    Json(item_id): Json<i32>,
+) -> impl IntoResponse {
+    match nav::delete_nav_item(&state.pool, item_id).await {
+        Ok(item) => match serde_json::to_value(item) {
+            Ok(json_value) => (StatusCode::CREATED, Json(json_value)),
+            Err(e) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(json!({"error!": "Serialization Failed: ".to_owned() + &e.to_string()})),
+            ),
+        },
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({"error": e.to_string()})),
+        ),
+    }
+}

@@ -28,7 +28,7 @@ pub async fn insert_new_item(pool: &Pool<SqliteConnectionManager>, new_nav_item:
 
     let last_id = conn.last_insert_rowid();
     conn.query_row(
-        "SELECT * from  WHERE id nav = ?",
+        "SELECT * from nav WHERE id = ?",
         params![last_id],
         |row| {
             let item_type_str: String = row.get(1)?;
