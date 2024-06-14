@@ -1,5 +1,6 @@
 use crate::errors::FrontendError;
-use crate::models::{posts::*, styling::Style};
+use crate::models::nav::NewNavItem;
+use crate::models::{posts::*, styling::Style, nav::*};
 use gloo_net::http::Request;
 
 pub async fn fetch_posts() -> Result<Posts, FrontendError> {
@@ -76,4 +77,20 @@ pub async fn add_style(style: Style) -> Result<Style, FrontendError> {
             "Failed to connect to server".to_string(),
         )),
     }
+}
+
+pub async fn add_nav_item(new_item: NewNavItem) -> Result<NavItem, FrontendError> {
+    match Request::post(&format!("http://127.0.0.1:3000/nav"))
+        .json(&new_item)
+        .unwrap()
+        .send()
+        .await {
+            Ok(response) => match response.json::<NavItem>().await {
+                Ok(created_item) => Ok(created_item),
+                Err(_) => Err(FrontendError::FetchError)
+            },
+            Err(_) => Err(FrontendError::NetworkError(
+                "Failed to connect to server".to_string(),
+            )),
+        }
 }
