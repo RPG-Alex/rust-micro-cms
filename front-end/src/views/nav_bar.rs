@@ -7,7 +7,7 @@ pub fn nav_bar() -> Html {
             <div class="content">
                 <div class="img-container">
                      <h1 class="blog-title">
-                        <a href="placeholder_url"> {"Place holder text"}</a>
+                        <a href="/"> {"Place holder text"}</a>
                      </h1>
                 </div>
                 <p class="description">

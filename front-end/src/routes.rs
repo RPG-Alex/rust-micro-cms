@@ -37,16 +37,20 @@ pub fn cms_routes() -> Html {
     let route = use_route::<Routes>();
     let posts_context = use_context::<Posts>().expect("context not found");
 
-    if posts_context.posts.is_empty() {
-        return html! { <h1 class="posts">{"Loading..."}</h1> };
-    }
-
     match route {
-        Some(Routes::Home) => html! {
-            <RecentPosts posts={posts_context.posts.clone()} />
+        Some(Routes::Home) => {
+            if posts_context.posts.is_empty() {
+                html! { <h1 class="posts">{"Loading..."}</h1> }
+            } else {
+                html! { <RecentPosts posts={posts_context.posts.clone()} /> }
+            }
         },
-        Some(Routes::AllPosts) => html! {
-            <PostList posts={posts_context.posts.clone()} />
+        Some(Routes::AllPosts) => {
+            if posts_context.posts.is_empty() {
+                html! { <h1 class="posts">{"Loading..."}</h1> }
+            } else {
+                html! { <PostList posts={posts_context.posts.clone()} /> }
+            }
         },
         Some(Routes::Post { id }) => {
             if let Some(post) = posts_context.posts.iter().find(|p| p.id == id) {

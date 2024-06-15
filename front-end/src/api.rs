@@ -3,8 +3,10 @@ use crate::models::nav::NewNavItem;
 use crate::models::{posts::*, styling::Style, nav::*};
 use gloo_net::http::Request;
 
+pub const ROOT_URL: &str = "http://127.0.0.1:3000";
+
 pub async fn fetch_posts() -> Result<Posts, FrontendError> {
-    match Request::get("http://127.0.0.1:3000/posts").send().await {
+    match Request::get(&format!("{}/posts", ROOT_URL)).send().await {
         Ok(response) => match response.json::<Posts>().await {
             Ok(fetched_posts) => Ok(fetched_posts),
             Err(_) => Err(FrontendError::FetchError),
@@ -16,7 +18,7 @@ pub async fn fetch_posts() -> Result<Posts, FrontendError> {
 }
 
 pub async fn create_post(new_post: NewPost) -> Result<Post, FrontendError> {
-    match Request::post("http://127.0.0.1:3000/posts")
+    match Request::post(&format!("{}/posts", ROOT_URL))
         .json(&new_post)
         .unwrap()
         .send()
@@ -34,7 +36,7 @@ pub async fn create_post(new_post: NewPost) -> Result<Post, FrontendError> {
 
 pub async fn update_post(updated_post: UpdatePost) -> Result<UpdatePost, FrontendError> {
     let id = updated_post.id;
-    match Request::put(&format!("http://127.0.0.1:3000/posts/{}", id))
+    match Request::put(&format!("{}/posts/{}", ROOT_URL, id))
         .json(&updated_post)
         .unwrap()
         .send()
@@ -51,7 +53,7 @@ pub async fn update_post(updated_post: UpdatePost) -> Result<UpdatePost, Fronten
 }
 
 pub async fn delete_post(id: i64) -> Result<(), FrontendError> {
-    match Request::delete(&format!("http://127.0.0.1:3000/posts/{}", id))
+    match Request::delete(&format!("{}/posts/{}", ROOT_URL, id))
         .send()
         .await
     {
@@ -63,7 +65,7 @@ pub async fn delete_post(id: i64) -> Result<(), FrontendError> {
 }
 
 pub async fn add_style(style: Style) -> Result<Style, FrontendError> {
-    match Request::post(&format!("http://127.0.0.1:3000/styles"))
+    match Request::post(&format!("{}/styles", ROOT_URL))
         .json(&style)
         .unwrap()
         .send()
@@ -80,7 +82,7 @@ pub async fn add_style(style: Style) -> Result<Style, FrontendError> {
 }
 
 pub async fn add_nav_item(new_item: NewNavItem) -> Result<NavItem, FrontendError> {
-    match Request::post(&format!("http://127.0.0.1:3000/nav"))
+    match Request::post(&format!("{}/nav", ROOT_URL))
         .json(&new_item)
         .unwrap()
         .send()
