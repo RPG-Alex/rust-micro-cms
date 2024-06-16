@@ -36,7 +36,7 @@ pub fn app() -> Html {
         <div>
             <title>{ "Micro CMS!" }</title>
 
-            <NavBar />
+            <NavBar nav={/*TODO: Implement api to fetch nav items! */}/>
             <BrowserRouter>
                 <ContextProvider<Posts> context={(*posts).clone()}>
                     <CMSRoutes />

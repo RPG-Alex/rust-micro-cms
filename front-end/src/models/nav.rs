@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum NavItemType {
     ThumbnailUrl,
     BlogSummary,
@@ -24,7 +24,7 @@ impl NavItemType {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NavItem {
     pub id: i64,
     pub item_type: NavItemType,
@@ -39,7 +39,7 @@ pub struct NewNavItem {
     pub url: Option<String>,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Nav {
     pub items: Vec<NavItem>,
 }
