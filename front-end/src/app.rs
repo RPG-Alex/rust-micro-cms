@@ -1,4 +1,5 @@
 use crate::api::fetch_posts;
+use crate::models::nav::Nav;
 use crate::models::{posts::Posts, styling::Style};
 use crate::routes::CMSRoutes;
 use crate::views::{nav_bar::NavBar, styling::styling::StyleInjector};
@@ -10,6 +11,7 @@ pub fn app() -> Html {
     let default_style = Style::default();
 
     let posts = use_state(Posts::default);
+    let nav = use_state(Nav::default);
     let error_message = use_state(|| None);
 
     {
@@ -36,7 +38,7 @@ pub fn app() -> Html {
         <div>
             <title>{ "Micro CMS!" }</title>
 
-            <NavBar nav={/*TODO: Implement api to fetch nav items! */}/>
+            <NavBar nav={(*nav).clone()}/>
             <BrowserRouter>
                 <ContextProvider<Posts> context={(*posts).clone()}>
                     <CMSRoutes />
