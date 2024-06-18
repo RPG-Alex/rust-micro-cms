@@ -1,6 +1,6 @@
 use crate::errors::FrontendError;
 use crate::models::nav::NewNavItem;
-use crate::models::{posts::*, styling::Style, nav::*};
+use crate::models::{posts::*, styling::{NewStyle, Style}, nav::*};
 use gloo_net::http::Request;
 
 pub const ROOT_URL: &str = "http://127.0.0.1:3000";
@@ -64,7 +64,7 @@ pub async fn delete_post(id: i64) -> Result<(), FrontendError> {
     }
 }
 
-pub async fn add_style(style: Style) -> Result<Style, FrontendError> {
+pub async fn add_style(style: NewStyle) -> Result<Style, FrontendError> {
     match Request::post(&format!("{}/styles", ROOT_URL))
         .json(&style)
         .unwrap()
