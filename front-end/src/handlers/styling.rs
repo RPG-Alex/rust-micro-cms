@@ -1,3 +1,5 @@
+use std::result;
+
 use crate::api;
 use crate::models::styling::{NewStyle,Style};
 use crate::errors::FrontendError;
@@ -11,4 +13,18 @@ pub async fn handle_create_style(
     callback.emit(result);
 }
 
-//todo add method for updating style and deleting style. 
+pub async fn handle_update_style(
+    updated_style: Style,
+    callback: Callback<Result<Style, FrontendError>>,
+) {
+    let result = api::update_style(updated_style).await;
+    callback.emit(result);
+}
+
+pub async fn handle_delete_style(
+    style_id: i64,
+    callback: Callback<Result<(), FrontendError>>
+) {
+    let result = api::delete_style(style_id).await;
+    callback.emit(result);
+}

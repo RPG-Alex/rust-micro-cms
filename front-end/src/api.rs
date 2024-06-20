@@ -96,3 +96,11 @@ pub async fn add_nav_item(new_item: NewNavItem) -> Result<NavItem, FrontendError
             )),
         }
 }
+
+pub async fn update_style(updated_style: Style) -> Result<Style, FrontendError> {
+
+}
+
+pub async fn delete_style(style_id: i64) -> Result<(), FrontendError> {
+    
+}
