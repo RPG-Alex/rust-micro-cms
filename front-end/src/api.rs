@@ -110,6 +110,17 @@ pub async fn delete_style(style_id: i64) -> Result<(), FrontendError> {
     }
 }
 
+pub async fn fetch_nav() -> Result<Nav, FrontendError> {
+    match Request::get(&format!("{}/nav", ROOT_URL)).send().await {
+        Ok(response) => match response.json::<Nav>().await {
+            Ok(fetched_nav) => Ok(fetched_nav),
+            Err(_) => Err(FrontendError::FetchError),
+        },
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
+    }   
+}
 
 pub async fn add_nav_item(new_item: NewNavItem) -> Result<NavItem, FrontendError> {
     match Request::post(&format!("{}/nav", ROOT_URL))
