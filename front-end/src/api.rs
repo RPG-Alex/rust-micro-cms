@@ -81,6 +81,37 @@ pub async fn add_style(style: NewStyle) -> Result<Style, FrontendError> {
     }
 }
 
+pub async fn update_style(updated_style: Style) -> Result<Style, FrontendError> {
+    let id = updated_style.id;
+    match Request::put(&format!("{}/styles/{}", ROOT_URL, id))
+        .json(&updated_style)
+        .unwrap()
+        .send()
+        .await
+    {
+        Ok(response) => match response.json::<Style>().await {
+            Ok(style) => Ok(style),
+            Err(_) => Err(FrontendError::FetchError),
+        },
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
+    }
+}
+
+pub async fn delete_style(style_id: i64) -> Result<(), FrontendError> {
+    match Request::delete(&format!("{}/styles/{}", ROOT_URL, style_id))
+        .send()
+        .await
+    {
+        Ok(_) => Ok(()),
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
+    }
+}
+
+
 pub async fn add_nav_item(new_item: NewNavItem) -> Result<NavItem, FrontendError> {
     match Request::post(&format!("{}/nav", ROOT_URL))
         .json(&new_item)
@@ -95,12 +126,4 @@ pub async fn add_nav_item(new_item: NewNavItem) -> Result<NavItem, FrontendError
                 "Failed to connect to server".to_string(),
             )),
         }
-}
-
-pub async fn update_style(updated_style: Style) -> Result<Style, FrontendError> {
-
-}
-
-pub async fn delete_style(style_id: i64) -> Result<(), FrontendError> {
-    
 }
