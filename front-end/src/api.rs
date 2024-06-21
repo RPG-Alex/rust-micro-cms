@@ -1,6 +1,5 @@
 use crate::errors::FrontendError;
-use crate::models::nav::NewNavItem;
-use crate::models::{posts::*, styling::{NewStyle, Style}, nav::*};
+use crate::models::{posts::*, styling::{NewStyle, Style}, nav::{NavItemType, NavItem, NewNavItem, Nav}};
 use gloo_net::http::Request;
 
 pub const ROOT_URL: &str = "http://127.0.0.1:3000";
@@ -126,4 +125,34 @@ pub async fn add_nav_item(new_item: NewNavItem) -> Result<NavItem, FrontendError
                 "Failed to connect to server".to_string(),
             )),
         }
+}
+
+pub async fn update_nav_item(updated_nav_item: NavItem) -> Result<NavItem, FrontendError> {
+    let id = updated_nav_item.id;
+    match Request::put(&format!("{}/nav/{}", ROOT_URL, id))
+        .json(&updated_nav_item)
+        .unwrap()
+        .send()
+        .await
+    {
+        Ok(response) => match response.json::<NavItem>().await {
+            Ok(item) => Ok(item),
+            Err(_) => Err(FrontendError::FetchError),
+        },
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
+    }
+}
+
+pub async fn delete_nav_item(id: i64) -> Result<(), FrontendError> {
+    match Request::delete(&format!("{}/nav/{}", ROOT_URL, id))
+        .send()
+        .await
+    {
+        Ok(_) => Ok(()),
+        Err(_) => Err(FrontendError::NetworkError(
+            "Failed to connect to the server".to_string(),
+        )),
+    }
 }
