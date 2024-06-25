@@ -1,3 +1,3 @@
-pub mod nav_bar;
+pub mod nav;
 pub mod posts;
 pub mod styling;

@@ -8,6 +8,9 @@ use crate::views::{
         update_post::UpdatePostForm,
     },
     styling::update_styling::StyleForm,
+    nav::{
+        new_nav_item::NewNavItemForm
+    }
 };
 
 use yew::prelude::*;
@@ -27,6 +30,9 @@ pub enum Routes {
     NewPost,
     #[at("/style_update")]
     Style,
+    #[at("/nav/new")]
+    NewNav,
+    //todo implment update nav item
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -71,6 +77,9 @@ pub fn cms_routes() -> Html {
         },
         Some(Routes::NewPost) => html! {
             <PostForm />
+        },
+        Some(Routes::NewNav) => html! {
+            <NewNavItemForm />
         },
         Some(Routes::NotFound) | None => html! { <h1 class="posts">{"404 Not Found"}</h1> },
     }
