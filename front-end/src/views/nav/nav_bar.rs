@@ -1,5 +1,5 @@
+use crate::models::nav::{Nav, NavItem, NavItemType};
 use yew::prelude::*;
-use crate::models::nav::{Nav, NavItemType, NavItem};
 
 #[derive(Properties, PartialEq)]
 pub struct NavBarProps {
@@ -10,12 +10,16 @@ pub struct NavBarProps {
 pub fn nav_bar(props: &NavBarProps) -> Html {
     let NavBarProps { nav } = props;
 
-    let title = nav.items.iter()
+    let title = nav
+        .items
+        .iter()
         .find(|item| item.item_type == NavItemType::ThumbnailUrl)
         .map(|item| item.content.clone())
         .unwrap_or_else(|| "Place holder text".to_string());
 
-    let description = nav.items.iter()
+    let description = nav
+        .items
+        .iter()
         .find(|item| item.item_type == NavItemType::BlogSummary)
         .map(|item| item.content.clone())
         .unwrap_or_else(|| "Placeholder of Blog Description".to_string());

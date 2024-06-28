@@ -1,8 +1,8 @@
 use std::result;
 
 use crate::api;
-use crate::models::styling::{NewStyle,Style};
 use crate::errors::FrontendError;
+use crate::models::styling::{NewStyle, Style};
 use yew::{callback, prelude::*};
 
 pub async fn handle_create_style(
@@ -21,10 +21,7 @@ pub async fn handle_update_style(
     callback.emit(result);
 }
 
-pub async fn handle_delete_style(
-    style_id: i64,
-    callback: Callback<Result<(), FrontendError>>
-) {
+pub async fn handle_delete_style(style_id: i64, callback: Callback<Result<(), FrontendError>>) {
     let result = api::delete_style(style_id).await;
     callback.emit(result);
 }

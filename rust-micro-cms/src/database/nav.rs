@@ -5,8 +5,8 @@ use rusqlite::{params, Result};
 
 pub async fn create_nav_bar_table(pool: &Pool<SqliteConnectionManager>) -> Result<usize> {
     let conn = pool
-    .get()
-    .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
+        .get()
+        .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "CREATE TABLE IF NOT EXISTS nav (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         item TEXT NOT NULL,
@@ -16,32 +16,35 @@ pub async fn create_nav_bar_table(pool: &Pool<SqliteConnectionManager>) -> Resul
     conn.execute(sql, ())
 }
 
-pub async fn insert_new_item(pool: &Pool<SqliteConnectionManager>, new_nav_item: NewNavItem) -> Result<NavItem> {
+pub async fn insert_new_item(
+    pool: &Pool<SqliteConnectionManager>,
+    new_nav_item: NewNavItem,
+) -> Result<NavItem> {
     let conn = pool
         .get()
         .map_err(|_| rusqlite::Error::ExecuteReturnedResults)?;
     let sql = "INSERT INTO nav (item, content, url) VALUES (?, ?, ?)";
     conn.execute(
         sql,
-        params![NavItemType::as_str(&new_nav_item.item_type), new_nav_item.content, new_nav_item.url],
+        params![
+            NavItemType::as_str(&new_nav_item.item_type),
+            new_nav_item.content,
+            new_nav_item.url
+        ],
     )?;
 
     let last_id = conn.last_insert_rowid();
-    conn.query_row(
-        "SELECT * from nav WHERE id = ?",
-        params![last_id],
-        |row| {
-            let item_type_str: String = row.get(1)?;
-            let item_type = NavItemType::from_str(&item_type_str);
+    conn.query_row("SELECT * from nav WHERE id = ?", params![last_id], |row| {
+        let item_type_str: String = row.get(1)?;
+        let item_type = NavItemType::from_str(&item_type_str);
 
-            Ok(NavItem {
-                id: row.get(0)?,
-                item_type,
-                content: row.get(2)?,
-                url: row.get(3)?,
-            })
-        },
-    )
+        Ok(NavItem {
+            id: row.get(0)?,
+            item_type,
+            content: row.get(2)?,
+            url: row.get(3)?,
+        })
+    })
 }
 
 pub async fn fetch_all_nav_items(pool: &Pool<SqliteConnectionManager>) -> Result<Nav> {

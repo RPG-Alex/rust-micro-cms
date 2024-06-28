@@ -1,12 +1,12 @@
-use crate::handlers::posts::{handle_update_post, handle_delete_post};
 use crate::errors::*;
+use crate::handlers::posts::{handle_delete_post, handle_update_post};
 use crate::models::posts::{Post, UpdatePost};
 use crate::routes::Routes;
 use chrono::Utc;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
 use yew::prelude::*;
-use yew_router::prelude::*;
 use yew::Callback;
+use yew_router::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct UpdatePostProps {
@@ -90,16 +90,20 @@ pub fn update_post_form(props: &UpdatePostProps) -> Html {
             let error_message = error_message.clone();
             let navigator = navigator.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                handle_update_post(updated_post, Callback::from(move |result: Result<UpdatePost, FrontendError>| {
-                    match result {
-                        Ok(_) => {
-                            navigator.push(&Routes::Home);
-                        }
-                        Err(e) => {
-                            error_message.set(Some(e.to_string()));
-                        }
-                    }
-                })).await;
+                handle_update_post(
+                    updated_post,
+                    Callback::from(
+                        move |result: Result<UpdatePost, FrontendError>| match result {
+                            Ok(_) => {
+                                navigator.push(&Routes::Home);
+                            }
+                            Err(e) => {
+                                error_message.set(Some(e.to_string()));
+                            }
+                        },
+                    ),
+                )
+                .await;
             });
         })
     };
@@ -110,21 +114,26 @@ pub fn update_post_form(props: &UpdatePostProps) -> Html {
         let navigator = navigator.clone();
 
         Callback::from(move |_| {
-            if web_sys::window().unwrap().confirm_with_message("Are you sure you want to delete this post?").unwrap() {
+            if web_sys::window()
+                .unwrap()
+                .confirm_with_message("Are you sure you want to delete this post?")
+                .unwrap()
+            {
                 let error_message = error_message.clone();
                 let navigator = navigator.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-                    handle_delete_post(post_id, Callback::from(move |result: Result<(), FrontendError>| {
-                        match result {
+                    handle_delete_post(
+                        post_id,
+                        Callback::from(move |result: Result<(), FrontendError>| match result {
                             Ok(_) => {
                                 navigator.push(&Routes::Home);
-
                             }
                             Err(e) => {
                                 error_message.set(Some(e.to_string()));
                             }
-                        }
-                    })).await;
+                        }),
+                    )
+                    .await;
                 });
             }
         })

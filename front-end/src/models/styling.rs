@@ -151,10 +151,10 @@ impl Default for Style {
         "#
         .to_string();
 
-        Style { 
+        Style {
             id: 0,
             name: "default".to_string(),
-            css: css, 
+            css: css,
         }
     }
 }

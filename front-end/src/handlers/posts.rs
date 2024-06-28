@@ -1,6 +1,6 @@
 use crate::api;
-use crate::models::posts::{NewPost, Post, UpdatePost};
 use crate::errors::FrontendError;
+use crate::models::posts::{NewPost, Post, UpdatePost};
 use yew::prelude::*;
 
 pub async fn handle_create_post(
@@ -11,8 +11,10 @@ pub async fn handle_create_post(
     callback.emit(result);
 }
 
-
-pub async fn handle_update_post(updated_post: UpdatePost, callback: Callback<Result<UpdatePost, FrontendError>>) {
+pub async fn handle_update_post(
+    updated_post: UpdatePost,
+    callback: Callback<Result<UpdatePost, FrontendError>>,
+) {
     let result = api::update_post(updated_post).await;
     callback.emit(result);
 }

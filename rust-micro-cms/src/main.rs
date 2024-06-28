@@ -41,7 +41,6 @@ async fn main() {
         .allow_methods(vec![Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers(vec![HeaderName::from_static("content-type")]);
 
-
     let app = routes::app_routes()
         .await
         .layer(Extension(state))

@@ -46,6 +46,6 @@ pub struct Nav {
 
 impl Default for Nav {
     fn default() -> Self {
-        Nav {items: Vec::new()}
+        Nav { items: Vec::new() }
     }
 }

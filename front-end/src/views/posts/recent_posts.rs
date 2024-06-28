@@ -1,8 +1,8 @@
 use crate::models::posts::Post;
+use crate::routes::Routes;
 use chrono::{Duration, Local, NaiveDateTime};
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::routes::Routes;
 
 #[function_component(RecentPosts)]
 pub fn recent_posts(props: &RecentPostsProps) -> Html {

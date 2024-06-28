@@ -1,16 +1,11 @@
 use crate::models::{posts::Posts, styling::Style};
 use crate::views::{
+    nav::new_nav_item::NewNavItemForm,
     posts::{
-        all_posts::PostList, 
-        new_post::PostForm,
-        recent_posts::RecentPosts, 
-        single_post::SinglePost,
-        update_post::UpdatePostForm,
+        all_posts::PostList, new_post::PostForm, recent_posts::RecentPosts,
+        single_post::SinglePost, update_post::UpdatePostForm,
     },
     styling::update_styling::StyleForm,
-    nav::{
-        new_nav_item::NewNavItemForm
-    }
 };
 
 use yew::prelude::*;
@@ -50,28 +45,28 @@ pub fn cms_routes() -> Html {
             } else {
                 html! { <RecentPosts posts={posts_context.posts.clone()} /> }
             }
-        },
+        }
         Some(Routes::AllPosts) => {
             if posts_context.posts.is_empty() {
                 html! { <h1 class="posts">{"Loading..."}</h1> }
             } else {
                 html! { <PostList posts={posts_context.posts.clone()} /> }
             }
-        },
+        }
         Some(Routes::Post { id }) => {
             if let Some(post) = posts_context.posts.iter().find(|p| p.id == id) {
                 html! { <SinglePost post={post.to_owned()} /> }
             } else {
                 html! { <h1 class="posts">{"Post does not exist"}</h1> }
             }
-        },
+        }
         Some(Routes::UpdatePost { id }) => {
             if let Some(post) = posts_context.posts.iter().find(|p| p.id == id) {
                 html! { <UpdatePostForm post={post.to_owned()} /> }
             } else {
                 html! { <h1 class="posts">{"Post does not exist"}</h1> }
             }
-        },
+        }
         Some(Routes::Style) => html! {
             <StyleForm style={Style::default()} posts={posts_context.posts.clone()} />
         },

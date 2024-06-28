@@ -5,8 +5,8 @@ use crate::routes::Routes;
 use chrono::Utc;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
 use yew::prelude::*;
-use yew_router::prelude::*;
 use yew::Callback;
+use yew_router::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct NewPostProps {
@@ -76,8 +76,9 @@ pub fn post_form() -> Html {
             let error_message = error_message.clone();
             let navigator = navigator.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                handle_create_post(new_post, Callback::from(move |result: Result<Post, FrontendError>| {
-                    match result {
+                handle_create_post(
+                    new_post,
+                    Callback::from(move |result: Result<Post, FrontendError>| match result {
                         Ok(post) => {
                             let post_id: i64 = post.id;
                             navigator.push(&Routes::Post { id: post_id });
@@ -85,8 +86,9 @@ pub fn post_form() -> Html {
                         Err(e) => {
                             error_message.set(Some(e.to_string()));
                         }
-                    }
-                })).await;
+                    }),
+                )
+                .await;
             });
         })
     };

@@ -1,16 +1,16 @@
 use crate::errors::*;
 use crate::handlers::nav::handle_create_nav_item;
-use crate::models::nav::{NewNavItem, NavItem, NavItemType, Nav};
+use crate::models::nav::{Nav, NavItem, NavItemType, NewNavItem};
 use crate::routes::Routes;
 use chrono::Utc;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
 use yew::prelude::*;
-use yew_router::prelude::*;
 use yew::Callback;
+use yew_router::prelude::*;
 
 #[function_component(NewNavItemForm)]
 pub fn new_nav_item_form() -> Html {
-    let item_type = use_state(|| NavItemType::SocialLink); 
+    let item_type = use_state(|| NavItemType::SocialLink);
     let content = use_state(|| String::new());
     let url = use_state(|| String::new());
     let error_message = use_state(|| None);
@@ -52,21 +52,27 @@ pub fn new_nav_item_form() -> Html {
             let new_nav_item = NewNavItem {
                 item_type: *item_type,
                 content: (*content).clone(),
-                url: if url.is_empty() { None } else { Some((*url).clone()) },
+                url: if url.is_empty() {
+                    None
+                } else {
+                    Some((*url).clone())
+                },
             };
             let error_message = error_message.clone();
             let navigator = navigator.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                handle_create_nav_item(new_nav_item, Callback::from(move |result: Result<NavItem, FrontendError>| {
-                    match result {
+                handle_create_nav_item(
+                    new_nav_item,
+                    Callback::from(move |result: Result<NavItem, FrontendError>| match result {
                         Ok(nav_item) => {
                             navigator.push(&Routes::Home);
                         }
                         Err(e) => {
                             error_message.set(Some(e.to_string()));
                         }
-                    }
-                })).await;
+                    }),
+                )
+                .await;
             });
         })
     };

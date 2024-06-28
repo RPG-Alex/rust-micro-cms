@@ -21,7 +21,8 @@ pub async fn app_routes() -> Router {
         )
         // Nav Routes
         .route(
-            "/nav", get(nav::fetch_nav_items_handler)
+            "/nav",
+            get(nav::fetch_nav_items_handler)
                 .post(nav::create_nav_item_handler)
                 .delete(nav::delete_nav_item_handler),
         )
