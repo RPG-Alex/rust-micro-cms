@@ -1,0 +1,1 @@
+//render the delete nav item here alongside the nav items

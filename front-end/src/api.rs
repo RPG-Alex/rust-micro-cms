@@ -1,6 +1,6 @@
 use crate::errors::FrontendError;
 use crate::models::{
-    nav::{Nav, NavItem, NavItemType, NewNavItem},
+    nav::{Nav, NavItem, NewNavItem},
     posts::*,
     styling::{NewStyle, Style},
 };

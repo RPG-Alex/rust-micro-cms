@@ -1,4 +1,4 @@
-use crate::models::nav::{Nav, NavItem, NavItemType};
+use crate::models::nav::{Nav, NavItemType};
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]

@@ -1,6 +1,6 @@
 use crate::api;
 use crate::errors::FrontendError;
-use crate::models::nav::{Nav, NavItem, NavItemType, NewNavItem};
+use crate::models::nav::{NavItem, NewNavItem};
 use yew::prelude::*;
 
 pub async fn handle_create_nav_item(
