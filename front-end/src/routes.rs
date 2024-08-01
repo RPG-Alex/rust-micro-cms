@@ -1,6 +1,9 @@
 use crate::models::{posts::Posts, styling::Style};
 use crate::views::{
-    nav::new_nav_item::NewNavItemForm,
+    nav::new_nav_item::{
+        NewNavItemForm,
+        EditNavItemForm,
+    },
     posts::{
         all_posts::PostList, new_post::PostForm, recent_posts::RecentPosts,
         single_post::SinglePost, update_post::UpdatePostForm,
@@ -27,7 +30,8 @@ pub enum Routes {
     Style,
     #[at("/nav/new")]
     NewNav,
-    //todo implment update nav item
+    #[at("/nav/edit")]
+    EditNav,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -75,6 +79,9 @@ pub fn cms_routes() -> Html {
         },
         Some(Routes::NewNav) => html! {
             <NewNavItemForm />
+        },
+        Some(Routes::EditNav) => html! {
+            <EditNavItemForm />
         },
         Some(Routes::NotFound) | None => html! { <h1 class="posts">{"404 Not Found"}</h1> },
     }
