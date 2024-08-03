@@ -1,3 +1,4 @@
+use crate::models::nav::{NavItem, NavItemType};
 use crate::models::{posts::Posts, styling::Style};
 use crate::views::{
     nav::{
@@ -81,7 +82,13 @@ pub fn cms_routes() -> Html {
             <NewNavItemForm />
         },
         Some(Routes::EditNav) => html! {
-            <UpdateNavItemForm />
+            //placeholder value change later!
+            <UpdateNavItemForm update_nav={NavItem {
+                id: 1,
+                item_type: NavItemType::ThumbnailUrl,
+                content: "Some content".to_string(),
+                url: Some("website.url".to_string()),
+            }}/>
         },
         Some(Routes::NotFound) | None => html! { <h1 class="posts">{"404 Not Found"}</h1> },
     }
