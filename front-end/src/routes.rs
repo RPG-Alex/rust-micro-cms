@@ -1,5 +1,10 @@
-use crate::models::nav::{NavItem, NavItemType};
-use crate::models::{posts::Posts, styling::Style};
+use crate::models::{
+    nav::{
+        NavItem, 
+        NavItemType
+    },
+    posts::Posts, styling::Style
+};
 use crate::views::{
     nav::{
         new_nav_item::NewNavItemForm,
