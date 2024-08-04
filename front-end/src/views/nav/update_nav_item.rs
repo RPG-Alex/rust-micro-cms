@@ -8,14 +8,12 @@ use yew::Callback;
 use yew_router::prelude::*;
 
 #[derive(Properties, PartialEq)]
-pub struct  UpdateNavItemProps {
+pub struct UpdateNavItemProps {
     pub update_nav: NavItem,
 }
 
 #[function_component(UpdateNavItemForm)]
 pub fn update_nav_item_form(props: &UpdateNavItemProps) -> Html {
-
-
     html! {
         <div>
             {"Boiler plate for updating nav message"}

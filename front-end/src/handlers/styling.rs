@@ -1,8 +1,7 @@
-
 use crate::api;
 use crate::errors::FrontendError;
 use crate::models::styling::{NewStyle, Style};
-use yew::{prelude::*};
+use yew::prelude::*;
 
 pub async fn handle_create_style(
     new_style: NewStyle,

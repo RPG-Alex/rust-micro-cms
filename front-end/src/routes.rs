@@ -1,15 +1,10 @@
 use crate::models::{
-    nav::{
-        NavItem, 
-        NavItemType
-    },
-    posts::Posts, styling::Style
+    nav::{NavItem, NavItemType},
+    posts::Posts,
+    styling::Style,
 };
 use crate::views::{
-    nav::{
-        new_nav_item::NewNavItemForm,
-        update_nav_item::UpdateNavItemForm,
-    },
+    nav::{new_nav_item::NewNavItemForm, update_nav_item::UpdateNavItemForm},
     posts::{
         all_posts::PostList, new_post::PostForm, recent_posts::RecentPosts,
         single_post::SinglePost, update_post::UpdatePostForm,
