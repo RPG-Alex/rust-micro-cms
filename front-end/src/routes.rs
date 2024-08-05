@@ -1,5 +1,5 @@
 use crate::models::{
-    nav::{NavItem, NavItemType},
+    nav::{Nav, NavItem, NavItemType},
     posts::Posts,
     styling::Style,
 };
@@ -41,7 +41,8 @@ pub enum Routes {
 #[function_component(CMSRoutes)]
 pub fn cms_routes() -> Html {
     let route = use_route::<Routes>();
-    let posts_context = use_context::<Posts>().expect("context not found");
+    let posts_context = use_context::<Posts>().expect("posts context not found");
+    let nav_items = use_context::<Nav>().expect("nav items context not found");
 
     match route {
         Some(Routes::Home) => {
