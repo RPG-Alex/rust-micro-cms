@@ -31,8 +31,8 @@ pub enum Routes {
     Style,
     #[at("/nav/new")]
     NewNav,
-    #[at("/nav/edit")]
-    EditNav,
+    #[at("/nav/:id/edit")]
+    EditNav { id: i64 },
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -42,7 +42,7 @@ pub enum Routes {
 pub fn cms_routes() -> Html {
     let route = use_route::<Routes>();
     let posts_context = use_context::<Posts>().expect("posts context not found");
-    let nav_items = use_context::<Nav>().expect("nav items context not found");
+    let nav_items_context = use_context::<Nav>().expect("nav items context not found");
 
     match route {
         Some(Routes::Home) => {
@@ -82,14 +82,19 @@ pub fn cms_routes() -> Html {
         Some(Routes::NewNav) => html! {
             <NewNavItemForm />
         },
-        Some(Routes::EditNav) => html! {
+        Some(Routes::EditNav { id }) => {
+            if let Some(nav_item) = nav_items_context.items.iter().find(|p| p.id == id ) {
+                html! {<UpdateNavItemForm nav_item={nav_item.to_owner()} />}
+            } else {
+                html! { <h1 class="posts">{"Nav Item Does Not Exist"}</h1>}
+            }
             //placeholder value change later!
-            <UpdateNavItemForm update_nav={NavItem {
-                id: 1,
-                item_type: NavItemType::ThumbnailUrl,
-                content: "Some content".to_string(),
-                url: Some("website.url".to_string()),
-            }}/>
+            // <UpdateNavItemForm update_nav={NavItem {
+            //     id: 1,
+            //     item_type: NavItemType::ThumbnailUrl,
+            //     content: "Some content".to_string(),
+            //     url: Some("website.url".to_string()),
+            // }}/>
         },
         Some(Routes::NotFound) | None => html! { <h1 class="posts">{"404 Not Found"}</h1> },
     }
