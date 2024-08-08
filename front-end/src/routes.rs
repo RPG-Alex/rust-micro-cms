@@ -84,7 +84,7 @@ pub fn cms_routes() -> Html {
         },
         Some(Routes::EditNav { id }) => {
             if let Some(nav_item) = nav_items_context.items.iter().find(|p| p.id == id ) {
-                html! {<UpdateNavItemForm nav_item={nav_item.to_owned()} />}
+                html! {<UpdateNavItemForm update_nav={nav_item.to_owned()} />}
             } else {
                 html! { <h1 class="posts">{"Nav Item Does Not Exist"}</h1>}
             }
