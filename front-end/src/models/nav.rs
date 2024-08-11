@@ -22,7 +22,12 @@ impl NavItemType {
             _ => NavItemType::SocialLink,
         }
     }
+    pub fn iterator() -> impl Iterator<Item = NavItemType> {
+        [NavItemType::ThumbnailUrl, NavItemType::BlogSummary, NavItemType::SocialLink].iter().cloned()
+    }
 }
+
+
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NavItem {

@@ -19,8 +19,19 @@ pub fn update_nav_item_form(props: &UpdateNavItemProps) -> Html {
     let content = use_state(|| props.update_nav.content.clone());
     let url = use_state(|| props.update_nav.url.clone());
     html! {
-        <div>
-            {"Boiler plate for updating nav message"}
-        </div>
+        <div class="posts">
+        <form>
+            <input type="hidden" value={props.update_nav.id.to_string()} />
+            <select name="item-types">
+                {
+                    NavItemType::iterator().map(|item| {
+                        html! {
+                            <option value={item.as_str()} selected={item == *item_type}>{item.as_str()}</option>
+                        }
+                    }).collect::<Html>()
+                }
+            </select>
+        </form>
+    </div>
     }
 }
